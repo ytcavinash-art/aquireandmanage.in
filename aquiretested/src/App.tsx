@@ -9,7 +9,7 @@ import AddItemForm from './components/AddItemForm';
 
 export default function App() {
   useEffect(() => {
-    fetch('http://localhost:5050/api/items')
+    fetch('https://aquiretested-2.onrender.com/api/items')
       .then((res) => {
         if (!res.ok) throw new Error('Items fetch failed');
         return res.json();

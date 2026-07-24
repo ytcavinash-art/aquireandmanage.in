@@ -7,7 +7,7 @@ function AddItemForm() {
     e.preventDefault();
 
     try {
-      const response = await fetch('http://localhost:5050/api/items', {
+      const response = await fetch('https://aquiretested-2.onrender.com/api/items', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
