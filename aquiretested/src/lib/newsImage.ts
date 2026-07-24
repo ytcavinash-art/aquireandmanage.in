@@ -1,7 +1,10 @@
 import type { SyntheticEvent } from 'react';
 
 export const DEFAULT_NEWS_IMAGE_URL =
-  'https://images.unsplash.com/photo-1504711434969-e33886168f5c?q=80&w=1200&auto=format&fit=crop';
+  'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=1200&auto=format&fit=crop';
+
+const ERROR_NEWS_IMAGE_URL =
+  'https://images.unsplash.com/photo-1541888946425-d0fbb186a5b3?q=80&w=1200&auto=format&fit=crop';
 
 export function getNewsImageUrl(imageUrl?: string) {
   if (!imageUrl) return DEFAULT_NEWS_IMAGE_URL;
@@ -21,5 +24,5 @@ export function getNewsImageUrl(imageUrl?: string) {
 
 export function useNewsImageFallback(event: SyntheticEvent<HTMLImageElement>) {
   event.currentTarget.onerror = null;
-  event.currentTarget.src = DEFAULT_NEWS_IMAGE_URL;
+  event.currentTarget.src = ERROR_NEWS_IMAGE_URL;
 }
