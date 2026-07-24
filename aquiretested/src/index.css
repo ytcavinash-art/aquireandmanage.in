@@ -48,6 +48,12 @@
 }
 
 @layer utilities {
+  /* Use the visible viewport on modern iOS Safari, with a legacy fallback. */
+  .min-h-screen {
+    min-height: 100vh;
+    min-height: 100dvh;
+  }
+
   /* Visible only to screen readers and keyboard users pressing Tab */
   .sr-only-focusable:not(:focus) {
     position: absolute;

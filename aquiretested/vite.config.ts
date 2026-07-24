@@ -15,6 +15,7 @@ export default defineConfig({
   },
 
   build: {
+    target: 'es2015',
     rollupOptions: {
       input: {
         main: resolve(__dirname, 'index.html'),
