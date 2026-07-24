@@ -1,7 +1,8 @@
 import { formatDistanceToNow, isValid } from 'date-fns';
 import { motion } from 'framer-motion';
-import { Building2, Calendar, ExternalLink, Newspaper } from 'lucide-react';
+import { Building2, Calendar, ExternalLink } from 'lucide-react';
 import type { NewsArticle } from '../types/news';
+import { getNewsImageUrl, useNewsImageFallback } from '../lib/newsImage';
 
 interface NewsCardProps {
   article: NewsArticle;
@@ -22,19 +23,15 @@ export default function NewsCard({ article }: NewsCardProps) {
       className="group overflow-hidden rounded-2xl bg-white text-slate-900 shadow transition-all duration-300 hover:shadow-2xl dark:bg-zinc-900 dark:text-white"
     >
       <div className="h-60 overflow-hidden bg-slate-100 dark:bg-zinc-800">
-        {article.imageUrl ? (
-          <img
-            loading="lazy"
-            decoding="async"
-            src={article.imageUrl}
-            alt={article.title}
-            className="h-full w-full object-cover transition duration-500 group-hover:scale-110"
-          />
-        ) : (
-          <div className="grid h-full place-items-center bg-gradient-to-br from-navy to-mediumBlue text-white/70" aria-label="News image unavailable">
-            <Newspaper size={52} strokeWidth={1.5} aria-hidden="true" />
-          </div>
-        )}
+        <img
+          loading="lazy"
+          decoding="async"
+          src={getNewsImageUrl(article.imageUrl)}
+          alt={article.title}
+          referrerPolicy="no-referrer"
+          onError={useNewsImageFallback}
+          className="h-full w-full object-cover transition duration-500 group-hover:scale-110"
+        />
       </div>
 
       <div className="p-6">
