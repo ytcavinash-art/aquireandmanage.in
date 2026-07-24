@@ -1,12 +1,23 @@
+import { useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import Nav from './components/Nav';
 import Hero from './components/Hero';
 import OurClients from './components/OurClients';
-import Contact from './components/Contact';
 import FAQ from './components/FAQ';
 import Footer from './components/Footer';
+import AddItemForm from './components/AddItemForm';
 
 export default function App() {
+  useEffect(() => {
+    fetch('http://localhost:5050/api/items')
+      .then((res) => {
+        if (!res.ok) throw new Error('Items fetch failed');
+        return res.json();
+      })
+      .then((data) => console.log(data))
+      .catch((error) => console.error(error));
+  }, []);
+
   return (
     <div className="font-sans antialiased">
       {/* SEO Tags for Home Page */}
@@ -29,9 +40,10 @@ export default function App() {
 
         <OurClients />
 
+        <AddItemForm />
+
         <FAQ />
 
-        <Contact />
       </main>
 
       <Footer />

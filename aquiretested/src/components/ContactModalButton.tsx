@@ -1,7 +1,13 @@
-import { FormEvent, useEffect, useState } from 'react';
+import { type ChangeEvent, type FormEvent, useEffect, useState } from 'react';
 
 export default function ContactModalButton() {
   const [isOpen, setIsOpen] = useState(false);
+  const [formData, setFormData] = useState({
+    fullName: '',
+    mobileNumber: '',
+    emailAddress: '',
+    message: '',
+  });
 
   useEffect(() => {
     if (!isOpen) return;
@@ -14,8 +20,38 @@ export default function ContactModalButton() {
     return () => document.removeEventListener('keydown', closeOnEscape);
   }, [isOpen]);
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const handleChange = (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setFormData({
+      ...formData,
+      [event.target.name]: event.target.value,
+    });
+  };
+
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+
+    try {
+      const response = await fetch('http://localhost:5050/api/items', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        alert('Message sent successfully!');
+        setFormData({ fullName: '', mobileNumber: '', emailAddress: '', message: '' });
+        setIsOpen(false);
+      } else {
+        alert(`Error: ${result.error}`);
+      }
+    } catch (error) {
+      console.error('Error submitting form:', error);
+      alert('Backend connection error');
+    }
   };
 
   return (
@@ -57,16 +93,16 @@ export default function ContactModalButton() {
 
             <form onSubmit={handleSubmit}>
               <label className="sr-only" htmlFor="contact-name">Full Name</label>
-              <input id="contact-name" name="name" type="text" placeholder="Full Name" required className="mb-4 w-full rounded border p-3" />
+              <input id="contact-name" name="fullName" type="text" placeholder="Full Name" value={formData.fullName} onChange={handleChange} required className="mb-4 w-full rounded border p-3" />
 
               <label className="sr-only" htmlFor="contact-mobile">Mobile Number</label>
-              <input id="contact-mobile" name="mobile" type="tel" placeholder="Mobile Number" required className="mb-4 w-full rounded border p-3" />
+              <input id="contact-mobile" name="mobileNumber" type="tel" placeholder="Mobile Number" value={formData.mobileNumber} onChange={handleChange} required className="mb-4 w-full rounded border p-3" />
 
               <label className="sr-only" htmlFor="contact-email">Email Address</label>
-              <input id="contact-email" name="email" type="email" placeholder="Email Address" required className="mb-4 w-full rounded border p-3" />
+              <input id="contact-email" name="emailAddress" type="email" placeholder="Email Address" value={formData.emailAddress} onChange={handleChange} required className="mb-4 w-full rounded border p-3" />
 
               <label className="sr-only" htmlFor="contact-message">Your Message</label>
-              <textarea id="contact-message" name="message" rows={4} placeholder="Your Message" required className="mb-6 w-full rounded border p-3" />
+              <textarea id="contact-message" name="message" rows={4} placeholder="Your Message" value={formData.message} onChange={handleChange} required className="mb-6 w-full rounded border p-3" />
 
               <button type="submit" className="w-full rounded-lg bg-crimson py-3 font-semibold text-white transition-colors hover:bg-crimson/90">
                 Send Message
