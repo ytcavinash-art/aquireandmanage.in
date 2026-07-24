@@ -33,6 +33,7 @@ export default function FeedbackForm() {
 
       setSubmitted(true);
       setFormData({ fullName: '', emailAddress: '', rating: 5, feedback: '' });
+      window.dispatchEvent(new Event('feedback-submitted'));
     } catch (submitError) {
       setError(submitError instanceof Error ? submitError.message : 'Backend connection error.');
     } finally {

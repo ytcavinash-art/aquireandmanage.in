@@ -6,6 +6,7 @@ import OurClients from './components/OurClients';
 import FAQ from './components/FAQ';
 import Footer from './components/Footer';
 import FeedbackForm from './components/FeedbackForm';
+import ReviewsList from './components/ReviewsList';
 
 export default function App() {
   useEffect(() => {
@@ -43,6 +44,8 @@ export default function App() {
         <FAQ />
 
         <FeedbackForm />
+
+        <ReviewsList />
 
       </main>
 
