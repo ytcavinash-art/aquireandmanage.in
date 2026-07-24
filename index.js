@@ -14,6 +14,7 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 const Item = require('./models/Item');
 const ContactSubmission = require('./models/ContactSubmission');
+const Feedback = require('./models/Feedback');
 
 const app = express();
 app.use(express.json());
@@ -34,6 +35,35 @@ app.post('/api/contact', async (req, res) => {
     res.status(201).json(submission);
   } catch (error) {
     res.status(400).json({ error: error.message });
+  }
+});
+
+app.post('/api/feedback', async (req, res) => {
+  try {
+    const { fullName, emailAddress, rating, feedback } = req.body;
+    const newFeedback = await Feedback.create({
+      fullName,
+      emailAddress,
+      rating,
+      feedback
+    });
+
+    res.status(201).json({
+      success: true,
+      message: 'Feedback submitted successfully!',
+      feedback: newFeedback
+    });
+  } catch (error) {
+    res.status(400).json({ success: false, error: error.message });
+  }
+});
+
+app.get('/api/feedback', async (req, res) => {
+  try {
+    const feedbacks = await Feedback.find().sort({ createdAt: -1 });
+    res.status(200).json(feedbacks);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
   }
 });
 
