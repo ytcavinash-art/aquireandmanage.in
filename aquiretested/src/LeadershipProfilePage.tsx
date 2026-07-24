@@ -21,7 +21,7 @@ const profiles = {
   },
   'srinivasan-mohan': {
     name: 'Srinivasan Mohan', title: 'COO', photo: srinivasanPhoto,
-    positioning: 'Experienced business leader specializing in large-scale urban redevelopment, community engagement, and sustainable project delivery across Mumbai’s real estate sector.',
+    positioning: 'Experienced business leader specializing in large-scale urban redevelopment, community engagement, and sustainable project delivery in the real estate sector.',
     experience: [
       'MBA-qualified professional with over 30 years of experience across the financial services sector and Mumbai’s real estate industry, including 12+ years of leadership in large-scale Slum Rehabilitation Redevelopment Projects.',
       'Associated with HDFC Bank, Omkar Realtors & Developers, and the Adani Group (NMDPL), he has played key roles in landmark projects, including the Dharavi Redevelopment Project. His expertise spans stakeholder engagement, tenant management, land acquisition, rehabilitation, project execution, and coordination with government authorities.',
