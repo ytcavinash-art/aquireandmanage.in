@@ -5,7 +5,6 @@ import Hero from './components/Hero';
 import OurClients from './components/OurClients';
 import FAQ from './components/FAQ';
 import Footer from './components/Footer';
-import AddItemForm from './components/AddItemForm';
 
 export default function App() {
   useEffect(() => {
@@ -39,8 +38,6 @@ export default function App() {
         <Hero />
 
         <OurClients />
-
-        <AddItemForm />
 
         <FAQ />
 
