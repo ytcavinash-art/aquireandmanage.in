@@ -48,10 +48,28 @@ export default function Seo() {
     { '@type': 'ListItem', position: isArticle ? 3 : 2, name: page.label, item: canonical },
   ];
   const organization = {
-    '@context': 'https://schema.org', '@type': 'ProfessionalService', '@id': `${siteUrl}/#organization`,
+    '@context': 'https://schema.org',
+    '@type': ['Organization', 'LocalBusiness', 'ProfessionalService'],
+    '@id': `${siteUrl}/#organization`,
     name: 'A&M Advisory', url: siteUrl, logo: defaultImage, telephone: '+91-22-4564-8350',
+    email: 'info@aquireandmanage.com',
+    address: {
+      '@type': 'PostalAddress',
+      addressLocality: 'Mumbai',
+      addressRegion: 'Maharashtra',
+      addressCountry: 'IN',
+    },
     areaServed: { '@type': 'City', name: 'Mumbai' },
     knowsAbout: ['SRA Redevelopment', 'Tenant Management', 'Government Liaisoning', 'Slum Rehabilitation'],
+  };
+  const websiteSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    '@id': `${siteUrl}/#website`,
+    url: siteUrl,
+    name: 'A&M Advisory',
+    publisher: { '@id': `${siteUrl}/#organization` },
+    inLanguage: 'en-IN',
   };
   const contentSchema = {
     '@context': 'https://schema.org', '@type': isArticle ? 'Article' : 'WebPage',
@@ -79,6 +97,7 @@ export default function Seo() {
       <meta name="twitter:description" content={page.description} />
       <meta name="twitter:image" content={defaultImage} />
       <script type="application/ld+json">{JSON.stringify(organization)}</script>
+      <script type="application/ld+json">{JSON.stringify(websiteSchema)}</script>
       <script type="application/ld+json">{JSON.stringify(contentSchema)}</script>
       {breadcrumbItems.length > 0 && <script type="application/ld+json">{JSON.stringify({ '@context': 'https://schema.org', '@type': 'BreadcrumbList', itemListElement: breadcrumbItems })}</script>}
     </Helmet>

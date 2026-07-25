@@ -4,6 +4,7 @@ import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 export default function PageLoader() {
   const reduceMotion = useReducedMotion();
   const [visible, setVisible] = useState(() => {
+    if (window.matchMedia('(max-width: 767px), (prefers-reduced-motion: reduce)').matches) return false;
     try {
       return sessionStorage.getItem('am-loader-seen') !== 'true';
     } catch {
@@ -20,7 +21,7 @@ export default function PageLoader() {
       } catch {
         // Loader can still dismiss when storage is unavailable.
       }
-    }, reduceMotion ? 250 : 1750);
+    }, reduceMotion ? 100 : 900);
     return () => window.clearTimeout(timeout);
   }, [reduceMotion, visible]);
 
