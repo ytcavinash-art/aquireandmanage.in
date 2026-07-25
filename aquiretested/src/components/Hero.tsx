@@ -80,7 +80,7 @@ export default function Hero() {
 
   return (
     <section id="home" className="relative overflow-hidden bg-navy-dark pt-16 text-white">
-      <div className="relative flex min-h-[690px] items-center lg:min-h-[720px]">
+      <div className="relative flex min-h-[830px] items-center sm:min-h-[790px] lg:min-h-[720px]">
         <img
           src="/images/hero-poster.jpg"
           alt=""
@@ -111,7 +111,7 @@ export default function Hero() {
           initial={reduceMotion ? false : { opacity: 0, y: 28 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: 'easeOut' }}
-          className="relative z-10 mx-auto w-full max-w-7xl px-6 pb-40 pt-20 md:px-10 lg:pb-44"
+          className="relative z-10 mx-auto w-full max-w-7xl px-6 pb-60 pt-16 sm:pb-56 sm:pt-20 md:px-10 lg:pb-44"
         >
           <div className="max-w-4xl">
             <p className="mb-6 flex items-center gap-3 text-xs font-bold uppercase tracking-[0.24em] text-white/80 sm:text-sm">
@@ -129,7 +129,7 @@ export default function Hero() {
               process and precision together to move complex redevelopment projects forward.
             </p>
 
-            <div className="mt-9 flex flex-col gap-3 sm:flex-row sm:items-center">
+            <div className="mt-8 flex flex-col gap-3 sm:mt-9 sm:flex-row sm:items-center">
               <motion.a
                 href="#footer"
                 onClick={handleContact}
