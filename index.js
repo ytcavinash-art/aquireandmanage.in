@@ -15,10 +15,32 @@ const mongoose = require('mongoose');
 const Item = require('./models/Item');
 const ContactSubmission = require('./models/ContactSubmission');
 const Feedback = require('./models/Feedback');
+const BlogPost = require('./models/BlogPost');
+const cron = require('node-cron');
+const { syncAutomatedBlogs, slugify } = require('./services/blogSync');
+const { answerQuestion } = require('./services/chatbot');
 
 const app = express();
 app.use(express.json());
 app.use(cors());
+
+const requireAdmin = (req, res, next) => {
+  if (!process.env.ADMIN_API_KEY || req.get('x-admin-key') !== process.env.ADMIN_API_KEY) {
+    return res.status(401).json({ error: 'Admin authorization required.' });
+  }
+  next();
+};
+
+const chatRequests = new Map();
+const chatRateLimit = (req, res, next) => {
+  const key = req.ip;
+  const now = Date.now();
+  const recent = (chatRequests.get(key) || []).filter((time) => now - time < 60_000);
+  if (recent.length >= 12) return res.status(429).json({ error: 'Please wait before sending more messages.' });
+  recent.push(now);
+  chatRequests.set(key, recent);
+  next();
+};
 
 app.get('/', (req, res) => {
   res.send('API running fine!');
@@ -26,6 +48,22 @@ app.get('/', (req, res) => {
 
 app.get('/api/users', (req, res) => {
   res.json({ message: 'User list route working fine!' });
+});
+
+app.post('/api/chat', chatRateLimit, async (req, res) => {
+  try {
+    const messages = Array.isArray(req.body.messages) ? req.body.messages.slice(-8) : [];
+    const validMessages = messages
+      .filter((message) => ['user', 'assistant'].includes(message?.role) && typeof message?.content === 'string')
+      .map((message) => ({ role: message.role, content: message.content.trim().slice(0, 600) }))
+      .filter((message) => message.content);
+    if (!validMessages.length || validMessages.at(-1).role !== 'user') {
+      return res.status(400).json({ error: 'A valid user message is required.' });
+    }
+    res.json(await answerQuestion(validMessages));
+  } catch (error) {
+    res.status(500).json({ error: 'Unable to answer right now.' });
+  }
 });
 
 app.post('/api/contact', async (req, res) => {
@@ -64,6 +102,78 @@ app.get('/api/feedback', async (req, res) => {
     res.status(200).json(feedbacks);
   } catch (error) {
     res.status(500).json({ error: error.message });
+  }
+});
+
+app.get('/api/blogs', async (req, res) => {
+  try {
+    const page = Math.max(Number.parseInt(req.query.page || '1', 10), 1);
+    const limit = Math.min(Math.max(Number.parseInt(req.query.limit || '12', 10), 1), 50);
+    const query = { isPublished: true };
+    if (req.query.category) query.category = req.query.category;
+    if (req.query.search) query.$text = { $search: String(req.query.search) };
+    const [posts, total] = await Promise.all([
+      BlogPost.find(query).sort({ publishedAt: -1 }).skip((page - 1) * limit).limit(limit).lean(),
+      BlogPost.countDocuments(query),
+    ]);
+    res.set('Cache-Control', 'public, max-age=300, stale-while-revalidate=900');
+    res.json({ posts, page, total, totalPages: Math.ceil(total / limit) });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.get('/api/blogs/:slug', async (req, res) => {
+  try {
+    const post = await BlogPost.findOne({ slug: req.params.slug, isPublished: true }).lean();
+    if (!post) return res.status(404).json({ error: 'Blog post not found.' });
+    res.json(post);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.post('/api/blogs', requireAdmin, async (req, res) => {
+  try {
+    const post = await BlogPost.create({
+      ...req.body,
+      slug: req.body.slug || slugify(req.body.title),
+      isAutomated: false,
+    });
+    res.status(201).json(post);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
+
+app.put('/api/blogs/:id', requireAdmin, async (req, res) => {
+  try {
+    const post = await BlogPost.findByIdAndUpdate(req.params.id, req.body, {
+      returnDocument: 'after',
+      runValidators: true,
+    });
+    if (!post) return res.status(404).json({ error: 'Blog post not found.' });
+    res.json(post);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
+
+app.delete('/api/blogs/:id', requireAdmin, async (req, res) => {
+  try {
+    const post = await BlogPost.findByIdAndDelete(req.params.id);
+    if (!post) return res.status(404).json({ error: 'Blog post not found.' });
+    res.json({ success: true });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.post('/api/blogs/sync/run', requireAdmin, async (req, res) => {
+  try {
+    res.json(await syncAutomatedBlogs());
+  } catch (error) {
+    res.status(502).json({ error: error.message });
   }
 });
 
@@ -150,6 +260,19 @@ mongoose.connect(process.env.MONGO_URI, {
 })
 .then(() => {
   console.log('✅ MongoDB connected successfully!');
+  cron.schedule('0 */6 * * *', async () => {
+    try {
+      console.log('Running scheduled blog sync...');
+      console.log(await syncAutomatedBlogs());
+    } catch (error) {
+      console.error('Scheduled blog sync failed:', error.message);
+    }
+  }, { timezone: 'Asia/Kolkata' });
+
+  void syncAutomatedBlogs()
+    .then((result) => console.log('Initial blog sync:', result))
+    .catch((error) => console.error('Initial blog sync failed:', error.message));
+
   app.listen(PORT, () => {
     console.log(`🚀 Server listening on port ${PORT}`);
   });

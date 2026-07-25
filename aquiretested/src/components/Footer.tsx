@@ -1,5 +1,6 @@
 import { Facebook, Globe2, Instagram, Linkedin, Mail, Phone, Twitter } from 'lucide-react';
 import { scrollToFooter } from '../lib/scrollToFooter';
+import FloatingActions from './FloatingActions';
 
 const services = [
   { label: 'Tenant Management', href: '/tenant-management.html' },
@@ -27,12 +28,13 @@ export default function Footer() {
   };
 
   return (
+    <>
     <footer id="footer" className="bg-[#0e172a] text-white">
       <div className="mx-auto max-w-6xl px-6 py-12 sm:py-14">
         <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-[1.45fr_1fr_1fr_1.35fr] lg:gap-12">
           <div>
             <a href="/#home" className={`inline-block ${ringOnDark}`} aria-label="A&M Advisory home">
-              <img src="/a&mwhitelogo.png" alt="A&M Advisory" className="h-auto w-28" />
+              <img src="/a&mwhitelogo.png" alt="A&M Advisory" loading="lazy" decoding="async" width="112" height="64" className="h-auto w-28" />
             </a>
             <p className="mt-4 max-w-[220px] text-xs leading-relaxed text-slate-300">
               Strategic consulting and business management firm helping organizations improve performance and accelerate sustainable growth.
@@ -81,5 +83,7 @@ export default function Footer() {
         </div>
       </div>
     </footer>
+    <FloatingActions />
+    </>
   );
 }

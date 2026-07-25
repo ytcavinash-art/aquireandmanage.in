@@ -39,6 +39,10 @@ const OurClients = () => {
                     <img
                       src={client.logo}
                       alt={client.name}
+                      loading="lazy"
+                      decoding="async"
+                      width="140"
+                      height="32"
                       className="max-h-8 max-w-full object-contain"
                     />
                   </div>

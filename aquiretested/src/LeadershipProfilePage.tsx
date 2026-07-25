@@ -57,7 +57,7 @@ export default function LeadershipProfilePage() {
             </a>
             <article className="grid gap-10 md:grid-cols-[minmax(260px,0.85fr)_1.4fr] md:gap-14">
               <div className="flex items-start justify-center md:justify-start">
-                <img src={profile.photo} alt={profile.name} className="w-full max-w-xs aspect-[4/5] object-cover rounded-lg ring-2 ring-crimson" />
+                <img src={profile.photo} alt={profile.name} loading="eager" fetchPriority="high" decoding="async" width="320" height="400" className="w-full max-w-xs aspect-[4/5] object-cover rounded-lg ring-2 ring-crimson" />
               </div>
               <div>
                 <p className="text-crimson text-sm font-semibold tracking-widest uppercase mb-3">Leadership Profile</p>

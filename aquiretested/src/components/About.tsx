@@ -32,6 +32,8 @@ export default function About() {
             <img
               src="/images/sra-project.png"
               alt="SRA rehabilitation housing project in Mumbai"
+              loading="lazy"
+              decoding="async"
               className="aspect-[4/3] w-full rounded-lg object-cover shadow-2xl"
             />
             {/* Decorative border */}

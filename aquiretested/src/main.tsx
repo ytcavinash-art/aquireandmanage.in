@@ -1,17 +1,18 @@
-import { StrictMode } from 'react';
+import { lazy, StrictMode, Suspense } from 'react';
 import { createRoot } from 'react-dom/client';
 import { HelmetProvider } from 'react-helmet-async'; // Yeh line add karein
 
-import App from './App.tsx';
-import ServicesPage from './ServicesPage.tsx';
-import GalleryPage from './GalleryPage.tsx';
-import BlogPage from './BlogPage.tsx';
-import BlogDetails from './BlogDetails.tsx';
-import BlogPostPage from './BlogPostPage.tsx';
-import LeadershipProfilePage from './LeadershipProfilePage.tsx';
-import AboutPage from './AboutPage.tsx';
 import { blogs } from './data/blogs';
 import './index.css';
+
+const App = lazy(() => import('./App.tsx'));
+const ServicesPage = lazy(() => import('./ServicesPage.tsx'));
+const GalleryPage = lazy(() => import('./GalleryPage.tsx'));
+const BlogPage = lazy(() => import('./BlogPage.tsx'));
+const BlogDetails = lazy(() => import('./BlogDetails.tsx'));
+const BlogPostPage = lazy(() => import('./BlogPostPage.tsx'));
+const LeadershipProfilePage = lazy(() => import('./LeadershipProfilePage.tsx'));
+const AboutPage = lazy(() => import('./AboutPage.tsx'));
 
 const isServicesPage = window.location.pathname.endsWith('/services.html');
 const isGalleryPage = window.location.pathname.endsWith('/gallery.html');
@@ -25,16 +26,18 @@ createRoot(document.getElementById('root')!).render(
   <StrictMode>
     {/* HelmetProvider se sabhi components ko wrap karein */}
     <HelmetProvider>
-      {
-        isServicesPage ? <ServicesPage /> :
-          isGalleryPage ? <GalleryPage /> :
-            isBlogPage ? <BlogPage /> :
-              isBlogDetailsPage ? <BlogDetails /> :
-                isBlogPostPage ? <BlogPostPage /> :
-                  isLeadershipProfilePage ? <LeadershipProfilePage /> :
-                    isAboutPage ? <AboutPage /> :
-                      <App />
-      }
+      <Suspense fallback={<div className="min-h-screen bg-white" aria-label="Loading page" />}>
+        {
+          isServicesPage ? <ServicesPage /> :
+            isGalleryPage ? <GalleryPage /> :
+              isBlogPage ? <BlogPage /> :
+                isBlogDetailsPage ? <BlogDetails /> :
+                  isBlogPostPage ? <BlogPostPage /> :
+                    isLeadershipProfilePage ? <LeadershipProfilePage /> :
+                      isAboutPage ? <AboutPage /> :
+                        <App />
+        }
+      </Suspense>
     </HelmetProvider>
   </StrictMode>
 );

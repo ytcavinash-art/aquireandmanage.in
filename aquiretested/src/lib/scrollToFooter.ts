@@ -18,7 +18,12 @@ export function scrollToElement(elementId: string) {
  * Specifically for scrolling to footer
  */
 export function scrollToFooter() {
-  scrollToElement('footer');
+  const contactSection = document.querySelector<HTMLElement>('#contact');
+  if (contactSection) {
+    contactSection.scrollIntoView({ behavior: 'smooth' });
+  } else {
+    window.location.href = '/#contact';
+  }
 }
 
 /**

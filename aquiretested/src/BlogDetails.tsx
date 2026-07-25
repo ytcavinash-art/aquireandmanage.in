@@ -1,4 +1,6 @@
 import { blogs } from "./data/blogs";
+import Seo from './components/Seo';
+import Breadcrumbs from './components/Breadcrumbs';
 
 export default function BlogDetails(){
 
@@ -17,6 +19,8 @@ return <h1>Blog not found</h1>;
 return(
 
 <div className="max-w-5xl mx-auto py-20">
+<Seo />
+<Breadcrumbs items={[{label: 'Blog', href: '/blog.html'}, {label: post.title}]} />
 
 <h1>{post.title}</h1>
 
