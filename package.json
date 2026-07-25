@@ -6,6 +6,10 @@
   },
   "name": "aquiretested",
   "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "aquiretested"
+  ],
   "description": "",
   "main": "index.js",
   "dependencies": {
@@ -34,8 +38,8 @@
   "scripts": {
     "start": "node index.js",
     "dev": "nodemon index.js",
-    "build": "npm --prefix aquiretested run build",
-    "preview": "npm --prefix aquiretested run preview"
+    "build": "npm run build --workspace=vite-react-typescript-starter",
+    "preview": "npm run preview --workspace=vite-react-typescript-starter"
   },
   "keywords": [],
   "author": "",
