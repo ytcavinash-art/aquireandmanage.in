@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url><loc>https://www.aquireandmanage.com/</loc><changefreq>weekly</changefreq><priority>1.0</priority></url>
-  <url><loc>https://www.aquireandmanage.com/about.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://www.aquireandmanage.com/services.html</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
-  <url><loc>https://www.aquireandmanage.com/tenant-management.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://www.aquireandmanage.com/liaisoning.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://www.aquireandmanage.com/iec-activities.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://www.aquireandmanage.com/facility-management.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://www.aquireandmanage.com/gallery.html</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://www.aquireandmanage.com/blog.html</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://www.aquireandmanage.com/blog-sra-redevelopment.html</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://www.aquireandmanage.com/blog-community-engagement.html</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://www.aquireandmanage.com/blog-regulatory-compliance.html</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://www.aquireandmanage.com/blog-mumbai-sra-policy-2026.html</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://www.aquireandmanage.com/news.html</loc><changefreq>daily</changefreq><priority>0.8</priority></url>
-  <url><loc>https://www.aquireandmanage.com/leadership.html</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://www.aquireandmanage.com/vision.html</loc><changefreq>yearly</changefreq><priority>0.5</priority></url>
-  <url><loc>https://www.aquireandmanage.com/mission.html</loc><changefreq>yearly</changefreq><priority>0.5</priority></url>
-  <url><loc>https://www.aquireandmanage.com/core-values.html</loc><changefreq>yearly</changefreq><priority>0.5</priority></url>
-  <url><loc>https://www.aquireandmanage.com/goals.html</loc><changefreq>yearly</changefreq><priority>0.5</priority></url>
-  <url><loc>https://www.aquireandmanage.com/careers.html</loc><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://www.aquireandmanage.com/about</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://www.aquireandmanage.com/services</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://www.aquireandmanage.com/tenant-management</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://www.aquireandmanage.com/liaisoning</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://www.aquireandmanage.com/iec-activities</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://www.aquireandmanage.com/facility-management</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://www.aquireandmanage.com/gallery</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://www.aquireandmanage.com/blog</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://www.aquireandmanage.com/blog-sra-redevelopment</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://www.aquireandmanage.com/blog-community-engagement</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://www.aquireandmanage.com/blog-regulatory-compliance</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://www.aquireandmanage.com/blog-mumbai-sra-policy-2026</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://www.aquireandmanage.com/news</loc><changefreq>daily</changefreq><priority>0.8</priority></url>
+  <url><loc>https://www.aquireandmanage.com/leadership</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://www.aquireandmanage.com/vision</loc><changefreq>yearly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://www.aquireandmanage.com/mission</loc><changefreq>yearly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://www.aquireandmanage.com/core-values</loc><changefreq>yearly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://www.aquireandmanage.com/goals</loc><changefreq>yearly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://www.aquireandmanage.com/careers</loc><changefreq>weekly</changefreq><priority>0.6</priority></url>
 </urlset>

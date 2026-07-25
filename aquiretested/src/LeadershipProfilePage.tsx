@@ -43,7 +43,7 @@ const profiles = {
 };
 
 export default function LeadershipProfilePage() {
-  const slug = window.location.pathname.match(/leadership-(.+)\.html$/)?.[1] as keyof typeof profiles;
+  const slug = window.location.pathname.match(/leadership-(.+?)(?:\.html)?$/)?.[1] as keyof typeof profiles;
   const profile = profiles[slug] ?? profiles['manoj-harlikar'];
 
   return (

@@ -30,8 +30,9 @@ const pages: Record<string, PageSeo> = {
 
 export default function Seo() {
   const rawPath = window.location.pathname.replace(/\/+/g, '/');
-  const path = rawPath === '/index.html' ? '/' : rawPath;
-  const slug = path.match(/^\/blog-(.+)\.html$/)?.[1];
+  const cleanPath = rawPath === '/index.html' ? '/' : rawPath.replace(/\.html$/, '');
+  const path = cleanPath === '/' ? '/' : `${cleanPath}.html`;
+  const slug = cleanPath.match(/^\/blog-(.+)$/)?.[1];
   const article = blogPosts.find((post) => post.slug === slug);
   const apiArticle = blogs.find((post) => post.slug === slug);
   const isArticle = Boolean(article || apiArticle);
@@ -40,10 +41,10 @@ export default function Seo() {
     : apiArticle
       ? { title: `${apiArticle.title} | A&M Advisory`, description: apiArticle.description, label: apiArticle.title }
       : pages[path] ?? pages['/'];
-  const canonical = `${siteUrl}${path === '/' ? '/' : path}`;
-  const breadcrumbItems = path === '/' ? [] : [
+  const canonical = `${siteUrl}${cleanPath === '/' ? '/' : cleanPath}`;
+  const breadcrumbItems = cleanPath === '/' ? [] : [
     { '@type': 'ListItem', position: 1, name: 'Home', item: `${siteUrl}/` },
-    ...(isArticle ? [{ '@type': 'ListItem', position: 2, name: 'Blog', item: `${siteUrl}/blog.html` }] : []),
+    ...(isArticle ? [{ '@type': 'ListItem', position: 2, name: 'Blog', item: `${siteUrl}/blog` }] : []),
     { '@type': 'ListItem', position: isArticle ? 3 : 2, name: page.label, item: canonical },
   ];
   const organization = {

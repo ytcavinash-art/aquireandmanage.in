@@ -6,7 +6,7 @@ import NewsletterSignup from './components/NewsletterSignup';
 import Breadcrumbs from './components/Breadcrumbs';
 
 export default function BlogPostPage() {
-  const slug = window.location.pathname.match(/blog-(.+)\.html$/)?.[1];
+  const slug = window.location.pathname.match(/blog-(.+?)(?:\.html)?$/)?.[1];
   const post = blogPosts.find((item) => item.slug === slug) ?? blogPosts[0];
   const relatedPosts = blogPosts.filter((item) => item.slug !== post.slug).slice(0, 2);
 

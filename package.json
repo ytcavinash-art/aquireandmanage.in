@@ -34,8 +34,8 @@
   "scripts": {
     "start": "node index.js",
     "dev": "nodemon index.js",
-    "build": "vite build",
-    "preview": "vite preview"
+    "build": "npm --prefix aquiretested run build",
+    "preview": "npm --prefix aquiretested run preview"
   },
   "keywords": [],
   "author": "",

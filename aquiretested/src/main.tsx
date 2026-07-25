@@ -14,13 +14,19 @@ const BlogPostPage = lazy(() => import('./BlogPostPage.tsx'));
 const LeadershipProfilePage = lazy(() => import('./LeadershipProfilePage.tsx'));
 const AboutPage = lazy(() => import('./AboutPage.tsx'));
 
-const isServicesPage = window.location.pathname.endsWith('/services.html');
-const isGalleryPage = window.location.pathname.endsWith('/gallery.html');
-const isBlogPage = window.location.pathname.endsWith('/blog.html');
-const isBlogDetailsPage = /^\/blog-.+\.html$/.test(window.location.pathname) && blogs.some((blog) => window.location.pathname === `/blog-${blog.slug}.html`);
-const isBlogPostPage = /\/blog-(sra-redevelopment|community-engagement|regulatory-compliance)\.html$/.test(window.location.pathname);
-const isLeadershipProfilePage = /\/leadership-(manoj-harlikar|srinivasan-mohan|mayilvanan-pandi)\.html$/.test(window.location.pathname);
-const isAboutPage = /\/(about|vision|mission|leadership|core-values|goals)\.html$/.test(window.location.pathname);
+const requestedPath = window.location.pathname;
+const routePath = requestedPath.replace(/\.html$/, '');
+if (requestedPath !== routePath) {
+  window.history.replaceState({}, '', `${routePath}${window.location.search}${window.location.hash}`);
+}
+
+const isServicesPage = routePath === '/services';
+const isGalleryPage = routePath === '/gallery';
+const isBlogPage = routePath === '/blog';
+const isBlogDetailsPage = /^\/blog-.+$/.test(routePath) && blogs.some((blog) => routePath === `/blog-${blog.slug}`);
+const isBlogPostPage = /\/blog-(sra-redevelopment|community-engagement|regulatory-compliance)$/.test(routePath);
+const isLeadershipProfilePage = /\/leadership-(manoj-harlikar|srinivasan-mohan|mayilvanan-pandi)$/.test(routePath);
+const isAboutPage = /\/(about|vision|mission|leadership|core-values|goals)$/.test(routePath);
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
