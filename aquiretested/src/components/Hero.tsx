@@ -135,16 +135,16 @@ export default function Hero() {
                 onClick={handleContact}
                 whileHover={reduceMotion ? undefined : { y: -3, scale: 1.02 }}
                 whileTap={reduceMotion ? undefined : { scale: 0.97 }}
-                className="group inline-flex min-h-12 items-center justify-center gap-2 rounded-sm bg-crimson-light px-7 py-3.5 text-sm font-bold text-white shadow-lg shadow-black/20 transition hover:bg-white hover:text-navy focus-visible:outline-white"
+                className="group inline-flex w-full sm:w-auto min-h-12 items-center justify-center gap-2 rounded-sm bg-crimson-light px-6 sm:px-7 py-3.5 text-sm font-bold text-white shadow-lg shadow-black/20 transition hover:bg-white hover:text-navy focus-visible:outline-white"
               >
                 Discuss Your Project
                 <ArrowRight size={18} className="transition-transform group-hover:translate-x-1" aria-hidden="true" />
               </motion.a>
               <motion.a
-                href="/services.html"
+                href="/services"
                 whileHover={reduceMotion ? undefined : { y: -3, scale: 1.02 }}
                 whileTap={reduceMotion ? undefined : { scale: 0.97 }}
-                className="inline-flex min-h-12 items-center justify-center border border-white/55 bg-white/5 px-7 py-3.5 text-sm font-bold text-white backdrop-blur-sm transition hover:border-white hover:bg-white hover:text-navy focus-visible:outline-white"
+                className="inline-flex w-full sm:w-auto min-h-12 items-center justify-center border border-white/55 bg-white/5 px-6 sm:px-7 py-3.5 text-sm font-bold text-white backdrop-blur-sm transition hover:border-white hover:bg-white hover:text-navy focus-visible:outline-white"
               >
                 Explore Our Services
               </motion.a>
@@ -175,11 +175,9 @@ export default function Hero() {
                   viewport={{ once: true, amount: 0.5 }}
                   transition={{ duration: 0.4, delay: index * 0.08 }}
                   whileHover={reduceMotion ? undefined : { y: -5, backgroundColor: 'rgba(255,255,255,0.08)' }}
-                  className={`px-4 py-5 sm:px-7 sm:py-6 ${
-                    index % 2 !== 0 ? 'border-l border-white/15' : ''
-                  } ${index >= 2 ? 'border-t border-white/15 lg:border-t-0' : ''} ${
-                    index > 0 ? 'lg:border-l lg:border-white/15' : ''
-                  }`}
+                  className={`px-4 py-5 sm:px-7 sm:py-6 ${index % 2 !== 0 ? 'border-l border-white/15' : ''
+                    } ${index >= 2 ? 'border-t border-white/15 lg:border-t-0' : ''} ${index > 0 ? 'lg:border-l lg:border-white/15' : ''
+                    }`}
                 >
                   <p className="font-serif text-3xl font-bold leading-none text-white sm:text-4xl">
                     <AnimatedNumber value={stat.value} suffix={stat.suffix} />
