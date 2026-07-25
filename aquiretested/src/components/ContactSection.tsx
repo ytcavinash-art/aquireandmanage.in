@@ -14,8 +14,9 @@ export default function ContactSection() {
 
   const submitEnquiry = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    const formElement = event.currentTarget;
     setStatus('sending');
-    const form = new FormData(event.currentTarget);
+    const form = new FormData(formElement);
     const payload = {
       fullName: form.get('fullName'),
       mobileNumber: form.get('mobileNumber'),
@@ -30,9 +31,10 @@ export default function ContactSection() {
         body: JSON.stringify(payload),
       });
       if (!response.ok) throw new Error('Unable to submit enquiry.');
-      event.currentTarget.reset();
+      formElement.reset();
       setStatus('success');
-    } catch {
+    } catch (error) {
+      console.error('Quick enquiry submission failed:', error);
       setStatus('error');
     }
   };

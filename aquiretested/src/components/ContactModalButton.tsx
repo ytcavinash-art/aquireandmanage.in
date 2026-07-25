@@ -31,7 +31,7 @@ export default function ContactModalButton() {
     event.preventDefault();
 
     try {
-      const response = await fetch('https://aquiretested-2.onrender.com/api/items', {
+      const response = await fetch('https://aquiretested-2.onrender.com/api/contact', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -39,14 +39,14 @@ export default function ContactModalButton() {
         body: JSON.stringify(formData),
       });
 
-      const result = await response.json();
+      const result = await response.json().catch(() => ({}));
 
       if (response.ok) {
         alert('Message sent successfully!');
         setFormData({ fullName: '', mobileNumber: '', emailAddress: '', message: '' });
         setIsOpen(false);
       } else {
-        alert(`Error: ${result.error}`);
+        alert(`Unable to send message: ${result.error || 'Please try again.'}`);
       }
     } catch (error) {
       console.error('Error submitting form:', error);
