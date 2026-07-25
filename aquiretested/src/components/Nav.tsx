@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { ChevronDown, Menu, Search, X } from 'lucide-react';
 import PageLoader from './PageLoader';
 import Seo from './Seo';
+import CursorFollower from './CursorFollower';
 
 const serviceLinks = [
   { label: 'Tenant Management', href: '/tenant-management.html' },
@@ -140,6 +141,7 @@ export default function Nav() {
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-white shadow-sm border-b border-slate-200">
       <Seo />
+      <CursorFollower />
       <PageLoader />
       <div className="max-w-7xl mx-auto px-6 flex items-center justify-between h-16">
         <a href={isInnerPage ? '/' : '#home'} {...homeLinkProps('#home')} className={`flex items-center gap-1 select-none ${ringLight}`} aria-label="A&M Advisory — go to home">
