@@ -25,6 +25,7 @@ const seoPages: Record<string, { title: string; description: string; label: stri
   'core-values.html': { title: 'Core Values | A&M Advisory', description: 'Explore the accountability, transparency and stakeholder-first values that guide A&M Advisory.', label: 'Core Values' },
   'goals.html': { title: 'Our Goals | A&M Advisory', description: 'Learn about the goals shaping A&M Advisory’s approach to sustainable and successful redevelopment.', label: 'Goals' },
   'careers.html': { title: 'Careers at A&M Advisory | Mumbai', description: 'Explore career opportunities in liaisoning, tenant management, facility management and redevelopment project coordination.', label: 'Careers' },
+  'contact.html': { title: 'Contact A&M Advisory | Mumbai SRA Consultants', description: 'Contact A&M Advisory in Mumbai for SRA redevelopment consultancy, tenant management, liaisoning and project coordination support.', label: 'Contact Us' },
   'leadership-manoj-harlikar.html': { title: 'Dr. Manoj Harlikar | A&M Advisory', description: 'View Dr. Manoj Harlikar’s leadership profile, experience and redevelopment career highlights.', label: 'Dr. Manoj Harlikar' },
   'leadership-srinivasan-mohan.html': { title: 'Srinivasan Mohan | A&M Advisory', description: 'View Srinivasan Mohan’s leadership profile, experience and redevelopment career highlights.', label: 'Srinivasan Mohan' },
   'leadership-mayilvanan-pandi.html': { title: 'Mayilvanan Pandi | A&M Advisory', description: 'View Mayilvanan Pandi’s leadership profile, experience and Annexure II career highlights.', label: 'Mayilvanan Pandi' },
@@ -158,6 +159,7 @@ export default defineConfig({
         coreValues: resolve(__dirname, 'core-values.html'),
         goals: resolve(__dirname, 'goals.html'),
         careers: resolve(__dirname, 'careers.html'),
+        contact: resolve(__dirname, 'contact.html'),
 
         tenantManagement: resolve(
           __dirname,

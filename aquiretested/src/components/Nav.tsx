@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
 import { ChevronDown, Menu, Search, X } from 'lucide-react';
-import { scrollToFooter } from '../lib/scrollToFooter';
 import PageLoader from './PageLoader';
 import Seo from './Seo';
 
@@ -30,7 +29,7 @@ const searchTargets = [
   { label: 'A&M Projects Gallery', href: '/gallery.html', terms: ['gallery', 'projects', 'images'] },
   { label: 'A&M Advisory Blog', href: '/blog.html', terms: ['blog', 'insights', 'articles'] },
   { label: 'SRA & Real Estate News', href: '/news.html', terms: ['news', 'sra news', 'real estate news'] },
-  { label: 'Contact Us', href: '/#footer', terms: ['contact', 'phone', 'email', 'office'] },
+  { label: 'Contact Us', href: '/contact', terms: ['contact', 'phone', 'email', 'office'] },
 ];
 
 export default function Nav() {
@@ -41,14 +40,14 @@ export default function Nav() {
         { label: 'About', href: '/about.html' },
         { label: 'Gallery', href: '/gallery.html' },
         { label: 'News', href: '/news.html' },
-        { label: 'Contact', href: '/#footer' },
+        { label: 'Contact', href: '/contact' },
       ]
     : [
         { label: 'Home', href: '#home' },
         { label: 'About', href: '/about.html' },
         { label: 'Gallery', href: '/gallery.html' },
         { label: 'News', href: '/news.html' },
-        { label: 'Contact', href: '#footer' },
+        { label: 'Contact', href: '/contact' },
       ];
   const aboutLinks = [
     { label: 'About Us', href: '/about.html' },
@@ -115,19 +114,7 @@ export default function Nav() {
     document.querySelector<HTMLElement>(href)?.scrollIntoView({ behavior: 'smooth' });
   };
 
-  const handleContactLink = (event: React.MouseEvent<HTMLAnchorElement>) => {
-    event.preventDefault();
-    setOpen(false);
-    scrollToFooter();
-  };
-
   const homeLinkProps = (href: string, label?: string) => {
-    // Handle Contact links specially
-    if (label === 'Contact') {
-      return {
-        onClick: handleContactLink,
-      };
-    }
     // Handle other anchor links on homepage
     return isInnerPage || !href.startsWith('#') ? {} : {
       onClick: (event: React.MouseEvent<HTMLAnchorElement>) => {
@@ -256,7 +243,7 @@ export default function Nav() {
             {searchOpen && searchQuery.trim() && (
             <div className="absolute right-0 top-full z-50 mt-2 w-64 overflow-hidden rounded-sm border border-slate-200 bg-white py-1 shadow-lg">
               {searchResults.length ? searchResults.map((result) => (
-                <a key={result.href} href={result.href} onClick={(e) => { if (result.label === 'Contact Us') handleContactLink(e); setSearchOpen(false); }} className={`block px-4 py-3 text-sm font-medium text-navy/75 hover:bg-slate-50 hover:text-navy ${ringLight}`}>
+                <a key={result.href} href={result.href} onClick={() => setSearchOpen(false)} className={`block px-4 py-3 text-sm font-medium text-navy/75 hover:bg-slate-50 hover:text-navy ${ringLight}`}>
                   {result.label}
                 </a>
               )) : <p className="px-4 py-3 text-sm text-slate-500">No matching pages found.</p>}

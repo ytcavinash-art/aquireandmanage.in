@@ -1,5 +1,4 @@
 import { Facebook, Globe2, Instagram, Linkedin, Mail, Phone, Twitter } from 'lucide-react';
-import { scrollToFooter } from '../lib/scrollToFooter';
 import FloatingActions from './FloatingActions';
 
 const services = [
@@ -16,17 +15,12 @@ const companyLinks = [
   { label: 'Blog', href: '/blog.html' },
   { label: 'FAQs', href: '/#faq' },
   { label: 'Careers', href: '/careers.html' },
-  { label: 'Contact Us', href: '/#footer' },
+  { label: 'Contact Us', href: '/contact' },
 ];
 
 const ringOnDark = 'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white focus-visible:rounded-sm';
 
 export default function Footer() {
-  const handleContactClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
-    e.preventDefault();
-    scrollToFooter();
-  };
-
   return (
     <>
     <footer id="footer" className="bg-[#0e172a] text-white">
@@ -63,7 +57,7 @@ export default function Footer() {
           <div>
             <h2 className="border-b-2 border-[#eb1f54] pb-2 text-xs font-bold">Company</h2>
             <ul className="mt-4 space-y-2.5 text-[11px] text-slate-200">
-              {companyLinks.map((link) => <li key={link.label}><a href={link.href} onClick={link.label === 'Contact Us' ? handleContactClick : undefined} className={`transition-colors hover:text-[#eb1f54] ${ringOnDark}`}><span className="mr-2 text-[#eb1f54]">›</span>{link.label}</a></li>)}
+              {companyLinks.map((link) => <li key={link.label}><a href={link.href} className={`transition-colors hover:text-[#eb1f54] ${ringOnDark}`}><span className="mr-2 text-[#eb1f54]">›</span>{link.label}</a></li>)}
             </ul>
           </div>
 

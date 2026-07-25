@@ -13,6 +13,7 @@ const BlogDetails = lazy(() => import('./BlogDetails.tsx'));
 const BlogPostPage = lazy(() => import('./BlogPostPage.tsx'));
 const LeadershipProfilePage = lazy(() => import('./LeadershipProfilePage.tsx'));
 const AboutPage = lazy(() => import('./AboutPage.tsx'));
+const ContactPage = lazy(() => import('./ContactPage.tsx'));
 
 const requestedPath = window.location.pathname;
 const routePath = requestedPath.replace(/\.html$/, '');
@@ -27,6 +28,7 @@ const isBlogDetailsPage = /^\/blog-.+$/.test(routePath) && blogs.some((blog) => 
 const isBlogPostPage = /\/blog-(sra-redevelopment|community-engagement|regulatory-compliance)$/.test(routePath);
 const isLeadershipProfilePage = /\/leadership-(manoj-harlikar|srinivasan-mohan|mayilvanan-pandi)$/.test(routePath);
 const isAboutPage = /\/(about|vision|mission|leadership|core-values|goals)$/.test(routePath);
+const isContactPage = routePath === '/contact';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
@@ -34,7 +36,8 @@ createRoot(document.getElementById('root')!).render(
     <HelmetProvider>
       <Suspense fallback={<div className="min-h-screen bg-white" aria-label="Loading page" />}>
         {
-          isServicesPage ? <ServicesPage /> :
+          isContactPage ? <ContactPage /> :
+            isServicesPage ? <ServicesPage /> :
             isGalleryPage ? <GalleryPage /> :
               isBlogPage ? <BlogPage /> :
                 isBlogDetailsPage ? <BlogDetails /> :
