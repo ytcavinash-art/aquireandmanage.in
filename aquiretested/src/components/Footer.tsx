@@ -18,6 +18,29 @@ const companyLinks = [
   { label: 'Contact Us', href: '/contact' },
 ];
 
+const socialLinks = [
+  {
+    label: 'LinkedIn',
+    href: 'https://www.linkedin.com/in/aquireand-manage-09b9a0424/',
+    Icon: Linkedin,
+  },
+  {
+    label: 'X',
+    href: 'https://x.com/aquireandmanage',
+    Icon: Twitter,
+  },
+  {
+    label: 'Facebook',
+    href: 'https://www.facebook.com/profile.php?id=61592212810704',
+    Icon: Facebook,
+  },
+  {
+    label: 'Instagram',
+    href: 'https://www.instagram.com/aquireandmanage/',
+    Icon: Instagram,
+  },
+];
+
 const ringOnDark = 'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white focus-visible:rounded-sm';
 
 export default function Footer() {
@@ -34,13 +57,15 @@ export default function Footer() {
               Strategic consulting and business management firm helping organizations improve performance and accelerate sustainable growth.
             </p>
             <div className="mt-5 flex gap-2.5" aria-label="Social media links">
-              {[
-                { label: 'LinkedIn', Icon: Linkedin },
-                { label: 'Twitter', Icon: Twitter },
-                { label: 'Facebook', Icon: Facebook },
-                { label: 'Instagram', Icon: Instagram },
-              ].map(({ label, Icon }) => (
-                <a key={label} href="#footer" aria-label={label} className={`grid h-7 w-7 place-items-center rounded-full bg-slate-700/70 text-slate-300 transition-colors hover:bg-[#eb1f54] hover:text-white ${ringOnDark}`}>
+              {socialLinks.map(({ label, href, Icon }) => (
+                <a
+                  key={label}
+                  href={href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={`Open Aquire and Manage on ${label}`}
+                  className={`grid h-7 w-7 place-items-center rounded-full bg-slate-700/70 text-slate-300 transition-colors hover:bg-[#eb1f54] hover:text-white ${ringOnDark}`}
+                >
                   <Icon size={13} aria-hidden="true" />
                 </a>
               ))}
