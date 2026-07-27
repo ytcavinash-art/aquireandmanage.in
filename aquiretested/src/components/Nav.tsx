@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { ChevronDown, Languages, Menu, Search, X } from 'lucide-react';
 import PageLoader from './PageLoader';
-import Seo from './Seo';
 import CursorFollower from './CursorFollower';
 
 const serviceLinks = [
@@ -226,7 +225,7 @@ export default function Nav() {
     document.querySelector<HTMLElement>(href)?.scrollIntoView({ behavior: 'smooth' });
   };
 
-  const homeLinkProps = (href: string, label?: string) => {
+  const homeLinkProps = (href: string) => {
     // Handle other anchor links on homepage
     return isInnerPage || !href.startsWith('#') ? {} : {
       onClick: (event: React.MouseEvent<HTMLAnchorElement>) => {
@@ -251,7 +250,6 @@ export default function Nav() {
 
   return (
     <header className="fixed top-0 left-0 right-0 z-[80] bg-white shadow-sm border-b border-slate-200">
-      <Seo />
       <CursorFollower />
       <PageLoader />
       <div id="google_translate_element" className="pointer-events-none absolute h-0 w-0 overflow-hidden opacity-0" aria-hidden="true" />
@@ -263,7 +261,7 @@ export default function Nav() {
         <div className="hidden lg:flex items-center gap-4">
         <nav aria-label="Primary navigation" className="flex items-center gap-7">
           {links.slice(0, 1).map((link) => (
-            <a key={link.href} href={link.href} {...homeLinkProps(link.href, link.label)} className={`text-sm font-medium text-navy/75 hover:text-navy transition-colors ${ringLight}`}>
+            <a key={link.href} href={link.href} {...homeLinkProps(link.href)} className={`text-sm font-medium text-navy/75 hover:text-navy transition-colors ${ringLight}`}>
               {link.label}
             </a>
           ))}
@@ -278,7 +276,7 @@ export default function Nav() {
             {aboutOpen && (
               <div id="about-menu" role="menu" aria-label="About" className="absolute left-1/2 top-full z-50 w-64 -translate-x-1/2 border border-slate-200 bg-white py-2 shadow-lg">
                 {aboutLinks.map((link) => (
-                  <a key={link.href} href={link.href} {...homeLinkProps(link.href, link.label)} role="menuitem" onClick={() => setAboutOpen(false)} className={`block px-5 py-3 text-sm font-medium text-navy/75 transition-colors hover:bg-slate-50 hover:text-navy ${ringLight}`}>
+                  <a key={link.href} href={link.href} {...homeLinkProps(link.href)} role="menuitem" onClick={() => setAboutOpen(false)} className={`block px-5 py-3 text-sm font-medium text-navy/75 transition-colors hover:bg-slate-50 hover:text-navy ${ringLight}`}>
                     {link.label}
                   </a>
                 ))}
@@ -323,7 +321,7 @@ export default function Nav() {
           </div>
 
           {links.slice(3).map((link) => (
-            <a key={link.href} href={link.href} {...homeLinkProps(link.href, link.label)} className={`text-sm font-medium text-navy/75 hover:text-navy transition-colors ${ringLight}`}>
+            <a key={link.href} href={link.href} {...homeLinkProps(link.href)} className={`text-sm font-medium text-navy/75 hover:text-navy transition-colors ${ringLight}`}>
               {link.label}
             </a>
           ))}
@@ -383,14 +381,14 @@ export default function Nav() {
         >
           <nav aria-label="Mobile navigation">
             {links.slice(0, 1).map((link) => (
-              <a key={link.href} href={link.href} {...homeLinkProps(link.href, link.label)} className={`block px-6 py-3 text-sm font-medium text-navy/75 hover:text-navy hover:bg-slate-50 transition-colors ${ringLight}`}>
+              <a key={link.href} href={link.href} {...homeLinkProps(link.href)} className={`block px-6 py-3 text-sm font-medium text-navy/75 hover:text-navy hover:bg-slate-50 transition-colors ${ringLight}`}>
                 {link.label}
               </a>
             ))}
             <div className="border-t border-slate-200 py-2">
               <p className="px-6 py-2 text-xs font-semibold uppercase tracking-wider text-navy/60">About</p>
               {aboutLinks.map((link) => (
-                <a key={link.href} href={link.href} {...homeLinkProps(link.href, link.label)} onClick={() => setOpen(false)} className={`block px-9 py-2 text-sm font-medium text-navy/75 hover:text-navy hover:bg-slate-50 transition-colors ${ringLight}`}>
+                <a key={link.href} href={link.href} {...homeLinkProps(link.href)} onClick={() => setOpen(false)} className={`block px-9 py-2 text-sm font-medium text-navy/75 hover:text-navy hover:bg-slate-50 transition-colors ${ringLight}`}>
                   {link.label}
                 </a>
               ))}
@@ -412,7 +410,7 @@ export default function Nav() {
               ))}
             </div>
             {links.slice(3).map((link) => (
-              <a key={link.href} href={link.href} {...homeLinkProps(link.href, link.label)} className={`block px-6 py-3 text-sm font-medium text-navy/75 hover:text-navy hover:bg-slate-50 transition-colors ${ringLight}`}>
+              <a key={link.href} href={link.href} {...homeLinkProps(link.href)} className={`block px-6 py-3 text-sm font-medium text-navy/75 hover:text-navy hover:bg-slate-50 transition-colors ${ringLight}`}>
                 {link.label}
               </a>
             ))}

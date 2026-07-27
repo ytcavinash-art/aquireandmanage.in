@@ -30,7 +30,7 @@ export default function About() {
           {/* Visual */}
           <div className="relative">
             <img
-              src="/images/sra-project.png"
+              src="/images/sra-project-optimized.jpg"
               alt="SRA rehabilitation housing project in Mumbai"
               loading="lazy"
               decoding="async"

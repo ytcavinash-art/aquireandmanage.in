@@ -16,7 +16,7 @@ export const blogs: Blog[] = [
         slug: 'mumbai-sra-policy-2026',
         title: 'Mumbai SRA Policy 2026',
         description: 'Latest updates on Mumbai SRA redevelopment policy and implementation.',
-        image: '/images/blog1.jpg',
+        image: '/images/hero-poster.jpg',
         author: 'A&M Advisory',
         date: '22 July 2026',
         category: 'SRA',

@@ -1,4 +1,3 @@
-import { Helmet } from 'react-helmet-async';
 import Nav from './components/Nav';
 import Services from './components/Services';
 import Footer from './components/Footer';
@@ -8,19 +7,6 @@ import FAQ from './components/FAQ';
 export default function ServicesPage() {
   return (
     <div className="font-sans antialiased">
-      {/* SEO Tags for Services Page */}
-      <Helmet>
-        <title>SRA Liaisoning & Facility Management Services Mumbai | A&M</title>
-        <meta 
-          name="description" 
-          content="A&M provides expert tenant management, IEC activities, liaisoning, and facility management services for SRA redevelopment projects in Mumbai." 
-        />
-        <meta 
-          name="keywords" 
-          content="SRA liaisoning, tenant management Mumbai, facility management SRA, IEC activities slum rehabilitation" 
-        />
-      </Helmet>
-
       <Nav />
       <main id="main-content" tabIndex={-1} className="pt-16">
         <Services />

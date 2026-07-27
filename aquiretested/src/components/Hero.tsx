@@ -50,29 +50,6 @@ function AnimatedNumber({ value, suffix }: { value: number; suffix: string }) {
 
 export default function Hero() {
   const reduceMotion = useReducedMotion();
-  const [showVideo, setShowVideo] = useState(false);
-
-  useEffect(() => {
-    if (reduceMotion || !window.matchMedia('(min-width: 1024px)').matches) return;
-
-    const connection = (navigator as Navigator & {
-      connection?: { saveData?: boolean; effectiveType?: string };
-    }).connection;
-    if (connection?.saveData || ['slow-2g', '2g', '3g'].includes(connection?.effectiveType || '')) return;
-
-    let timer = 0;
-    const loadVideo = () => {
-      timer = window.setTimeout(() => setShowVideo(true), 5000);
-    };
-
-    if (document.readyState === 'complete') loadVideo();
-    else window.addEventListener('load', loadVideo, { once: true });
-
-    return () => {
-      window.removeEventListener('load', loadVideo);
-      window.clearTimeout(timer);
-    };
-  }, [reduceMotion]);
 
   const scrollToContent = () => {
     document.getElementById('hero-statistics')?.scrollIntoView({ behavior: 'smooth' });
@@ -96,19 +73,6 @@ export default function Hero() {
           className="absolute inset-0 h-full w-full scale-[1.02] object-cover"
           aria-hidden="true"
         />
-        {showVideo && (
-          <video
-            className="absolute inset-0 hidden h-full w-full scale-[1.02] object-cover lg:block"
-            src="/hero-video.mp4"
-            autoPlay
-            muted
-            loop
-            playsInline
-            preload="none"
-            poster="/images/hero-poster.jpg"
-            aria-hidden="true"
-          />
-        )}
         <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(6,15,50,0.97)_0%,rgba(10,25,70,0.87)_48%,rgba(10,21,64,0.46)_100%)]" aria-hidden="true" />
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_78%_30%,rgba(255,255,255,0.13),transparent_32%)]" aria-hidden="true" />
 

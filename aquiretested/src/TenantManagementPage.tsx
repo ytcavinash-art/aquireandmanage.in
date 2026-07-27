@@ -1,4 +1,3 @@
-import { Helmet } from 'react-helmet-async';
 import Nav from './components/Nav';
 import Footer from './components/Footer';
 import ServiceSolutionsSlider from './components/ServiceSolutionsSlider';
@@ -50,11 +49,6 @@ export default function TenantManagementPage() {
 
   return (
     <div className="font-sans antialiased">
-      <Helmet>
-        <title>Tenant Management Services | A&M Advisory</title>
-        <meta name="description" content="Professional tenant management and coordination services for SRA redevelopment projects in Mumbai." />
-      </Helmet>
-
       <Nav />
 
       <main id="main-content" tabIndex={-1} className="pt-20">

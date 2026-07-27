@@ -1,4 +1,3 @@
-import { Helmet } from 'react-helmet-async';
 import Nav from './components/Nav';
 import Footer from './components/Footer';
 import ServiceSolutionsSlider from './components/ServiceSolutionsSlider';
@@ -8,7 +7,7 @@ export default function LiaisoningPage() {
   const services = [
     {
       title: 'Coordinate with SRA and municipal authorities for project approvals',
-      image: '/images/liaisoning/coordinate-sra-municipal-approvals-v2.png',
+      image: '/images/liaisoning/coordinate-sra-municipal-approvals-v2.jpg',
     },
     {
       title: 'Manage submission of proposals, documents, and follow-ups',
@@ -50,11 +49,6 @@ export default function LiaisoningPage() {
 
   return (
     <div className="font-sans antialiased">
-      <Helmet>
-        <title>Liaisoning Services | A&M Advisory</title>
-        <meta name="description" content="Expert liaisoning and regulatory approval services for SRA redevelopment projects in Mumbai." />
-      </Helmet>
-
       <Nav />
 
       <main id="main-content" tabIndex={-1} className="pt-20">

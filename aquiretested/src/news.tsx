@@ -1,19 +1,15 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { Helmet, HelmetProvider } from 'react-helmet-async';
+import { HelmetProvider } from 'react-helmet-async';
 import Footer from './components/Footer';
 import Nav from './components/Nav';
 import NewsWidget from './components/NewsWidget';
 import './index.css';
 
-function NewsPage() {
+export function NewsPage() {
   return (
     <div className="min-h-screen bg-slate-50 font-sans antialiased dark:bg-zinc-950">
-      <Helmet>
-        <title>Latest Mumbai Redevelopment News | A&amp;M Advisory</title>
-        <meta name="description" content="Latest Mumbai SRA, real estate, and redevelopment news and updates." />
-      </Helmet>
       <Nav />
       <main id="main-content" className="min-h-screen pt-16" tabIndex={-1}>
         <section className="bg-navy px-6 py-16 text-center text-white">

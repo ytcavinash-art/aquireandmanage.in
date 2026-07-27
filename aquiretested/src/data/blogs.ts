@@ -24,7 +24,7 @@ title:"Mumbai SRA Policy 2026",
 
 description:"Latest redevelopment updates",
 
-image:"/images/blog1.jpg",
+image:"/images/hero-poster.jpg",
 
 author:"A&M",
 

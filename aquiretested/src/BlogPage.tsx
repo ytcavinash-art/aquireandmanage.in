@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
 import { ArrowRight, ExternalLink, Search, TrendingUp } from 'lucide-react';
-import { Helmet } from 'react-helmet-async';
 import { blogPosts } from './blogData';
 import Footer from './components/Footer';
 import Nav from './components/Nav';
@@ -8,9 +7,9 @@ import NewsletterSignup from './components/NewsletterSignup';
 import { fetchBlogPosts, type ApiBlogPost } from './services/blogApi';
 
 const articleImages: Record<string, string> = {
-  'sra-redevelopment': '/images/sra-project.png',
-  'community-engagement': '/images/iec-activities.png',
-  'regulatory-compliance': '/images/liaisoning.png',
+  'sra-redevelopment': '/images/sra-project-optimized.jpg',
+  'community-engagement': '/images/iec-activities.jpg',
+  'regulatory-compliance': '/images/liaisoning-optimized.jpg',
 };
 
 export default function BlogPage() {
@@ -58,10 +57,6 @@ export default function BlogPage() {
 
   return (
     <div className="font-sans antialiased">
-      <Helmet>
-        <title>Redevelopment Insights &amp; SRA Articles | A&amp;M Advisory</title>
-        <meta name="description" content="Explore practical insights on Mumbai SRA redevelopment, stakeholder engagement, government approvals and regulatory compliance." />
-      </Helmet>
       <Nav />
 
       <main id="main-content" tabIndex={-1} className="pt-16">

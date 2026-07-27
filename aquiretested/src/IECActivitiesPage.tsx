@@ -1,4 +1,3 @@
-import { Helmet } from 'react-helmet-async';
 import Nav from './components/Nav';
 import Footer from './components/Footer';
 import ServiceSolutionsSlider from './components/ServiceSolutionsSlider';
@@ -50,11 +49,6 @@ export default function IECActivitiesPage() {
 
   return (
     <div className="font-sans antialiased">
-      <Helmet>
-        <title>IEC Activities | A&M Advisory</title>
-        <meta name="description" content="Information, Education and Communication (IEC) activities for stakeholder engagement in SRA redevelopment projects." />
-      </Helmet>
-
       <Nav />
 
       <main id="main-content" tabIndex={-1} className="pt-20">

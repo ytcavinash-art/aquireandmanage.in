@@ -1,5 +1,4 @@
 import { Briefcase, Clock, MapPin } from 'lucide-react';
-import { Helmet } from 'react-helmet-async';
 import Footer from './components/Footer';
 import Nav from './components/Nav';
 
@@ -37,11 +36,6 @@ const jobs = [
 export default function CareersPage() {
   return (
     <div className="bg-white font-sans antialiased">
-      <Helmet>
-        <title>Careers in Mumbai | A&M Advisory</title>
-        <meta name="description" content="Explore career opportunities in business development, liaisoning, facility management, and project coordination at A&M Advisory in Mumbai." />
-      </Helmet>
-
       <Nav />
 
       <main id="main-content" tabIndex={-1} className="pt-16">
