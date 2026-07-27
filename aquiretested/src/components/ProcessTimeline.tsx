@@ -13,7 +13,7 @@ const steps = [
   {
     number: '01',
     title: 'Consultation',
-    description: 'We understand the site, stakeholders, objectives and key redevelopment challenges.',
+    description: 'We understand the site, stakeholders, objectives and key slum rehabilitation challenges.',
     Icon: Handshake,
   },
   {

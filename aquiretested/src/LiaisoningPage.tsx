@@ -8,7 +8,7 @@ export default function LiaisoningPage() {
   const services = [
     {
       title: 'Coordinate with SRA and municipal authorities for project approvals',
-      image: '/images/liaisoning/Coordinate with SRA and municipal authorities for project approvals.jpg',
+      image: '/images/liaisoning/coordinate-sra-municipal-approvals-v2.png',
     },
     {
       title: 'Manage submission of proposals, documents, and follow-ups',
@@ -59,8 +59,10 @@ export default function LiaisoningPage() {
 
       <main id="main-content" tabIndex={-1} className="pt-20">
         {/* Hero Section */}
-        <section className="aspect-[10/3] w-full bg-navy" aria-label="Liaisoning">
+        <section className="relative aspect-[10/3] w-full bg-navy" aria-label="Liaisoning">
           <img src="/images/liaisoning-banner.jpg" alt="" width="1920" height="576" loading="eager" fetchPriority="high" decoding="async" className="h-full w-full object-contain" />
+          <a href="tel:+912245648350" aria-label="Call A&M Advisory at +91 022-45648350" title="Call +91 022-45648350" className="absolute bottom-[5%] left-[2.5%] h-[13%] w-[11%] rounded focus-visible:outline focus-visible:outline-2 focus-visible:outline-white" />
+          <a href="mailto:info@aquireandmanage.com" aria-label="Email A&M Advisory at info@aquireandmanage.com" title="Email info@aquireandmanage.com" className="absolute bottom-[5%] left-[14%] h-[13%] w-[18%] rounded focus-visible:outline focus-visible:outline-2 focus-visible:outline-white" />
         </section>
 
         <ServiceSolutionsSlider serviceName="Liaisoning" services={services} />

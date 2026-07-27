@@ -16,7 +16,7 @@ export default function About() {
               <p>
                 Our expertise lies in liaisoning with government authorities, ensuring compliance with SRA regulations,
                 and facilitating seamless communication between developers, societies, and stakeholders. With a strong
-                focus on transparency, efficiency, and accountability, we help transform redevelopment visions into
+                focus on transparency, efficiency, and accountability, we help transform slum rehabilitation visions into
                 successful, legally compliant, and socially impactful outcomes.
               </p>
               <p>

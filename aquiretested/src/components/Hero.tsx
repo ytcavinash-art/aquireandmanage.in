@@ -125,13 +125,13 @@ export default function Hero() {
             </p>
 
             <h1 className="max-w-4xl text-4xl font-bold leading-[1.08] text-white sm:text-5xl md:text-6xl lg:text-7xl">
-              Transforming Mumbai Redevelopment Through{' '}
-              <span className="text-[#ff496b]">Trusted SRA Advisory</span>
+              Samajhenge toh badhenge, chaliye saath milkar{' '}
+              <span className="text-[#ff496b]">behtar bhavishya banayein</span>
             </h1>
 
             <p className="mt-7 max-w-2xl text-base leading-7 text-slate-200 sm:text-lg">
               From community engagement to regulatory approvals, we bring people,
-              process and precision together to move complex redevelopment projects forward.
+              process and precision together to move complex slum rehabilitation projects forward.
             </p>
 
             <div className="mt-8 flex flex-col gap-3 sm:mt-9 sm:flex-row sm:items-center">

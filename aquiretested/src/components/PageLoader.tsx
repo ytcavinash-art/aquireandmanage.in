@@ -76,7 +76,7 @@ export default function PageLoader() {
               transition={{ delay: 0.45 }}
               className="mt-3 text-[10px] font-bold uppercase tracking-[0.28em] text-white/55"
             >
-              Building trusted redevelopment
+              Building trusted slum rehabilitation
             </motion.p>
           </div>
           <span className="sr-only">Loading…</span>

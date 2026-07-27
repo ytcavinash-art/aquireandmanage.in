@@ -18,7 +18,7 @@ export default function NewsletterSignup({ compact = false }: { compact?: boolea
           <span className="grid h-10 w-10 place-items-center rounded-full bg-white/10 text-[#ff6985]">
             <Mail size={18} aria-hidden="true" />
           </span>
-          <h2 className={`${compact ? 'mt-4 text-2xl' : 'mt-4 text-3xl'} font-bold text-white`}>Redevelopment insights, directly to you.</h2>
+          <h2 className={`${compact ? 'mt-4 text-2xl' : 'mt-4 text-3xl'} font-bold text-white`}>Slum rehabilitation insights, directly to you.</h2>
           <p className="mt-3 text-sm leading-6 text-slate-300">
             Receive practical updates on SRA policy, compliance, community engagement and project execution.
           </p>

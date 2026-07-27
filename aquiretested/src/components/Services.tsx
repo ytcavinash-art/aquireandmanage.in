@@ -49,7 +49,7 @@ export default function Services() {
         <div className="mb-12 max-w-3xl">
           <p className="mb-3 text-sm font-bold uppercase tracking-[0.2em] text-crimson">End-to-End Support</p>
           <h1 id="services-heading" className="text-4xl font-bold text-navy md:text-5xl">
-            Services Built Around Every Stage of Redevelopment
+            Services Built Around Every Stage of Slum Rehabilitation
           </h1>
           <p className="mt-5 text-base leading-7 text-slate-600 md:text-lg">
             Explore the outcomes, working process and indicative engagement timeline for each specialist service.

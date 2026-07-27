@@ -59,8 +59,10 @@ export default function FacilityManagementPage() {
 
       <main id="main-content" tabIndex={-1} className="pt-20">
         {/* Hero Section */}
-        <section className="aspect-[10/3] w-full bg-navy" aria-label="Facility Management">
+        <section className="relative aspect-[10/3] w-full bg-navy" aria-label="Facility Management">
           <img src="/images/facility-management-banner.jpg" alt="" width="1920" height="576" loading="eager" fetchPriority="high" decoding="async" className="h-full w-full object-contain" />
+          <a href="tel:+912245648350" aria-label="Call A&M Advisory at +91 022-45648350" title="Call +91 022-45648350" className="absolute bottom-[5%] left-[2.5%] h-[13%] w-[11%] rounded focus-visible:outline focus-visible:outline-2 focus-visible:outline-white" />
+          <a href="mailto:info@aquireandmanage.com" aria-label="Email A&M Advisory at info@aquireandmanage.com" title="Email info@aquireandmanage.com" className="absolute bottom-[5%] left-[14%] h-[13%] w-[18%] rounded focus-visible:outline focus-visible:outline-2 focus-visible:outline-white" />
         </section>
 
         <ServiceSolutionsSlider serviceName="Facility Management" services={services} />

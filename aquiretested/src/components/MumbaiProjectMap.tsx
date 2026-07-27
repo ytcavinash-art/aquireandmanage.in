@@ -97,22 +97,21 @@ export default function MumbaiProjectMap() {
           <div className="relative min-h-[560px] overflow-hidden bg-[radial-gradient(circle_at_50%_45%,rgba(37,99,235,0.16),transparent_50%)] p-5 sm:p-9">
             <div className="absolute inset-0 opacity-[0.07] [background-image:linear-gradient(rgba(255,255,255,.4)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,.4)_1px,transparent_1px)] [background-size:40px_40px]" aria-hidden="true" />
 
-            <div className="relative mx-auto h-[500px] max-w-xl" role="img" aria-label="Stylised map of Mumbai with selectable redevelopment coverage markers">
-              <svg viewBox="0 0 340 640" className="absolute inset-0 h-full w-full drop-shadow-[0_20px_45px_rgba(0,0,0,0.45)]" aria-hidden="true">
-                <defs>
-                  <linearGradient id="mumbai-land" x1="0" y1="0" x2="1" y2="1">
-                    <stop offset="0%" stopColor="#263a65" />
-                    <stop offset="100%" stopColor="#12264c" />
-                  </linearGradient>
-                  <pattern id="map-lines" width="28" height="28" patternUnits="userSpaceOnUse">
-                    <path d="M0 14 H28 M14 0 V28" stroke="#fff" strokeOpacity=".055" strokeWidth="1" />
-                  </pattern>
-                </defs>
-                <path d="M115 8 C145 20 157 55 150 91 C144 124 158 144 175 174 C195 209 184 247 200 277 C219 312 254 329 248 374 C242 415 218 437 219 476 C220 516 244 552 221 600 C210 622 186 635 161 628 C137 621 128 596 131 568 C136 526 109 497 101 456 C93 416 112 388 103 348 C94 307 65 281 72 236 C77 202 100 181 102 147 C104 110 82 76 91 39 C95 21 103 12 115 8 Z" fill="url(#mumbai-land)" stroke="#5f7eb9" strokeWidth="2" />
-                <path d="M115 8 C145 20 157 55 150 91 C144 124 158 144 175 174 C195 209 184 247 200 277 C219 312 254 329 248 374 C242 415 218 437 219 476 C220 516 244 552 221 600 C210 622 186 635 161 628 C137 621 128 596 131 568 C136 526 109 497 101 456 C93 416 112 388 103 348 C94 307 65 281 72 236 C77 202 100 181 102 147 C104 110 82 76 91 39 C95 21 103 12 115 8 Z" fill="url(#map-lines)" />
-                <path d="M111 61 C124 143 119 200 145 266 C166 320 148 391 169 463 C182 509 175 562 166 609" fill="none" stroke="#7f9acb" strokeDasharray="5 7" strokeOpacity=".5" strokeWidth="2" />
-                <path d="M93 232 C127 246 164 245 195 281 M105 350 C143 359 196 354 241 377 M106 454 C145 444 181 452 218 475" fill="none" stroke="#7f9acb" strokeDasharray="5 7" strokeOpacity=".4" strokeWidth="2" />
-              </svg>
+            <div
+              className="relative mx-auto h-[500px] w-full max-w-[404px] overflow-hidden rounded-2xl border border-[#6f8ec9]/35 bg-[#10264d] shadow-[0_24px_70px_rgba(0,0,0,0.38),inset_0_0_40px_rgba(37,99,235,0.12)]"
+              role="img"
+              aria-label="Mumbai area map with selectable redevelopment coverage markers"
+            >
+              <img
+                src="/images/mumbai-footprint-map.png"
+                alt="Mumbai footprint map showing major suburban and city areas"
+                width="349"
+                height="433"
+                loading="lazy"
+                decoding="async"
+                className="absolute inset-0 h-full w-full scale-[1.02] object-cover opacity-95 [filter:invert(1)_hue-rotate(180deg)_saturate(1.3)_brightness(.72)_contrast(1.12)]"
+              />
+              <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_45%,transparent_42%,rgba(8,21,54,0.32)_100%)]" aria-hidden="true" />
 
               {visibleLocations.map((location) => {
                 const type = types.find((item) => item.label === location.type)!;

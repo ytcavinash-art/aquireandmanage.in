@@ -36,7 +36,7 @@ export default function RecentProjects() {
             <p className="mb-3 text-sm font-bold uppercase tracking-[0.2em] text-crimson">Project Showcase</p>
             <h2 id="projects-heading" className="text-4xl font-bold text-navy md:text-5xl">Recent Projects</h2>
             <p className="mt-4 max-w-2xl leading-7 text-slate-600">
-              A snapshot of redevelopment engagements where our teams bring clarity to coordination, compliance and execution.
+              A snapshot of slum rehabilitation engagements where our teams bring clarity to coordination, compliance and execution.
             </p>
           </div>
           <a

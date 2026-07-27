@@ -1,8 +1,8 @@
 import { Eye, Target } from 'lucide-react';
 
 const content = [
-  { title: 'Vision', Icon: Eye, text: 'To contribute towards a slum-free Mumbai by enabling inclusive, sustainable, and well-executed urban redevelopment.' },
-  { title: 'Mission', Icon: Target, text: 'To transform complex redevelopment challenges into executable solutions through strategic advisory and disciplined project execution.' },
+  { title: 'Vision', Icon: Eye, text: 'To contribute towards a slum-free Mumbai by enabling inclusive, sustainable, and well-executed slum rehabilitation.' },
+  { title: 'Mission', Icon: Target, text: 'To transform complex slum rehabilitation challenges into executable solutions through strategic advisory and disciplined project execution.' },
 ];
 
 export default function VisionMission() {

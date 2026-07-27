@@ -69,7 +69,7 @@ export default function BlogPage() {
           <div className="mx-auto max-w-7xl">
             <p className="text-sm font-bold uppercase tracking-[0.2em] text-[#ff6985]">Knowledge &amp; Insights</p>
             <h1 className="mt-4 max-w-3xl text-4xl font-bold leading-tight text-white md:text-6xl">
-              Ideas That Move Redevelopment Forward
+              Ideas That Move Slum Rehabilitation Forward
             </h1>
             <p className="mt-5 max-w-2xl leading-7 text-slate-300">
               Practical perspectives on SRA planning, community trust, compliance and project execution.

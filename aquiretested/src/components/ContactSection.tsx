@@ -46,7 +46,7 @@ export default function ContactSection() {
           <p className="mb-3 text-sm font-bold uppercase tracking-[0.2em] text-crimson">Contact A&amp;M Advisory</p>
           <h2 id="contact-heading" className="text-4xl font-bold text-navy md:text-5xl">Let&apos;s Move Your Project Forward</h2>
           <p className="mt-5 max-w-2xl leading-7 text-slate-600">
-            Connect with our Mumbai redevelopment advisory team by call, WhatsApp, scheduled consultation or quick enquiry.
+            Connect with our Mumbai slum rehabilitation advisory team by call, WhatsApp, scheduled consultation or quick enquiry.
           </p>
         </div>
 
