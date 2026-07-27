@@ -33,20 +33,22 @@ const searchTargets = [
   { label: 'Contact Us', href: '/contact', terms: ['contact', 'phone', 'email', 'office'] },
 ];
 
-function LanguageSwitcher({ mobile = false }: { mobile?: boolean }) {
-  const pageUrl = new URL(
-    `${window.location.pathname}${window.location.search}${window.location.hash}`,
-    'https://www.aquireandmanage.com',
-  ).toString();
-  const openTranslatedPage = (language: string) => {
-    if (language === 'en') {
-      window.location.href = pageUrl;
-      return;
-    }
+type SiteLanguage = 'en' | 'hi' | 'mr';
 
-    window.location.href = `https://translate.google.com/translate?sl=en&tl=${language}&u=${encodeURIComponent(pageUrl)}`;
-  };
+const getStoredLanguage = (): SiteLanguage => {
+  const match = document.cookie.match(/(?:^|;\s*)googtrans=\/en\/(en|hi|mr)(?:;|$)/);
+  return (match?.[1] as SiteLanguage | undefined) ?? 'en';
+};
 
+function LanguageSwitcher({
+  mobile = false,
+  language,
+  onLanguageChange,
+}: {
+  mobile?: boolean;
+  language: SiteLanguage;
+  onLanguageChange: (language: SiteLanguage) => void;
+}) {
   return (
     <div className={mobile ? 'mx-6 my-4' : 'relative shrink-0'}>
       <label htmlFor={mobile ? 'mobile-language' : 'desktop-language'} className="sr-only">
@@ -56,8 +58,8 @@ function LanguageSwitcher({ mobile = false }: { mobile?: boolean }) {
         <Languages size={15} className="pointer-events-none absolute left-3 text-navy/65" aria-hidden="true" />
         <select
           id={mobile ? 'mobile-language' : 'desktop-language'}
-          defaultValue="en"
-          onChange={(event) => openTranslatedPage(event.target.value)}
+          value={language}
+          onChange={(event) => onLanguageChange(event.target.value as SiteLanguage)}
           className="h-9 w-full min-w-32 cursor-pointer appearance-auto rounded-full border border-slate-300 bg-white py-1 pl-9 pr-3 text-sm font-semibold text-navy shadow-sm transition-colors hover:border-navy focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-navy"
           aria-label="Website language"
         >
@@ -101,6 +103,7 @@ export default function Nav() {
   const [aboutOpen, setAboutOpen] = useState(false);
   const [servicesOpen, setServicesOpen] = useState(false);
   const [galleryOpen, setGalleryOpen] = useState(false);
+  const [language, setLanguage] = useState<SiteLanguage>(getStoredLanguage);
   const menuRef = useRef<HTMLDivElement>(null);
   const toggleRef = useRef<HTMLButtonElement>(null);
   const servicesRef = useRef<HTMLDivElement>(null);
@@ -109,6 +112,67 @@ export default function Nav() {
   const searchRef = useRef<HTMLFormElement>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
   const ringLight = 'focus-visible:outline focus-visible:outline-2 focus-visible:outline-navy focus-visible:outline-offset-4 focus-visible:rounded-sm';
+
+  useEffect(() => {
+    const translateWindow = window as typeof window & {
+      google?: {
+        translate?: {
+          TranslateElement?: new (options: Record<string, unknown>, elementId: string) => unknown;
+        };
+      };
+      googleTranslateElementInit?: () => void;
+    };
+
+    translateWindow.googleTranslateElementInit = () => {
+      const TranslateElement = translateWindow.google?.translate?.TranslateElement;
+      if (!TranslateElement || document.querySelector('#google_translate_element select')) return;
+      new TranslateElement(
+        {
+          pageLanguage: 'en',
+          includedLanguages: 'en,hi,mr',
+          autoDisplay: false,
+        },
+        'google_translate_element',
+      );
+    };
+
+    if (translateWindow.google?.translate?.TranslateElement) {
+      translateWindow.googleTranslateElementInit();
+      return;
+    }
+
+    if (!document.querySelector('script[data-am-google-translate]')) {
+      const script = document.createElement('script');
+      script.src = 'https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit';
+      script.async = true;
+      script.dataset.amGoogleTranslate = 'true';
+      document.head.appendChild(script);
+    }
+  }, []);
+
+  const changeLanguage = (nextLanguage: SiteLanguage) => {
+    setLanguage(nextLanguage);
+    const hostname = window.location.hostname;
+
+    if (nextLanguage === 'en') {
+      document.cookie = 'googtrans=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
+      if (hostname.includes('.')) {
+        document.cookie = `googtrans=; path=/; domain=.${hostname}; expires=Thu, 01 Jan 1970 00:00:00 GMT`;
+      }
+      window.location.reload();
+      return;
+    }
+
+    const cookieValue = `/en/${nextLanguage}`;
+    document.cookie = `googtrans=${cookieValue}; path=/; max-age=31536000; SameSite=Lax`;
+    if (hostname.includes('.')) {
+      document.cookie = `googtrans=${cookieValue}; path=/; domain=.${hostname}; max-age=31536000; SameSite=Lax`;
+    }
+
+    // Reload once so Google Translate processes the complete page from the
+    // initial render instead of translating only the currently mounted nodes.
+    window.location.reload();
+  };
 
   useEffect(() => {
     const closeOnEscape = (event: KeyboardEvent) => {
@@ -190,6 +254,7 @@ export default function Nav() {
       <Seo />
       <CursorFollower />
       <PageLoader />
+      <div id="google_translate_element" className="pointer-events-none absolute h-0 w-0 overflow-hidden opacity-0" aria-hidden="true" />
       <div className="max-w-7xl mx-auto px-6 flex items-center justify-between h-16">
         <a href={isInnerPage ? '/' : '#home'} {...homeLinkProps('#home')} className={`flex items-center gap-1 select-none ${ringLight}`} aria-label="A&M Advisory — go to home">
           <img src="/am-logo.png" alt="A&M Advisory" width="1381" height="600" decoding="async" fetchPriority="high" className="h-10 w-auto" />
@@ -299,7 +364,7 @@ export default function Nav() {
             </div>
           )}
         </form>
-        <LanguageSwitcher />
+        <LanguageSwitcher language={language} onLanguageChange={changeLanguage} />
         </div>
 
         <button ref={toggleRef} className={`lg:hidden text-navy ${ringLight}`} onClick={() => setOpen((value) => !value)} aria-label={open ? 'Close menu' : 'Open menu'} aria-expanded={open} aria-controls="mobile-menu">
@@ -352,7 +417,7 @@ export default function Nav() {
               </a>
             ))}
           </nav>
-          <LanguageSwitcher mobile />
+          <LanguageSwitcher mobile language={language} onLanguageChange={changeLanguage} />
         </div>
       )}
     </header>

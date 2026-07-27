@@ -2,6 +2,21 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Keep Google Translate's injected toolbar from shifting the fixed website header. */
+.goog-te-banner-frame.skiptranslate,
+.VIpgJd-ZVi9od-ORHb-OEVmcd {
+  display: none !important;
+}
+
+body {
+  top: 0 !important;
+}
+
+.goog-text-highlight {
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
 @layer base {
   html {
     scroll-behavior: smooth;
