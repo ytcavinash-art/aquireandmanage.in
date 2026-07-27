@@ -152,20 +152,36 @@ export default function Nav() {
   const changeLanguage = (nextLanguage: SiteLanguage) => {
     setLanguage(nextLanguage);
     const hostname = window.location.hostname;
+    const hostnameParts = hostname.split('.');
+    const rootDomain = hostnameParts.length >= 2
+      ? hostnameParts.slice(-2).join('.')
+      : '';
+    const cookieDomains = [...new Set([
+      hostname,
+      hostname.includes('.') ? `.${hostname}` : '',
+      rootDomain,
+      rootDomain ? `.${rootDomain}` : '',
+    ].filter(Boolean))];
 
     if (nextLanguage === 'en') {
-      document.cookie = 'googtrans=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
-      if (hostname.includes('.')) {
-        document.cookie = `googtrans=; path=/; domain=.${hostname}; expires=Thu, 01 Jan 1970 00:00:00 GMT`;
+      const expiredCookie = 'googtrans=; path=/; max-age=0; expires=Thu, 01 Jan 1970 00:00:00 GMT; SameSite=Lax';
+      document.cookie = expiredCookie;
+      for (const domain of cookieDomains) {
+        document.cookie = `${expiredCookie}; domain=${domain}`;
       }
-      window.location.reload();
+
+      // A fresh navigation discards Google's translated DOM and restores the
+      // original English HTML after every possible cookie scope is cleared.
+      window.location.replace(
+        `${window.location.pathname}${window.location.search}${window.location.hash}`,
+      );
       return;
     }
 
     const cookieValue = `/en/${nextLanguage}`;
     document.cookie = `googtrans=${cookieValue}; path=/; max-age=31536000; SameSite=Lax`;
-    if (hostname.includes('.')) {
-      document.cookie = `googtrans=${cookieValue}; path=/; domain=.${hostname}; max-age=31536000; SameSite=Lax`;
+    for (const domain of cookieDomains) {
+      document.cookie = `googtrans=${cookieValue}; path=/; domain=${domain}; max-age=31536000; SameSite=Lax`;
     }
 
     // Reload once so Google Translate processes the complete page from the
