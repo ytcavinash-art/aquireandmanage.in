@@ -119,7 +119,6 @@ export default function BlogPage() {
                   <div className="mb-9">
                     <div className="mb-5 flex items-center justify-between gap-4">
                       <h2 className="text-2xl font-bold text-navy">Latest Industry Updates</h2>
-                      <span className="rounded-full bg-emerald-50 px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-emerald-700">Auto updated</span>
                     </div>
                     <div className="grid gap-7 md:grid-cols-2">
                       {filteredApiPosts.map((post) => (

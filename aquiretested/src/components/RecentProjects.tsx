@@ -3,20 +3,16 @@ import { motion, useReducedMotion } from 'framer-motion';
 
 const projects = [
   {
-    client: 'Navbharat',
+    client: 'ANJ Group of Companies',
     title: 'SRA Redevelopment Advisory',
     scope: 'End-to-end redevelopment advisory, tenant coordination and execution support.',
-    beforeImage: 'https://images.pexels.com/photos/439416/pexels-photo-439416.jpeg?auto=compress&cs=tinysrgb&w=900',
-    afterImage: 'https://images.pexels.com/photos/323705/pexels-photo-323705.jpeg?auto=compress&cs=tinysrgb&w=900',
     location: 'Mumbai Metropolitan Region',
     status: 'Ongoing',
   },
   {
-    client: 'DRPPL',
+    client: 'Navbharat Mega Developers',
     title: 'Stakeholder & Project Coordination',
     scope: 'Documentation, project coordination and structured stakeholder support.',
-    beforeImage: 'https://images.pexels.com/photos/534220/pexels-photo-534220.jpeg?auto=compress&cs=tinysrgb&w=900',
-    afterImage: 'https://images.pexels.com/photos/323780/pexels-photo-323780.jpeg?auto=compress&cs=tinysrgb&w=900',
     location: 'Mumbai',
     status: 'Ongoing',
   },
@@ -24,8 +20,6 @@ const projects = [
     client: 'Avenue Landmark Realty',
     title: 'Redevelopment Management',
     scope: 'Planning, liaisoning and coordinated redevelopment management support.',
-    beforeImage: 'https://images.pexels.com/photos/466685/pexels-photo-466685.jpeg?auto=compress&cs=tinysrgb&w=900',
-    afterImage: 'https://images.pexels.com/photos/439416/pexels-photo-439416.jpeg?auto=compress&cs=tinysrgb&w=900',
     location: 'Mumbai Metropolitan Region',
     status: 'Ongoing',
   },
@@ -65,22 +59,6 @@ export default function RecentProjects() {
               whileHover={reduceMotion ? undefined : { y: -8 }}
               className="group overflow-hidden border border-slate-200 bg-white shadow-sm transition-shadow duration-300 hover:shadow-xl"
             >
-              <div className="grid h-56 grid-cols-2 gap-px bg-white">
-                <figure className="relative overflow-hidden bg-slate-200">
-                  <motion.img src={project.beforeImage} alt="" loading="lazy" decoding="async" whileHover={reduceMotion ? undefined : { scale: 1.09 }} transition={{ duration: 0.55 }} className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" />
-                  <figcaption className="absolute left-3 top-3 bg-navy/90 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-white">
-                    Before
-                  </figcaption>
-                </figure>
-                <figure className="relative overflow-hidden bg-slate-200">
-                  <motion.img src={project.afterImage} alt="" loading="lazy" decoding="async" whileHover={reduceMotion ? undefined : { scale: 1.09 }} transition={{ duration: 0.55 }} className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" />
-                  <figcaption className="absolute right-3 top-3 bg-crimson/95 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-white">
-                    Vision
-                  </figcaption>
-                </figure>
-                <span className="absolute" />
-              </div>
-
               <div className="p-6">
                 <div className="mb-4 flex items-center justify-between gap-3">
                   <p className="text-xs font-bold uppercase tracking-[0.15em] text-crimson">{project.client}</p>
@@ -131,9 +109,6 @@ export default function RecentProjects() {
           ))}
         </div>
 
-        <p className="mt-6 text-center text-[11px] leading-5 text-slate-500">
-          Before and vision visuals are representative. Project-specific imagery and confidential engagement metrics are shared subject to approval.
-        </p>
       </div>
     </section>
   );

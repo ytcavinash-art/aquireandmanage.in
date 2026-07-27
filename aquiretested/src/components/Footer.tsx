@@ -19,7 +19,7 @@ const companyLinks = [
 const socialLinks = [
   {
     label: 'LinkedIn',
-    href: 'https://www.linkedin.com/in/aquireand-manage-09b9a0424/',
+    href: 'https://www.linkedin.com/company/a-m-advisory-private-limited/',
     Icon: Linkedin,
   },
   {
