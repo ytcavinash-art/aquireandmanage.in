@@ -125,8 +125,8 @@ export default function Hero() {
             </p>
 
             <h1 className="max-w-4xl text-4xl font-bold leading-[1.08] text-white sm:text-5xl md:text-6xl lg:text-7xl">
-              Samajhenge toh badhenge, chaliye saath milkar{' '}
-              <span className="text-[#ff496b]">behtar bhavishya banayein</span>
+              Transforming Mumbai Redevelopment Through{' '}
+              <span className="text-[#ff496b]">Trusted SRA Advisory</span>
             </h1>
 
             <p className="mt-7 max-w-2xl text-base leading-7 text-slate-200 sm:text-lg">
