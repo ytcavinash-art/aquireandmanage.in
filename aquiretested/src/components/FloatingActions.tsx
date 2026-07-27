@@ -107,9 +107,9 @@ export default function FloatingActions() {
           role="dialog"
           aria-modal="false"
           aria-labelledby="assistant-title"
-          className="fixed bottom-24 right-4 z-[70] flex h-[min(520px,70vh)] w-[calc(100vw-2rem)] max-w-sm flex-col overflow-hidden border border-slate-200 bg-white shadow-2xl sm:bottom-28 sm:right-6"
+          className="fixed inset-x-3 bottom-3 top-20 z-[90] flex flex-col overflow-hidden rounded-xl border border-slate-200 bg-white shadow-2xl sm:inset-x-auto sm:bottom-28 sm:right-6 sm:top-auto sm:h-[min(520px,70vh)] sm:w-[calc(100vw-3rem)] sm:max-w-sm sm:rounded-none"
         >
-          <header className="flex items-center justify-between bg-navy px-5 py-4 text-white">
+          <header className="flex shrink-0 items-center justify-between bg-navy px-4 py-3.5 text-white sm:px-5 sm:py-4">
             <div className="flex items-center gap-3">
               <span className="grid h-9 w-9 place-items-center rounded-full bg-white/10"><Bot size={19} aria-hidden="true" /></span>
               <div>
@@ -146,10 +146,10 @@ export default function FloatingActions() {
             )}
           </div>
 
-          <button type="button" onClick={goToContact} className="border-t border-slate-200 bg-white px-4 py-2.5 text-xs font-bold text-crimson hover:bg-slate-50">
+          <button type="button" onClick={goToContact} className="shrink-0 border-t border-slate-200 bg-white px-4 py-2.5 text-xs font-bold text-crimson hover:bg-slate-50">
             Open Quick Enquiry
           </button>
-          <form onSubmit={sendMessage} className="flex gap-2 border-t border-slate-200 bg-white p-3">
+          <form onSubmit={sendMessage} className="flex shrink-0 gap-2 border-t border-slate-200 bg-white p-3">
             <label htmlFor="assistant-message" className="sr-only">Ask the project assistant</label>
             <input
               ref={inputRef}
@@ -167,7 +167,7 @@ export default function FloatingActions() {
         </section>
       )}
 
-      <nav aria-label="Quick contact actions" className="fixed bottom-5 right-4 z-[65] flex flex-col items-end gap-2.5 sm:bottom-6 sm:right-6">
+      <nav aria-label="Quick contact actions" className={`fixed bottom-5 right-4 z-[65] flex-col items-end gap-2.5 sm:bottom-6 sm:right-6 ${chatOpen ? 'hidden sm:flex' : 'flex'}`}>
         {showTop && (
           <button type="button" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className={`${actionClass} bg-slate-700`} aria-label="Back to top">
             <ArrowUp size={19} aria-hidden="true" />

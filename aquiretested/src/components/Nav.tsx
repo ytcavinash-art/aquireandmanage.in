@@ -144,6 +144,16 @@ export default function Nav() {
   }, [open]);
 
   useEffect(() => {
+    if (!open) return;
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [open]);
+
+  useEffect(() => {
     if (searchExpanded) searchInputRef.current?.focus();
   }, [searchExpanded]);
 
@@ -176,7 +186,7 @@ export default function Nav() {
   };
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-white shadow-sm border-b border-slate-200">
+    <header className="fixed top-0 left-0 right-0 z-[80] bg-white shadow-sm border-b border-slate-200">
       <Seo />
       <CursorFollower />
       <PageLoader />
@@ -298,7 +308,14 @@ export default function Nav() {
       </div>
 
       {open && (
-        <div id="mobile-menu" ref={menuRef} role="dialog" aria-modal="true" aria-label="Navigation menu" className="lg:hidden bg-white border-t border-slate-200">
+        <div
+          id="mobile-menu"
+          ref={menuRef}
+          role="dialog"
+          aria-modal="true"
+          aria-label="Navigation menu"
+          className="fixed inset-x-0 bottom-0 top-16 overflow-y-auto overscroll-contain border-t border-slate-200 bg-white pb-[max(1rem,env(safe-area-inset-bottom))] shadow-2xl lg:hidden"
+        >
           <nav aria-label="Mobile navigation">
             {links.slice(0, 1).map((link) => (
               <a key={link.href} href={link.href} {...homeLinkProps(link.href, link.label)} className={`block px-6 py-3 text-sm font-medium text-navy/75 hover:text-navy hover:bg-slate-50 transition-colors ${ringLight}`}>
