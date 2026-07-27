@@ -11,7 +11,6 @@ export default function FeaturedNewsCard({ article }: { article: NewsArticle }) 
         alt={article.title}
         loading="eager"
         decoding="async"
-        referrerPolicy="no-referrer"
         onError={useNewsImageFallback}
         className="absolute inset-0 h-full w-full object-cover"
       />

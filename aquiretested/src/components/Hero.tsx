@@ -55,9 +55,14 @@ export default function Hero() {
   useEffect(() => {
     if (reduceMotion || !window.matchMedia('(min-width: 1024px)').matches) return;
 
+    const connection = (navigator as Navigator & {
+      connection?: { saveData?: boolean; effectiveType?: string };
+    }).connection;
+    if (connection?.saveData || ['slow-2g', '2g', '3g'].includes(connection?.effectiveType || '')) return;
+
     let timer = 0;
     const loadVideo = () => {
-      timer = window.setTimeout(() => setShowVideo(true), 1800);
+      timer = window.setTimeout(() => setShowVideo(true), 5000);
     };
 
     if (document.readyState === 'complete') loadVideo();

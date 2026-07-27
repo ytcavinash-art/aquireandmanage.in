@@ -31,7 +31,7 @@ export default function ServiceSolutionsSlider({ services }: ServiceSolutionsSli
           </div>
         </div>
         <div ref={sliderRef} className="flex snap-x snap-mandatory gap-6 overflow-x-auto pb-5 [scrollbar-width:thin]">
-          {services.map((service) => {
+          {services.map((service, index) => {
             const title = typeof service === 'string' ? service : service.title;
             const image = typeof service === 'string' ? undefined : service.image;
 
@@ -39,7 +39,16 @@ export default function ServiceSolutionsSlider({ services }: ServiceSolutionsSli
               <article key={title} className="relative flex min-h-72 min-w-[280px] snap-start flex-col justify-end overflow-hidden rounded-xl bg-gradient-to-br from-navy via-slate-800 to-black p-7 shadow-lg sm:min-w-[320px]">
                 {image && (
                   <>
-                    <img src={image} alt="" className="absolute inset-0 h-full w-full object-cover" loading="lazy" />
+                    <img
+                      src={image}
+                      alt=""
+                      width="960"
+                      height="640"
+                      className="absolute inset-0 h-full w-full object-cover"
+                      loading={index < 3 ? 'eager' : 'lazy'}
+                      fetchPriority={index === 0 ? 'high' : 'auto'}
+                      decoding="async"
+                    />
                     <div className="absolute inset-0 bg-gradient-to-t from-black via-black/55 to-black/10" aria-hidden="true" />
                   </>
                 )}

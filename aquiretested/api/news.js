@@ -1,10 +1,13 @@
 import Parser from 'rss-parser';
+import newsDecoderPackage from 'google-news-url-decoder';
 
 const parser = new Parser({
   customFields: {
     item: [['source', 'source']],
   },
 });
+const { GoogleDecoder } = newsDecoderPackage;
+const newsUrlDecoder = new GoogleDecoder();
 
 const FEED_URL =
   'https://news.google.com/rss/search?q=Mumbai+SRA+OR+Slum+Redevelopment+OR+MHADA+OR+Dharavi&hl=en-IN&gl=IN&ceid=IN:en';
@@ -45,6 +48,71 @@ function normalizeArticle(item) {
   };
 }
 
+function decodeHtml(value) {
+  return value
+    .replace(/&amp;/g, '&')
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;|&apos;/g, "'")
+    .replace(/&#x2F;/gi, '/');
+}
+
+function getMetadataImage(html, pageUrl) {
+  const patterns = [
+    /<meta[^>]+(?:property|name)=["'](?:og:image|og:image:url|twitter:image|twitter:image:src)["'][^>]+content=["']([^"']+)["'][^>]*>/i,
+    /<meta[^>]+content=["']([^"']+)["'][^>]+(?:property|name)=["'](?:og:image|og:image:url|twitter:image|twitter:image:src)["'][^>]*>/i,
+    /<link[^>]+rel=["']image_src["'][^>]+href=["']([^"']+)["'][^>]*>/i,
+    /"image"\s*:\s*(?:\[\s*)?(?:{\s*"url"\s*:\s*)?["']([^"']+)["']/i,
+  ];
+
+  for (const pattern of patterns) {
+    const candidate = pattern.exec(html)?.[1];
+    if (!candidate) continue;
+
+    try {
+      const imageUrl = new URL(decodeHtml(candidate), pageUrl);
+      if (imageUrl.protocol === 'http:' || imageUrl.protocol === 'https:') {
+        return imageUrl.toString();
+      }
+    } catch {
+      // Ignore malformed metadata and try the next available image field.
+    }
+  }
+
+  return '';
+}
+
+async function addOriginalArticleImage(article) {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 4500);
+
+  try {
+    const articleResponse = await fetch(article.url, {
+      redirect: 'follow',
+      signal: controller.signal,
+      headers: {
+        Accept: 'text/html,application/xhtml+xml',
+        'User-Agent': 'Mozilla/5.0 (compatible; A&M-Advisory-News/1.0)',
+      },
+    });
+
+    if (!articleResponse.ok) return article;
+    if (articleResponse.url.includes('news.google.com')) return article;
+
+    const html = await articleResponse.text();
+    const imageUrl = getMetadataImage(html, articleResponse.url);
+
+    return {
+      ...article,
+      url: articleResponse.url,
+      imageUrl,
+    };
+  } catch {
+    return article;
+  } finally {
+    clearTimeout(timeout);
+  }
+}
+
 export default async function handler(request, response) {
   if (request.method !== 'GET') {
     response.setHeader('Allow', 'GET');
@@ -79,6 +147,30 @@ export default async function handler(request, response) {
     const articles = hasRequestedPage
       ? uniqueArticles.slice(start, start + PAGE_SIZE)
       : uniqueArticles;
+    const articlesToEnrich = articles.slice(0, PAGE_SIZE);
+    const decodedBySourceUrl = new Map();
+
+    for (const article of articlesToEnrich) {
+      try {
+        const decodedResult = await newsUrlDecoder.decode(article.url);
+        decodedBySourceUrl.set(article.url, decodedResult);
+      } catch (error) {
+        console.warn(`Unable to decode Google News URL for "${article.title}":`, error);
+      }
+    }
+
+    const articlesWithImages = await Promise.all(
+      articles.map((article, index) => {
+        if (index >= PAGE_SIZE) return article;
+
+        const decodedResult = decodedBySourceUrl.get(article.url);
+        const publisherUrl = decodedResult?.status && decodedResult.decoded_url
+          ? decodedResult.decoded_url
+          : article.url;
+
+        return addOriginalArticleImage({ ...article, url: publisherUrl });
+      }),
+    );
     const nextPage = hasRequestedPage && start + PAGE_SIZE < uniqueArticles.length
       ? page + 1
       : undefined;
@@ -87,7 +179,7 @@ export default async function handler(request, response) {
       'Cache-Control',
       's-maxage=900, stale-while-revalidate',
     );
-    return response.status(200).json({ articles, nextPage });
+    return response.status(200).json({ articles: articlesWithImages, nextPage });
   } catch (error) {
     console.error('News RSS request failed:', error);
     return response.status(500).json({

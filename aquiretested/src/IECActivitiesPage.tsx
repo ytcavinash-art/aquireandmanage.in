@@ -8,43 +8,43 @@ export default function IECActivitiesPage() {
   const services = [
     {
       title: 'Zone launch and mobilisation events',
-      image: '/images/iec-activities/Zone launch and mobilisation events.png',
+      image: '/images/iec-activities/Zone launch and mobilisation events.jpg',
     },
     {
       title: 'Monthly community town halls',
-      image: '/images/iec-activities/Monthly community town halls.png',
+      image: '/images/iec-activities/Monthly community town halls.jpg',
     },
     {
       title: 'Lane / chawl / society micro-meetings',
-      image: '/images/iec-activities/Lane  chawl  society micro-meetings.png',
+      image: '/images/iec-activities/Lane  chawl  society micro-meetings.jpg',
     },
     {
       title: 'Policy / legal / technical briefing support',
-      image: '/images/iec-activities/Policy  legal  technical briefing support.png',
+      image: '/images/iec-activities/Policy  legal  technical briefing support.jpg',
     },
     {
       title: 'Printed IEC materials',
-      image: '/images/iec-activities/Printed IEC materials.png',
+      image: '/images/iec-activities/Printed IEC materials.jpg',
     },
     {
       title: 'Digital / WhatsApp / SMS / IVR communication',
-      image: '/images/iec-activities/Digital  WhatsApp  SMS  IVR communication.png',
+      image: '/images/iec-activities/Digital  WhatsApp  SMS  IVR communication.jpg',
     },
     {
       title: 'Audio-visual and explainer content',
-      image: '/images/iec-activities/Audio-visual and explainer content.png',
+      image: '/images/iec-activities/Audio-visual and explainer content.jpg',
     },
     {
       title: 'Grievance redressal camps',
-      image: '/images/iec-activities/Grievance redressal camps.png',
+      image: '/images/iec-activities/Grievance redressal camps.jpg',
     },
     {
       title: 'Media monitoring and misinformation response',
-      image: '/images/iec-activities/Media monitoring and misinformation response.png',
+      image: '/images/iec-activities/Media monitoring and misinformation response.jpg',
     },
     {
       title: 'Awareness Campaign',
-      image: '/images/iec-activities/Awareness Campaign.png',
+      image: '/images/iec-activities/Awareness Campaign.jpg',
     },
   ];
 
@@ -59,11 +59,9 @@ export default function IECActivitiesPage() {
 
       <main id="main-content" tabIndex={-1} className="pt-20">
         {/* Hero Section */}
-        <section
-          className="aspect-[10/3] w-full bg-white bg-contain bg-center bg-no-repeat"
-          style={{ backgroundImage: "url('/images/iec-activities-banner.png')" }}
-          aria-label="IEC Activities"
-        />
+        <section className="aspect-[10/3] w-full bg-white" aria-label="IEC Activities">
+          <img src="/images/iec-activities-banner.jpg" alt="" width="1920" height="576" loading="eager" fetchPriority="high" decoding="async" className="h-full w-full object-contain" />
+        </section>
 
         <ServiceSolutionsSlider serviceName="IEC Activities" services={services} />
 

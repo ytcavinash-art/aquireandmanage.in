@@ -8,43 +8,43 @@ export default function TenantManagementPage() {
   const services = [
     {
       title: 'Identify local Facilitators and Supporters',
-      image: '/images/tenant-management/Identify local Facilitators and Supporters.png',
+      image: '/images/tenant-management/Identify local Facilitators and Supporters.jpg',
     },
     {
       title: 'Conduct society meetings on ground for max participation',
-      image: '/images/tenant-management/Conduct society meetings on ground for max participation.png',
+      image: '/images/tenant-management/Conduct society meetings on ground for max participation.jpg',
     },
     {
       title: 'Survey (Lane Raccee, Numbering, Lidar & Base Map)',
-      image: '/images/tenant-management/Survey (Lane Raccee, Numbering, Lidar & Base Map).png',
+      image: '/images/tenant-management/Survey (Lane Raccee, Numbering, Lidar & Base Map).jpg',
     },
     {
       title: 'Documentation, Eligibility and application support',
-      image: '/images/tenant-management/Documentation, Eligibility and application support.png',
+      image: '/images/tenant-management/Documentation, Eligibility and application support.jpg',
     },
     {
       title: 'Data analysis & report generations',
-      image: '/images/tenant-management/Data analysis & report generations.png',
+      image: '/images/tenant-management/Data analysis & report generations.jpg',
     },
     {
       title: 'Nuisance Control / Vulnerable household / special-case support',
-      image: '/images/tenant-management/Nuisance Control  Vulnerable household  special-case support.png',
+      image: '/images/tenant-management/Nuisance Control  Vulnerable household  special-case support.jpg',
     },
     {
       title: 'Individual Agreements',
-      image: '/images/tenant-management/Individual Agreements.png',
+      image: '/images/tenant-management/Individual Agreements.jpg',
     },
     {
       title: 'Rent readiness / bank / KYC support',
-      image: '/images/tenant-management/Rent readiness  bank  KYC support.png',
+      image: '/images/tenant-management/Rent readiness  bank  KYC support.jpg',
     },
     {
       title: 'Shifting readiness and family coordination / Evacuation',
-      image: '/images/tenant-management/Shifting readiness and family coordination  Evacuation.png',
+      image: '/images/tenant-management/Shifting readiness and family coordination  Evacuation.jpg',
     },
     {
       title: 'Post closure Demolition & fencing',
-      image: '/images/tenant-management/Post closure Demolition & fencing.png',
+      image: '/images/tenant-management/Post closure Demolition & fencing.jpg',
     },
   ];
 
@@ -59,11 +59,9 @@ export default function TenantManagementPage() {
 
       <main id="main-content" tabIndex={-1} className="pt-20">
         {/* Hero Section */}
-        <section
-          className="aspect-[10/3] w-full bg-navy bg-contain bg-center bg-no-repeat"
-          style={{ backgroundImage: "url('/images/tenant-management-banner.png')" }}
-          aria-label="Tenant Management"
-        />
+        <section className="aspect-[10/3] w-full bg-navy" aria-label="Tenant Management">
+          <img src="/images/tenant-management-banner.jpg" alt="" width="1920" height="576" loading="eager" fetchPriority="high" decoding="async" className="h-full w-full object-contain" />
+        </section>
 
         <ServiceSolutionsSlider serviceName="Tenant Management" services={services} />
 

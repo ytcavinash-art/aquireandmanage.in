@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { ChevronDown, Menu, Search, X } from 'lucide-react';
+import { ChevronDown, Languages, Menu, Search, X } from 'lucide-react';
 import PageLoader from './PageLoader';
 import Seo from './Seo';
 import CursorFollower from './CursorFollower';
@@ -32,6 +32,43 @@ const searchTargets = [
   { label: 'SRA & Real Estate News', href: '/news.html', terms: ['news', 'sra news', 'real estate news'] },
   { label: 'Contact Us', href: '/contact', terms: ['contact', 'phone', 'email', 'office'] },
 ];
+
+function LanguageSwitcher({ mobile = false }: { mobile?: boolean }) {
+  const pageUrl = new URL(
+    `${window.location.pathname}${window.location.search}${window.location.hash}`,
+    'https://www.aquireandmanage.com',
+  ).toString();
+  const openTranslatedPage = (language: string) => {
+    if (language === 'en') {
+      window.location.href = pageUrl;
+      return;
+    }
+
+    window.location.href = `https://translate.google.com/translate?sl=en&tl=${language}&u=${encodeURIComponent(pageUrl)}`;
+  };
+
+  return (
+    <div className={mobile ? 'mx-6 my-4' : 'relative shrink-0'}>
+      <label htmlFor={mobile ? 'mobile-language' : 'desktop-language'} className="sr-only">
+        Choose website language
+      </label>
+      <div className="relative flex items-center">
+        <Languages size={15} className="pointer-events-none absolute left-3 text-navy/65" aria-hidden="true" />
+        <select
+          id={mobile ? 'mobile-language' : 'desktop-language'}
+          defaultValue="en"
+          onChange={(event) => openTranslatedPage(event.target.value)}
+          className="h-9 w-full min-w-32 cursor-pointer appearance-auto rounded-full border border-slate-300 bg-white py-1 pl-9 pr-3 text-sm font-semibold text-navy shadow-sm transition-colors hover:border-navy focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-navy"
+          aria-label="Website language"
+        >
+          <option value="en">English</option>
+          <option value="hi">हिन्दी</option>
+          <option value="mr">मराठी</option>
+        </select>
+      </div>
+    </div>
+  );
+}
 
 export default function Nav() {
   const isInnerPage = window.location.pathname !== '/' && !window.location.pathname.endsWith('/index.html');
@@ -145,10 +182,10 @@ export default function Nav() {
       <PageLoader />
       <div className="max-w-7xl mx-auto px-6 flex items-center justify-between h-16">
         <a href={isInnerPage ? '/' : '#home'} {...homeLinkProps('#home')} className={`flex items-center gap-1 select-none ${ringLight}`} aria-label="A&M Advisory — go to home">
-          <img src="/am-logo.png" alt="A&M Advisory" className="h-10 w-auto" />
+          <img src="/am-logo.png" alt="A&M Advisory" width="1381" height="600" decoding="async" fetchPriority="high" className="h-10 w-auto" />
         </a>
 
-        <div className="hidden md:flex items-center gap-4">
+        <div className="hidden lg:flex items-center gap-4">
         <nav aria-label="Primary navigation" className="flex items-center gap-7">
           {links.slice(0, 1).map((link) => (
             <a key={link.href} href={link.href} {...homeLinkProps(link.href, link.label)} className={`text-sm font-medium text-navy/75 hover:text-navy transition-colors ${ringLight}`}>
@@ -252,15 +289,16 @@ export default function Nav() {
             </div>
           )}
         </form>
+        <LanguageSwitcher />
         </div>
 
-        <button ref={toggleRef} className={`md:hidden text-navy ${ringLight}`} onClick={() => setOpen((value) => !value)} aria-label={open ? 'Close menu' : 'Open menu'} aria-expanded={open} aria-controls="mobile-menu">
+        <button ref={toggleRef} className={`lg:hidden text-navy ${ringLight}`} onClick={() => setOpen((value) => !value)} aria-label={open ? 'Close menu' : 'Open menu'} aria-expanded={open} aria-controls="mobile-menu">
           {open ? <X size={22} /> : <Menu size={22} />}
         </button>
       </div>
 
       {open && (
-        <div id="mobile-menu" ref={menuRef} role="dialog" aria-modal="true" aria-label="Navigation menu" className="md:hidden bg-white border-t border-slate-200">
+        <div id="mobile-menu" ref={menuRef} role="dialog" aria-modal="true" aria-label="Navigation menu" className="lg:hidden bg-white border-t border-slate-200">
           <nav aria-label="Mobile navigation">
             {links.slice(0, 1).map((link) => (
               <a key={link.href} href={link.href} {...homeLinkProps(link.href, link.label)} className={`block px-6 py-3 text-sm font-medium text-navy/75 hover:text-navy hover:bg-slate-50 transition-colors ${ringLight}`}>
@@ -297,6 +335,7 @@ export default function Nav() {
               </a>
             ))}
           </nav>
+          <LanguageSwitcher mobile />
         </div>
       )}
     </header>

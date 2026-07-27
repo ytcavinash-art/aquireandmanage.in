@@ -6,7 +6,7 @@ const services = [
     title: 'Tenant Management',
     description: 'Structured on-ground coordination from household survey to safe relocation.',
     href: '/tenant-management.html',
-    image: '/images/tenant-management-service-card.png',
+    image: '/images/tenant-management-service-card.jpg',
     benefits: ['Clear tenant records', 'Higher resident participation', 'Coordinated shifting support'],
     process: 'Survey → Documentation → Consent → Relocation',
     timeline: 'Project-phase based',
@@ -15,7 +15,7 @@ const services = [
     title: 'Liaisoning',
     description: 'Focused coordination for submissions, statutory approvals and SRA compliance.',
     href: '/liaisoning.html',
-    image: '/images/liaisoning-service-card.png',
+    image: '/images/liaisoning-service-card.jpg',
     benefits: ['Organised submissions', 'Proactive follow-ups', 'Reduced compliance gaps'],
     process: 'Review → Submit → Coordinate → Close',
     timeline: 'Authority dependent',
@@ -24,7 +24,7 @@ const services = [
     title: 'IEC Activities',
     description: 'Consistent, accessible communication that keeps every stakeholder informed.',
     href: '/iec-activities.html',
-    image: '/images/iec-activities.png',
+    image: '/images/iec-activities.jpg',
     benefits: ['Better project awareness', 'Faster query resolution', 'Stronger community trust'],
     process: 'Assess → Plan → Engage → Report',
     timeline: 'Ongoing by project stage',
@@ -33,7 +33,7 @@ const services = [
     title: 'Facility Management',
     description: 'Reliable operations, upkeep and safety coordination for occupied facilities.',
     href: '/facility-management.html',
-    image: '/images/facility-management.png',
+    image: '/images/facility-management.jpg',
     benefits: ['Safer daily operations', 'Preventive maintenance', 'Accountable vendor support'],
     process: 'Audit → Mobilise → Operate → Improve',
     timeline: 'Mobilisation after assessment',
@@ -72,8 +72,11 @@ export default function Services() {
                   <motion.img
                     src={service.image}
                     alt={`${service.title} service`}
-                    loading="lazy"
+                    loading={index < 2 ? 'eager' : 'lazy'}
+                    fetchPriority={index < 2 ? 'high' : 'auto'}
                     decoding="async"
+                    width="720"
+                    height="900"
                     whileHover={reduceMotion ? undefined : { scale: 1.07 }}
                     transition={{ duration: 0.55, ease: 'easeOut' }}
                     className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"

@@ -21,9 +21,13 @@ export default function ContactModalButton() {
   }, [isOpen]);
 
   const handleChange = (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const value = event.target.name === 'mobileNumber'
+      ? event.target.value.replace(/\D/g, '').slice(0, 10)
+      : event.target.value;
+
     setFormData({
       ...formData,
-      [event.target.name]: event.target.value,
+      [event.target.name]: value,
     });
   };
 
@@ -96,7 +100,21 @@ export default function ContactModalButton() {
               <input id="contact-name" name="fullName" type="text" placeholder="Full Name" value={formData.fullName} onChange={handleChange} required className="mb-4 w-full rounded border p-3" />
 
               <label className="sr-only" htmlFor="contact-mobile">Mobile Number</label>
-              <input id="contact-mobile" name="mobileNumber" type="tel" placeholder="Mobile Number" value={formData.mobileNumber} onChange={handleChange} required className="mb-4 w-full rounded border p-3" />
+              <input
+                id="contact-mobile"
+                name="mobileNumber"
+                type="tel"
+                inputMode="numeric"
+                pattern="[0-9]{10}"
+                maxLength={10}
+                placeholder="Mobile Number"
+                value={formData.mobileNumber}
+                onChange={handleChange}
+                required
+                aria-describedby="contact-mobile-hint"
+                className="mb-4 w-full rounded border p-3"
+              />
+              <span id="contact-mobile-hint" className="sr-only">Enter a 10-digit mobile number using numbers only.</span>
 
               <label className="sr-only" htmlFor="contact-email">Email Address</label>
               <input id="contact-email" name="emailAddress" type="email" placeholder="Email Address" value={formData.emailAddress} onChange={handleChange} required className="mb-4 w-full rounded border p-3" />

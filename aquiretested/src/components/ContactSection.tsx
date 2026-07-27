@@ -112,7 +112,22 @@ export default function ContactSection() {
                 </div>
                 <div>
                   <label htmlFor="quick-phone" className="mb-2 block text-xs font-bold text-navy">Mobile Number</label>
-                  <input id="quick-phone" name="mobileNumber" type="tel" required className="h-12 w-full border border-slate-300 bg-slate-50 px-4 text-sm text-navy focus:border-navy focus:bg-white" placeholder="+91" />
+                  <input
+                    id="quick-phone"
+                    name="mobileNumber"
+                    type="tel"
+                    inputMode="numeric"
+                    pattern="[0-9]{10}"
+                    maxLength={10}
+                    required
+                    onInput={(event) => {
+                      event.currentTarget.value = event.currentTarget.value.replace(/\D/g, '');
+                    }}
+                    className="h-12 w-full border border-slate-300 bg-slate-50 px-4 text-sm text-navy focus:border-navy focus:bg-white"
+                    placeholder="+91"
+                    aria-describedby="quick-phone-hint"
+                  />
+                  <span id="quick-phone-hint" className="sr-only">Enter a 10-digit mobile number using numbers only.</span>
                 </div>
                 <div className="sm:col-span-2">
                   <label htmlFor="quick-email" className="mb-2 block text-xs font-bold text-navy">Email Address</label>

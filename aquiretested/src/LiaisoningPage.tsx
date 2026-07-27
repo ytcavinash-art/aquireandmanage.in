@@ -8,43 +8,43 @@ export default function LiaisoningPage() {
   const services = [
     {
       title: 'Coordinate with SRA and municipal authorities for project approvals',
-      image: '/images/liaisoning/Coordinate with SRA and municipal authorities for project approvals.png',
+      image: '/images/liaisoning/Coordinate with SRA and municipal authorities for project approvals.jpg',
     },
     {
       title: 'Manage submission of proposals, documents, and follow-ups',
-      image: '/images/liaisoning/Manage submission of proposals, documents, and follow-ups.png',
+      image: '/images/liaisoning/Manage submission of proposals, documents, and follow-ups.jpg',
     },
     {
       title: 'Obtain necessary NOCs, LOI, and IOA approvals',
-      image: '/images/liaisoning/Obtain necessary NOCs, LOI, and IOA approvals.png',
+      image: '/images/liaisoning/Obtain necessary NOCs, LOI, and IOA approvals.jpg',
     },
     {
       title: 'Ensure compliance with applicable rules, policies, and regulations',
-      image: '/images/liaisoning/Ensure compliance with applicable rules, policies, and regulations.png',
+      image: '/images/liaisoning/Ensure compliance with applicable rules, policies, and regulations.jpg',
     },
     {
       title: 'Facilitate smooth communication between stakeholders and authorities',
-      image: '/images/liaisoning/Facilitate smooth communication between stakeholders and authorities.png',
+      image: '/images/liaisoning/Facilitate smooth communication between stakeholders and authorities.jpg',
     },
     {
       title: 'Resolve regulatory challenges and expedite approval processes',
-      image: '/images/liaisoning/Resolve regulatory challenges and expedite approval processes.png',
+      image: '/images/liaisoning/Resolve regulatory challenges and expedite approval processes.jpg',
     },
     {
       title: 'Liaisoning stakeholder on ground',
-      image: '/images/liaisoning/Liaisoning stakeholder on ground.png',
+      image: '/images/liaisoning/Liaisoning stakeholder on ground.jpg',
     },
     {
       title: 'Institutional & key stakeholder management',
-      image: '/images/liaisoning/Institutional & key stakeholder management.png',
+      image: '/images/liaisoning/Institutional & key stakeholder management.jpg',
     },
     {
       title: 'Legal regulatory & compliance documentation',
-      image: '/images/liaisoning/Legal regulatory & compliance documentation.png',
+      image: '/images/liaisoning/Legal regulatory & compliance documentation.jpg',
     },
     {
       title: 'Senior Advisors, Consultants & Specialist Retainers',
-      image: '/images/liaisoning/Senior Advisors, Consultants & Specialist Retainers.png',
+      image: '/images/liaisoning/Senior Advisors, Consultants & Specialist Retainers.jpg',
     },
   ];
 
@@ -59,11 +59,9 @@ export default function LiaisoningPage() {
 
       <main id="main-content" tabIndex={-1} className="pt-20">
         {/* Hero Section */}
-        <section
-          className="aspect-[10/3] w-full bg-navy bg-contain bg-center bg-no-repeat"
-          style={{ backgroundImage: "url('/images/liaisoning-banner.png')" }}
-          aria-label="Liaisoning"
-        />
+        <section className="aspect-[10/3] w-full bg-navy" aria-label="Liaisoning">
+          <img src="/images/liaisoning-banner.jpg" alt="" width="1920" height="576" loading="eager" fetchPriority="high" decoding="async" className="h-full w-full object-contain" />
+        </section>
 
         <ServiceSolutionsSlider serviceName="Liaisoning" services={services} />
 

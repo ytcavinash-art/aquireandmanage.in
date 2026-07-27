@@ -10,12 +10,10 @@ const services = [
 
 const companyLinks = [
   { label: 'About Us', href: '/about.html' },
-  { label: 'Our Vision', href: '/vision.html' },
-  { label: 'Core Values', href: '/core-values.html' },
   { label: 'Blog', href: '/blog.html' },
+  { label: 'News', href: '/news.html' },
   { label: 'FAQs', href: '/#faq' },
   { label: 'Careers', href: '/careers.html' },
-  { label: 'Contact Us', href: '/contact' },
 ];
 
 const socialLinks = [

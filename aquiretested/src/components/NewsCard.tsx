@@ -90,7 +90,6 @@ export default function NewsCard({ article }: NewsCardProps) {
           decoding="async"
           src={getNewsImageUrl(article.imageUrl)}
           alt={article.title}
-          referrerPolicy="no-referrer"
           onError={useNewsImageFallback}
           className="h-full w-full object-cover transition duration-700 ease-out group-hover:scale-110"
         />

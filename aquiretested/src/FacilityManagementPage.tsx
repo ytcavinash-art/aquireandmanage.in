@@ -8,43 +8,43 @@ export default function FacilityManagementPage() {
   const services = [
     {
       title: 'Facility operations coordination',
-      image: '/images/facility-management/facility-operations-coordination.png',
+      image: '/images/facility-management/facility-operations-coordination.jpg',
     },
     {
       title: 'Maintenance and repair support',
-      image: '/images/facility-management/maintenance-repair-support.png',
+      image: '/images/facility-management/maintenance-repair-support.jpg',
     },
     {
       title: 'Vendor and manpower management',
-      image: '/images/facility-management/vendor-manpower-management.png',
+      image: '/images/facility-management/vendor-manpower-management.jpg',
     },
     {
       title: 'Safety and compliance monitoring',
-      image: '/images/facility-management/safety-compliance-monitoring.png',
+      image: '/images/facility-management/safety-compliance-monitoring.jpg',
     },
     {
       title: 'Asset & Equipment Management',
-      image: '/images/facility-management/asset-equipment-management.png',
+      image: '/images/facility-management/asset-equipment-management.jpg',
     },
     {
       title: 'Preventive & Predictive Maintenance Planning',
-      image: '/images/facility-management/preventive-predictive-maintenance.png',
+      image: '/images/facility-management/preventive-predictive-maintenance.jpg',
     },
     {
       title: 'Housekeeping & Janitorial Management',
-      image: '/images/facility-management/housekeeping-janitorial-management.png',
+      image: '/images/facility-management/housekeeping-janitorial-management.jpg',
     },
     {
       title: 'Security Services',
-      image: '/images/facility-management/security-services-coordination.png',
+      image: '/images/facility-management/security-services-coordination.jpg',
     },
     {
       title: 'Utility & Energy Management',
-      image: '/images/facility-management/utility-energy-management.png',
+      image: '/images/facility-management/utility-energy-management.jpg',
     },
     {
       title: 'Space Planning & Workplace Management',
-      image: '/images/facility-management/space-workplace-management.png',
+      image: '/images/facility-management/space-workplace-management.jpg',
     },
   ];
 
@@ -59,11 +59,9 @@ export default function FacilityManagementPage() {
 
       <main id="main-content" tabIndex={-1} className="pt-20">
         {/* Hero Section */}
-        <section
-          className="aspect-[10/3] w-full bg-navy bg-contain bg-center bg-no-repeat"
-          style={{ backgroundImage: "url('/images/facility-management-banner.png')" }}
-          aria-label="Facility Management"
-        />
+        <section className="aspect-[10/3] w-full bg-navy" aria-label="Facility Management">
+          <img src="/images/facility-management-banner.jpg" alt="" width="1920" height="576" loading="eager" fetchPriority="high" decoding="async" className="h-full w-full object-contain" />
+        </section>
 
         <ServiceSolutionsSlider serviceName="Facility Management" services={services} />
 
