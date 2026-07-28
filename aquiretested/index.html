@@ -128,21 +128,51 @@
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
-    "@type": ["Organization", "LocalBusiness", "ProfessionalService"],
-    "@id": "https://www.aquireandmanage.com/#organization",
+    "@type": "ProfessionalService",
     "name": "A&M Advisory",
     "url": "https://www.aquireandmanage.com",
-    "logo": "https://www.aquireandmanage.com/android-chrome-512x512.png",
-    "telephone": "+91-22-4564-8350",
-    "email": "info@aquireandmanage.com",
+    "description": "A&M Advisory provides comprehensive SRA redevelopment advisory, tenant management, liaisoning, IEC activities, and professional facility management services in Mumbai.",
     "address": {
       "@type": "PostalAddress",
       "addressLocality": "Mumbai",
       "addressRegion": "Maharashtra",
       "addressCountry": "IN"
     },
-    "areaServed": { "@type": "City", "name": "Mumbai" },
-    "knowsAbout": ["SRA Redevelopment", "Tenant Management", "Government Liaisoning", "Slum Rehabilitation"]
+    "areaServed": "Mumbai",
+    "hasOfferCatalog": {
+      "@type": "OfferCatalog",
+      "name": "Core Services",
+      "itemListElement": [
+        {
+          "@type": "Offer",
+          "itemOffered": {
+            "@type": "Service",
+            "name": "SRA Redevelopment Advisory"
+          }
+        },
+        {
+          "@type": "Offer",
+          "itemOffered": {
+            "@type": "Service",
+            "name": "Tenant Management & Liaisoning Advisory"
+          }
+        },
+        {
+          "@type": "Offer",
+          "itemOffered": {
+            "@type": "Service",
+            "name": "IEC Activities (Information, Education, and Communication)"
+          }
+        },
+        {
+          "@type": "Offer",
+          "itemOffered": {
+            "@type": "Service",
+            "name": "Facility Management Services"
+          }
+        }
+      ]
+    }
   }
   </script>
 </head>
