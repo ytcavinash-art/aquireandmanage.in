@@ -280,28 +280,30 @@
 
   <main id="main-content" tabIndex="-1">
     <!-- Hero Banner Section -->
-    <section id="home" class="relative overflow-hidden bg-navy text-white min-h-[520px] flex items-center pt-16">
-      <img src="images/hero-poster.jpg" alt="Mumbai SRA Redevelopment" class="absolute inset-0 h-full w-full object-cover opacity-30" />
-      <div class="relative z-10 mx-auto max-w-7xl px-6 py-14 md:px-10">
-        <div class="max-w-3xl">
-          <p class="mb-3 flex items-center gap-3 text-xs font-bold uppercase tracking-[0.24em] text-crimson-light">
-            <span class="h-px w-9 bg-crimson-light"></span>
+    <section id="home" class="hero-reference">
+      <div class="hero-reference-shell">
+        <div class="hero-reference-copy">
+          <p class="hero-reference-eyebrow">
+            <span aria-hidden="true"></span>
             Mumbai's SRA Advisory Partner
           </p>
-          <h1 class="text-3xl font-bold leading-tight sm:text-4xl md:text-5xl font-serif">
-            Mumbai's <span class="text-crimson-light">Trusted SRA Advisory</span>
+          <h1 class="hero-reference-title">
+            Mumbai's <span>Trusted SRA Advisory</span>
           </h1>
-          <p class="mt-4 text-sm leading-relaxed text-slate-200 sm:text-base">
+          <p class="hero-reference-description">
             From community engagement to regulatory approvals, we bring people, process and precision together to move complex slum rehabilitation projects forward.
           </p>
-          <div class="mt-6 flex flex-wrap items-center gap-4">
-            <a href="contact.html" class="rounded-lg bg-crimson px-6 py-3 text-sm font-bold text-white shadow-lg transition hover:bg-white hover:text-navy">Discuss Your Project &rarr;</a>
-            <a href="services.html" class="rounded-lg border border-white/50 bg-white/10 px-6 py-3 text-sm font-bold text-white backdrop-blur-sm transition hover:bg-white hover:text-navy">Explore Services</a>
-            <button id="open-brochure-modal-btn" type="button" class="rounded-lg bg-emerald-600 px-5 py-3 text-sm font-bold text-white shadow-lg transition hover:bg-emerald-700 flex items-center gap-2">
+          <div class="hero-reference-actions">
+            <a href="contact.html" class="hero-reference-cta hero-reference-cta-primary">Discuss Your Project &rarr;</a>
+            <a href="services.html" class="hero-reference-cta hero-reference-cta-secondary">Explore Services</a>
+            <button id="open-brochure-modal-btn" type="button" class="hero-reference-cta hero-reference-cta-profile">
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
               <span>Download Company Profile (PPT / PDF)</span>
             </button>
           </div>
+        </div>
+        <div class="hero-reference-media">
+          <img src="images/hero-poster.jpg" alt="Mumbai SRA Redevelopment" />
         </div>
       </div>
     </section>
