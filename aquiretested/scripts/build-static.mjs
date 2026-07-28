@@ -3,8 +3,8 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const projectRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const invocationRoot = path.resolve(process.env.INIT_CWD || projectRoot);
-const outputDir = path.join(invocationRoot, 'dist');
+const outputDir = path.join(projectRoot, 'dist');
+const repositoryOutputDir = path.join(projectRoot, '..', 'dist');
 const staticDirectories = ['assets', 'css', 'data', 'images', 'js'];
 
 await rm(outputDir, { recursive: true, force: true });
@@ -40,6 +40,9 @@ for (const file of htmlFiles) {
   );
 }
 
+await rm(repositoryOutputDir, { recursive: true, force: true });
+await cp(outputDir, repositoryOutputDir, { recursive: true, force: true });
+
 console.log(
-  `Static build complete: ${htmlFiles.length} HTML pages and required assets copied to dist.`,
+  `Static build complete: ${htmlFiles.length} HTML pages and required assets copied to ${outputDir} and ${repositoryOutputDir}.`,
 );
