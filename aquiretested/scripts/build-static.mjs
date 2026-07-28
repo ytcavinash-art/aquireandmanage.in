@@ -3,7 +3,8 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const projectRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const outputDir = path.join(projectRoot, 'dist');
+const invocationRoot = path.resolve(process.env.INIT_CWD || projectRoot);
+const outputDir = path.join(invocationRoot, 'dist');
 const staticDirectories = ['assets', 'css', 'data', 'images', 'js'];
 
 await rm(outputDir, { recursive: true, force: true });
