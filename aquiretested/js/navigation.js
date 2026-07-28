@@ -5,11 +5,64 @@
 
 document.addEventListener('DOMContentLoaded', () => {
   initMobileMenu();
+  initDropdowns();
   initActiveLinks();
   initStickyHeader();
   initSearchModal();
   initLanguageSwitcher();
 });
+
+/* Dropdown Menu Click & Touch Toggle Handler */
+function initDropdowns() {
+  const dropdownItems = document.querySelectorAll('.nav-dropdown-item');
+
+  dropdownItems.forEach((item) => {
+    const trigger = item.querySelector('.nav-dropdown-trigger');
+    const menu = item.querySelector('.nav-dropdown-menu');
+
+    if (!trigger || !menu) return;
+
+    // Toggle on click for touch devices or keyboard users
+    trigger.addEventListener('click', (e) => {
+      // On mobile or small screens, toggle dropdown visibility
+      if (window.innerWidth < 768) {
+        e.preventDefault();
+        const isOpen = item.classList.contains('active-dropdown');
+        closeAllDropdowns();
+        if (!isOpen) {
+          item.classList.add('active-dropdown');
+          menu.classList.remove('opacity-0', 'invisible', 'translate-y-2');
+          menu.classList.add('opacity-100', 'visible', 'translate-y-0');
+        }
+      }
+    });
+  });
+
+  function closeAllDropdowns() {
+    dropdownItems.forEach((item) => {
+      item.classList.remove('active-dropdown');
+      const menu = item.querySelector('.nav-dropdown-menu');
+      if (menu) {
+        menu.classList.add('opacity-0', 'invisible', 'translate-y-2');
+        menu.classList.remove('opacity-100', 'visible', 'translate-y-0');
+      }
+    });
+  }
+
+  // Close dropdowns when clicking outside
+  document.addEventListener('click', (e) => {
+    if (!e.target.closest('.nav-dropdown-item')) {
+      closeAllDropdowns();
+    }
+  });
+
+  // Close on Escape key
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      closeAllDropdowns();
+    }
+  });
+}
 
 /* Mobile Menu Toggle */
 function initMobileMenu() {
