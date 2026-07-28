@@ -1,13 +1,302 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>IEC Activities | A&M Advisory</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/iec-activities.tsx"></script>
-  </body>
+<!DOCTYPE html>
+<html lang="en-IN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>IEC Activities &amp; Community Engagement | A&amp;M Advisory</title>
+  <meta name="description" content="Information, Education, and Communication (IEC) campaign management for SRA redevelopment projects." />
+  <link rel="canonical" href="https://www.aquireandmanage.com/iec-activities.html" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/responsive.css" />
+</head>
+<body class="bg-slate-50 font-sans antialiased text-slate-800">
+
+  <!-- Header Navigation -->
+  <header class="fixed inset-x-0 top-0 z-50 bg-white/90 backdrop-blur-md transition-all shadow-sm">
+    <div class="mx-auto flex max-w-7xl items-center justify-between px-6 py-3 md:px-10">
+      <a href="index.html" class="flex items-center gap-2">
+        <img src="images/am-logo.png" alt="A&amp;M Advisory Logo" class="h-12 w-auto" width="160" height="48" />
+      </a>
+
+      <nav class="hidden md:flex items-center gap-8 text-sm font-medium text-navy">
+        <a href="index.html" class="transition hover:text-crimson">Home</a>
+        <div class="relative group">
+          <a href="about.html" class="inline-flex items-center gap-1 transition hover:text-crimson">
+            About Us
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+          </a>
+          <div class="absolute left-0 mt-2 hidden w-48 rounded-xl border border-slate-100 bg-white p-2 shadow-xl group-hover:block">
+            <a href="about.html" class="block rounded-lg px-4 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50 hover:text-crimson">About Us</a>
+            <a href="leadership.html" class="block rounded-lg px-4 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50 hover:text-crimson">Team Leadership</a>
+          </div>
+        </div>
+        <div class="relative group">
+          <a href="services.html" class="inline-flex items-center gap-1 transition hover:text-crimson text-crimson font-bold">
+            Services
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+          </a>
+          <div class="absolute left-0 mt-2 hidden w-56 rounded-xl border border-slate-100 bg-white p-2 shadow-xl group-hover:block">
+            <a href="tenant-management.html" class="block rounded-lg px-4 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50 hover:text-crimson">Tenant Management</a>
+            <a href="liaisoning.html" class="block rounded-lg px-4 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50 hover:text-crimson">Government Liaisoning</a>
+            <a href="iec-activities.html" class="block rounded-lg px-4 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50 hover:text-crimson text-crimson font-bold">IEC Activities</a>
+            <a href="facility-management.html" class="block rounded-lg px-4 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50 hover:text-crimson">Facility Management</a>
+          </div>
+        </div>
+        <a href="gallery.html" class="transition hover:text-crimson">Gallery</a>
+        <a href="blog.html" class="transition hover:text-crimson">Blog</a>
+        <a href="news.html" class="transition hover:text-crimson">News</a>
+        <a href="contact.html" class="transition hover:text-crimson">Contact</a>
+      </nav>
+
+      <div class="hidden md:flex items-center gap-4">
+        <a href="contact.html" class="rounded-full bg-crimson px-5 py-2 text-xs font-bold text-white shadow-md transition hover:bg-navy">Enquire Now</a>
+      </div>
+
+      <button id="mobile-menu-button" type="button" class="p-2 text-navy md:hidden" aria-label="Open mobile menu">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <main id="main-content" class="pt-16">
+    <!-- Compact Service Detail Hero Banner -->
+    <section class="relative bg-[#06102e] text-white overflow-hidden min-h-[280px] flex items-center border-b border-white/10">
+      <div class="absolute inset-y-0 right-0 w-full md:w-3/5">
+        <img src="images/iec-activities.jpg" alt="IEC Activities" class="h-full w-full object-cover object-center" />
+        <div class="absolute inset-0 bg-gradient-to-r from-[#06102e] via-[#06102e]/85 to-transparent"></div>
+      </div>
+
+      <div class="relative z-10 mx-auto max-w-7xl px-6 py-10 md:px-10 w-full">
+        <div class="max-w-xl">
+          <h1 class="text-3xl font-bold font-serif text-white sm:text-4xl md:text-5xl leading-tight">
+            IEC Activities
+          </h1>
+          <p class="mt-3 text-xs leading-relaxed text-slate-300 sm:text-sm max-w-md">
+            Consistent, accessible communication that keeps every redevelopment stakeholder informed.
+          </p>
+
+          <div class="mt-6 flex flex-wrap items-center gap-6 text-xs text-slate-300 font-medium border-t border-white/10 pt-4">
+            <p class="flex items-center gap-2">📞 <span>+91 022-45648350</span></p>
+            <p class="flex items-center gap-2">✉️ <span>info@aquireandmanage.com</span></p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Overview Content -->
+    <section class="py-12 max-w-6xl mx-auto px-6">
+      <div class="bg-white rounded-2xl p-8 border border-slate-200 shadow-xl space-y-6">
+        <h2 class="text-2xl font-bold text-navy font-serif">Information, Education &amp; Communication (IEC)</h2>
+        <p class="text-slate-600 text-sm md:text-base leading-relaxed text-justify">
+          Effective communication builds trust and eliminates misconceptions in slum rehabilitation schemes. A&amp;M Advisory sets up dedicated Information Booths, conducts town-hall community meetings, distributes bilingual educational brochures, and operates helpdesk helplines to resolve tenant queries transparently.
+        </p>
+      </div>
+    </section>
+
+    <!-- 10 IEC Activities Services Grid & Photos -->
+    <section id="services-solutions" class="py-16 bg-white border-t border-slate-200">
+      <div class="max-w-7xl mx-auto px-6 md:px-10">
+        <div class="mb-12 text-center max-w-3xl mx-auto">
+          <p class="mb-2 text-xs font-bold uppercase tracking-[0.2em] text-crimson">COMMUNITY ENGAGEMENT &amp; OUTREACH</p>
+          <h2 class="text-3xl font-bold text-navy md:text-4xl font-serif">Our IEC Activities &amp; Solutions</h2>
+          <p class="mt-3 text-xs text-slate-600 md:text-sm">Explore our 10 specialized communication modules for building trust on ground.</p>
+        </div>
+
+        <div class="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
+          <!-- Service 1 -->
+          <article class="group relative flex min-h-[300px] flex-col justify-end overflow-hidden rounded-2xl border border-slate-200 shadow-md transition-all duration-300 hover:-translate-y-1.5 hover:shadow-2xl">
+            <img src="images/iec-activities/Zone launch and mobilisation events.jpg" alt="Zone launch and mobilisation events" class="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" />
+            <div class="absolute inset-0 bg-gradient-to-t from-[#06102e] via-[#06102e]/60 to-transparent"></div>
+            <span class="absolute top-4 left-4 rounded-md bg-crimson px-3 py-1 text-[11px] font-bold text-white shadow-md">
+              01
+            </span>
+            <div class="relative z-10 p-6 text-white">
+              <h3 class="text-base font-bold leading-snug text-white font-serif">Zone launch and mobilisation events</h3>
+            </div>
+          </article>
+
+          <!-- Service 2 -->
+          <article class="group relative flex min-h-[300px] flex-col justify-end overflow-hidden rounded-2xl border border-slate-200 shadow-md transition-all duration-300 hover:-translate-y-1.5 hover:shadow-2xl">
+            <img src="images/iec-activities/Monthly community town halls.jpg" alt="Monthly community town halls" class="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" />
+            <div class="absolute inset-0 bg-gradient-to-t from-[#06102e] via-[#06102e]/60 to-transparent"></div>
+            <span class="absolute top-4 left-4 rounded-md bg-crimson px-3 py-1 text-[11px] font-bold text-white shadow-md">
+              02
+            </span>
+            <div class="relative z-10 p-6 text-white">
+              <h3 class="text-base font-bold leading-snug text-white font-serif">Monthly community town halls</h3>
+            </div>
+          </article>
+
+          <!-- Service 3 -->
+          <article class="group relative flex min-h-[300px] flex-col justify-end overflow-hidden rounded-2xl border border-slate-200 shadow-md transition-all duration-300 hover:-translate-y-1.5 hover:shadow-2xl">
+            <img src="images/iec-activities/Lane  chawl  society micro-meetings.jpg" alt="Lane / chawl / society micro-meetings" class="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" />
+            <div class="absolute inset-0 bg-gradient-to-t from-[#06102e] via-[#06102e]/60 to-transparent"></div>
+            <span class="absolute top-4 left-4 rounded-md bg-crimson px-3 py-1 text-[11px] font-bold text-white shadow-md">
+              03
+            </span>
+            <div class="relative z-10 p-6 text-white">
+              <h3 class="text-base font-bold leading-snug text-white font-serif">Lane / chawl / society micro-meetings</h3>
+            </div>
+          </article>
+
+          <!-- Service 4 -->
+          <article class="group relative flex min-h-[300px] flex-col justify-end overflow-hidden rounded-2xl border border-slate-200 shadow-md transition-all duration-300 hover:-translate-y-1.5 hover:shadow-2xl">
+            <img src="images/iec-activities/Policy  legal  technical briefing support.jpg" alt="Policy / legal / technical briefing support" class="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" />
+            <div class="absolute inset-0 bg-gradient-to-t from-[#06102e] via-[#06102e]/60 to-transparent"></div>
+            <span class="absolute top-4 left-4 rounded-md bg-crimson px-3 py-1 text-[11px] font-bold text-white shadow-md">
+              04
+            </span>
+            <div class="relative z-10 p-6 text-white">
+              <h3 class="text-base font-bold leading-snug text-white font-serif">Policy / legal / technical briefing support</h3>
+            </div>
+          </article>
+
+          <!-- Service 5 -->
+          <article class="group relative flex min-h-[300px] flex-col justify-end overflow-hidden rounded-2xl border border-slate-200 shadow-md transition-all duration-300 hover:-translate-y-1.5 hover:shadow-2xl">
+            <img src="images/iec-activities/Printed IEC materials.jpg" alt="Printed IEC materials" class="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" />
+            <div class="absolute inset-0 bg-gradient-to-t from-[#06102e] via-[#06102e]/60 to-transparent"></div>
+            <span class="absolute top-4 left-4 rounded-md bg-crimson px-3 py-1 text-[11px] font-bold text-white shadow-md">
+              05
+            </span>
+            <div class="relative z-10 p-6 text-white">
+              <h3 class="text-base font-bold leading-snug text-white font-serif">Printed IEC materials</h3>
+            </div>
+          </article>
+
+          <!-- Service 6 -->
+          <article class="group relative flex min-h-[300px] flex-col justify-end overflow-hidden rounded-2xl border border-slate-200 shadow-md transition-all duration-300 hover:-translate-y-1.5 hover:shadow-2xl">
+            <img src="images/iec-activities/Digital  WhatsApp  SMS  IVR communication.jpg" alt="Digital / WhatsApp / SMS / IVR communication" class="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" />
+            <div class="absolute inset-0 bg-gradient-to-t from-[#06102e] via-[#06102e]/60 to-transparent"></div>
+            <span class="absolute top-4 left-4 rounded-md bg-crimson px-3 py-1 text-[11px] font-bold text-white shadow-md">
+              06
+            </span>
+            <div class="relative z-10 p-6 text-white">
+              <h3 class="text-base font-bold leading-snug text-white font-serif">Digital / WhatsApp / SMS / IVR communication</h3>
+            </div>
+          </article>
+
+          <!-- Service 7 -->
+          <article class="group relative flex min-h-[300px] flex-col justify-end overflow-hidden rounded-2xl border border-slate-200 shadow-md transition-all duration-300 hover:-translate-y-1.5 hover:shadow-2xl">
+            <img src="images/iec-activities/Audio-visual and explainer content.jpg" alt="Audio-visual and explainer content" class="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" />
+            <div class="absolute inset-0 bg-gradient-to-t from-[#06102e] via-[#06102e]/60 to-transparent"></div>
+            <span class="absolute top-4 left-4 rounded-md bg-crimson px-3 py-1 text-[11px] font-bold text-white shadow-md">
+              07
+            </span>
+            <div class="relative z-10 p-6 text-white">
+              <h3 class="text-base font-bold leading-snug text-white font-serif">Audio-visual and explainer content</h3>
+            </div>
+          </article>
+
+          <!-- Service 8 -->
+          <article class="group relative flex min-h-[300px] flex-col justify-end overflow-hidden rounded-2xl border border-slate-200 shadow-md transition-all duration-300 hover:-translate-y-1.5 hover:shadow-2xl">
+            <img src="images/iec-activities/Grievance redressal camps.jpg" alt="Grievance redressal camps" class="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" />
+            <div class="absolute inset-0 bg-gradient-to-t from-[#06102e] via-[#06102e]/60 to-transparent"></div>
+            <span class="absolute top-4 left-4 rounded-md bg-crimson px-3 py-1 text-[11px] font-bold text-white shadow-md">
+              08
+            </span>
+            <div class="relative z-10 p-6 text-white">
+              <h3 class="text-base font-bold leading-snug text-white font-serif">Grievance redressal camps</h3>
+            </div>
+          </article>
+
+          <!-- Service 9 -->
+          <article class="group relative flex min-h-[300px] flex-col justify-end overflow-hidden rounded-2xl border border-slate-200 shadow-md transition-all duration-300 hover:-translate-y-1.5 hover:shadow-2xl">
+            <img src="images/iec-activities/Media monitoring and misinformation response.jpg" alt="Media monitoring and misinformation response" class="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" />
+            <div class="absolute inset-0 bg-gradient-to-t from-[#06102e] via-[#06102e]/60 to-transparent"></div>
+            <span class="absolute top-4 left-4 rounded-md bg-crimson px-3 py-1 text-[11px] font-bold text-white shadow-md">
+              09
+            </span>
+            <div class="relative z-10 p-6 text-white">
+              <h3 class="text-base font-bold leading-snug text-white font-serif">Media monitoring and misinformation response</h3>
+            </div>
+          </article>
+
+          <!-- Service 10 -->
+          <article class="group relative flex min-h-[300px] flex-col justify-end overflow-hidden rounded-2xl border border-slate-200 shadow-md transition-all duration-300 hover:-translate-y-1.5 hover:shadow-2xl">
+            <img src="images/iec-activities/Awareness Campaign.jpg" alt="Awareness Campaign" class="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" />
+            <div class="absolute inset-0 bg-gradient-to-t from-[#06102e] via-[#06102e]/60 to-transparent"></div>
+            <span class="absolute top-4 left-4 rounded-md bg-crimson px-3 py-1 text-[11px] font-bold text-white shadow-md">
+              10
+            </span>
+            <div class="relative z-10 p-6 text-white">
+              <h3 class="text-base font-bold leading-snug text-white font-serif">Awareness Campaign</h3>
+            </div>
+          </article>
+        </div>
+
+        <div class="mt-12 text-center">
+          <a href="contact.html" class="inline-block rounded-xl bg-crimson px-8 py-3.5 text-xs font-bold text-white shadow-lg transition hover:bg-navy">
+            Discuss IEC Campaign For Your Project &rarr;
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Full 4-Column Footer -->
+  <footer id="footer" class="bg-[#0e172a] text-white">
+    <div class="mx-auto max-w-6xl px-6 py-12">
+      <div class="grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
+        <div>
+          <a href="index.html" class="inline-block">
+            <img src="images/a&mwhitelogo.png" alt="A&amp;M Advisory White Logo" width="112" height="64" class="h-auto w-28" />
+          </a>
+          <p class="mt-4 text-xs text-slate-300 leading-relaxed">
+            Strategic consulting and business management firm helping organizations improve performance and accelerate sustainable growth.
+          </p>
+
+          <!-- Clickable Social Media Links -->
+          <div class="mt-5 flex items-center gap-3">
+            <a href="https://www.linkedin.com/company/aquireandmanage" target="_blank" rel="noopener noreferrer" class="grid h-9 w-9 place-items-center rounded-full bg-slate-800 text-slate-300 transition hover:bg-crimson hover:text-white shadow-sm" aria-label="LinkedIn">
+              <svg class="h-4 w-4 fill-current" viewBox="0 0 24 24"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z"/></svg>
+            </a>
+            <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" class="grid h-9 w-9 place-items-center rounded-full bg-slate-800 text-slate-300 transition hover:bg-crimson hover:text-white shadow-sm" aria-label="Twitter / X">
+              <svg class="h-4 w-4 fill-current" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+            </a>
+            <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" class="grid h-9 w-9 place-items-center rounded-full bg-slate-800 text-slate-300 transition hover:bg-crimson hover:text-white shadow-sm" aria-label="Facebook">
+              <svg class="h-4 w-4 fill-current" viewBox="0 0 24 24"><path d="M12 2.04C6.5 2.04 2 6.53 2 12.06C2 17.06 5.66 21.21 10.44 21.96V14.96H7.9V12.06H10.44V9.85C10.44 7.34 11.93 5.96 14.22 5.96C15.31 5.96 16.45 6.15 16.45 6.15V8.62H15.19C13.95 8.62 13.56 9.39 13.56 10.18V12.06H16.34L15.89 14.96H13.56V21.96A10 10 0 0 0 22 12.06C22 6.53 17.5 2.04 12 2.04Z"/></svg>
+            </a>
+            <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" class="grid h-9 w-9 place-items-center rounded-full bg-slate-800 text-slate-300 transition hover:bg-crimson hover:text-white shadow-sm" aria-label="Instagram">
+              <svg class="h-4 w-4 fill-current" viewBox="0 0 24 24"><path d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 0 1-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 0 1 7.8 2m-.2 2A3.8 3.8 0 0 0 3.8 7.8v8.4A3.8 3.8 0 0 0 7.6 20h8.4a3.8 3.8 0 0 0 3.8-3.8V7.8A3.8 3.8 0 0 0 16 4H7.6m9.65 1.5a1.25 1.25 0 0 1 1.25 1.25A1.25 1.25 0 0 1 17.25 8 1.25 1.25 0 0 1 16 6.75a1.25 1.25 0 0 1 1.25-1.25M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3z"/></svg>
+            </a>
+          </div>
+        </div>
+        <div>
+          <h2 class="border-b-2 border-crimson pb-2 text-xs font-bold uppercase">Our Services</h2>
+          <ul class="mt-4 space-y-2 text-xs text-slate-300">
+            <li><a href="tenant-management.html" class="hover:text-crimson">› Tenant Management</a></li>
+            <li><a href="liaisoning.html" class="hover:text-crimson">› Government Liaisoning</a></li>
+            <li><a href="iec-activities.html" class="hover:text-crimson">› IEC Activities</a></li>
+            <li><a href="facility-management.html" class="hover:text-crimson">› Facility Management</a></li>
+          </ul>
+        </div>
+        <div>
+          <h2 class="border-b-2 border-crimson pb-2 text-xs font-bold uppercase">Company</h2>
+          <ul class="mt-4 space-y-2 text-xs text-slate-300">
+            <li><a href="about.html" class="hover:text-crimson">› About Us</a></li>
+            <li><a href="blog.html" class="hover:text-crimson">› Blog</a></li>
+            <li><a href="news.html" class="hover:text-crimson">› News</a></li>
+            <li><a href="careers.html" class="hover:text-crimson">› Careers</a></li>
+          </ul>
+        </div>
+        <div>
+          <h2 class="border-b-2 border-crimson pb-2 text-xs font-bold uppercase">Get In Touch</h2>
+          <address class="mt-4 not-italic space-y-2 text-xs text-slate-300">
+            <p>📞 <a href="tel:+91-22-45648350" class="hover:text-crimson">+91 022-45648350</a></p>
+            <p>✉️ <a href="mailto:info@aquireandmanage.com" class="hover:text-crimson">info@aquireandmanage.com</a></p>
+            <p>🌐 <a href="https://www.aquireandmanage.com" class="hover:text-crimson">www.aquireandmanage.com</a></p>
+          </address>
+        </div>
+      </div>
+      <div class="mt-10 border-t border-slate-800 pt-6 text-center text-xs text-slate-500">
+        © 2026 Advisory Excellence, Building the Future Together. All Rights Reserved.
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/navigation.js"></script>
+</body>
 </html>

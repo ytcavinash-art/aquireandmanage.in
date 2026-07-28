@@ -1,0 +1,69 @@
+/* Responsive and Custom Styling Overrides for A&M Advisory */
+
+@media (max-width: 640px) {
+  .hero-title {
+    font-size: 2.25rem;
+    line-height: 2.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .mobile-menu-open {
+    overflow: hidden;
+  }
+}
+
+/* Custom Animation Utilities */
+@keyframes pulseGlow {
+  0%, 100% { opacity: 0.8; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.05); }
+}
+
+.animate-pulse-glow {
+  animation: pulseGlow 2.5s infinite ease-in-out;
+}
+
+/* Client Logos Marquee Animation */
+@keyframes scrollMarquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.animate-scroll {
+  display: flex;
+  width: max-content;
+  animation: scrollMarquee 20s linear infinite;
+}
+
+.animate-scroll:hover {
+  animation-play-state: paused;
+}
+
+/* Timeline Scroll Reveal Animations */
+.timeline-item {
+  opacity: 0;
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.timeline-item-left {
+  transform: translateX(-36px);
+}
+
+.timeline-item-right {
+  transform: translateX(36px);
+}
+
+.timeline-item.in-view {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.timeline-line-fill {
+  transform: scaleY(0);
+  transform-origin: top;
+  transition: transform 1.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.timeline-line-fill.in-view {
+  transform: scaleY(1);
+}

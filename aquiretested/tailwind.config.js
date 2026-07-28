@@ -1,6 +1,6 @@
 /** @type {import('tailwindcss').Config} */
-export default {
-  content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
+module.exports = {
+  content: ['./*.html', './js/*.js'],
   theme: {
     extend: {
       colors: {
@@ -10,7 +10,7 @@ export default {
           dark: '#0a1540',
         },
         mediumBlue: {
-          DEFAULT: '#274690'
+          DEFAULT: '#274690',
         },
         crimson: {
           DEFAULT: '#c8102e',
