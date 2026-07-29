@@ -476,11 +476,16 @@
 }
 
 .services-orbit-center > span:last-child {
-  margin-top: 0.12rem;
+  width: 100%;
+  max-width: 104px;
+  margin-top: 0.2rem;
+  padding: 0 0.2rem;
   color: #ed1b45;
-  font-size: 0.57rem;
+  font-size: 0.54rem;
   font-weight: 700;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.07em;
+  line-height: 1.18;
+  text-align: center;
   text-transform: uppercase;
 }
 
@@ -657,7 +662,9 @@
   }
 
   .services-orbit-center > span:last-child {
-    font-size: 0.45rem;
+    max-width: 82px;
+    font-size: 0.43rem;
+    letter-spacing: 0.055em;
   }
 }
 
