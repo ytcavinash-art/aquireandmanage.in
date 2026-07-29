@@ -250,6 +250,10 @@
   box-shadow: 0 30px 55px rgba(15, 23, 42, 0.2);
 }
 
+.hero-reference-media.hero-reference-motion {
+  aspect-ratio: 16 / 9;
+}
+
 .hero-reference-media::after {
   position: absolute;
   inset: 0;
