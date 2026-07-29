@@ -2,5 +2,16 @@
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
   "cleanUrls": true,
-  "trailingSlash": false
+  "trailingSlash": false,
+  "headers": [
+    {
+      "source": "/(.*)\\.(css|js|png|jpg|jpeg|webp|gif|svg|ico|woff2)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=86400, stale-while-revalidate=604800"
+        }
+      ]
+    }
+  ]
 }
