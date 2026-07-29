@@ -70,21 +70,45 @@ function initMobileMenu() {
   const menuCloseBtn = document.getElementById('mobile-menu-close');
   const mobileMenu = document.getElementById('mobile-menu');
 
+  if (!mobileMenu) return;
+
+  // A fixed drawer inside a backdrop-filter header is clipped to the header
+  // bounds on mobile browsers. Move it to body so it uses the full viewport.
+  if (mobileMenu.parentElement !== document.body) {
+    document.body.appendChild(mobileMenu);
+  }
+
+  const closeMobileMenu = () => {
+    mobileMenu.classList.add('hidden');
+    mobileMenu.classList.remove('flex');
+    if (menuBtn) menuBtn.setAttribute('aria-expanded', 'false');
+    document.body.classList.remove('mobile-menu-open');
+  };
+
   if (menuBtn && mobileMenu) {
     menuBtn.addEventListener('click', () => {
       mobileMenu.classList.remove('hidden');
+      mobileMenu.classList.add('flex');
       menuBtn.setAttribute('aria-expanded', 'true');
       document.body.classList.add('mobile-menu-open');
+      if (menuCloseBtn) menuCloseBtn.focus();
     });
   }
 
-  if (menuCloseBtn && mobileMenu) {
-    menuCloseBtn.addEventListener('click', () => {
-      mobileMenu.classList.add('hidden');
-      if (menuBtn) menuBtn.setAttribute('aria-expanded', 'false');
-      document.body.classList.remove('mobile-menu-open');
-    });
+  if (menuCloseBtn) {
+    menuCloseBtn.addEventListener('click', closeMobileMenu);
   }
+
+  mobileMenu.querySelectorAll('a[href]').forEach((link) => {
+    link.addEventListener('click', closeMobileMenu);
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && !mobileMenu.classList.contains('hidden')) {
+      closeMobileMenu();
+      if (menuBtn) menuBtn.focus();
+    }
+  });
 }
 
 /* Active Link Highlighting */
@@ -201,20 +225,42 @@ function initSearchModal() {
 
 /* Language Switcher - Google Translate Integration for EN, HI, MR */
 function initLanguageSwitcher() {
-  // 1. Inject hidden google translate element container if missing
+  const supportedLanguages = ['en', 'hi', 'mr'];
+  const savedLanguage = localStorage.getItem('am_selected_language');
+  const cookieLanguage = getLanguageCookie();
+  const currentLang = supportedLanguages.includes(savedLanguage)
+    ? savedLanguage
+    : (supportedLanguages.includes(cookieLanguage) ? cookieLanguage : 'en');
+
+  // Keep the cookie ready before Google's script starts reading it.
+  setLanguageCookie(currentLang);
+  document.documentElement.lang = currentLang;
+
+  // Google must be able to render its select. Keeping the element off-screen
+  // works; display:none can prevent the widget from being initialized.
   if (!document.getElementById('google_translate_element')) {
     const translateDiv = document.createElement('div');
     translateDiv.id = 'google_translate_element';
-    translateDiv.style.display = 'none';
+    translateDiv.setAttribute('aria-hidden', 'true');
     document.body.appendChild(translateDiv);
   }
 
-  // 2. Hide Google Translate branding bar, banners, tooltips & font shifts via CSS
+  // Hide Google's UI without hiding every .skiptranslate element globally.
   if (!document.getElementById('google-translate-styles')) {
     const style = document.createElement('style');
     style.id = 'google-translate-styles';
     style.innerHTML = `
-      .goog-te-banner-frame, .goog-te-banner, .skiptranslate, #goog-gt-tt, .goog-te-balloon-frame {
+      #google_translate_element {
+        position: fixed !important;
+        left: -10000px !important;
+        top: 0 !important;
+        width: 1px !important;
+        height: 1px !important;
+        overflow: hidden !important;
+        opacity: 0 !important;
+        pointer-events: none !important;
+      }
+      .goog-te-banner-frame, .goog-te-banner, #goog-gt-tt, .goog-te-balloon-frame {
         display: none !important;
       }
       body {
@@ -233,7 +279,7 @@ function initLanguageSwitcher() {
     document.head.appendChild(style);
   }
 
-  // 3. Define global init callback for Google Translate API
+  // Define the callback before loading Google's script.
   window.googleTranslateElementInit = function () {
     new window.google.translate.TranslateElement(
       {
@@ -245,16 +291,11 @@ function initLanguageSwitcher() {
       'google_translate_element'
     );
 
-    // Auto-apply stored language once Google Translate initializes
-    const savedLang = getLanguageCookie() || localStorage.getItem('am_selected_language') || 'en';
-    if (savedLang !== 'en') {
-      setTimeout(() => {
-        applyGoogleTranslation(savedLang);
-      }, 300);
-    }
+    // TranslateElement adds .goog-te-combo asynchronously after this callback.
+    applyGoogleTranslation(currentLang);
   };
 
-  // 4. Load Google Translate script dynamically if not already present
+  // Load Google Translate once.
   if (!document.querySelector('script[src*="translate.google.com"]')) {
     const gtScript = document.createElement('script');
     gtScript.type = 'text/javascript';
@@ -263,43 +304,54 @@ function initLanguageSwitcher() {
     document.head.appendChild(gtScript);
   }
 
-  // 5. Get stored language or cookie language
-  const currentLang = getLanguageCookie() || localStorage.getItem('am_selected_language') || 'en';
-
-  // Synchronize all select elements on page
+  // Synchronize desktop and mobile selects.
   const languageSelects = document.querySelectorAll('.language-select');
   languageSelects.forEach((select) => {
     select.value = currentLang;
 
     select.addEventListener('change', (e) => {
       const selectedLang = e.target.value;
-      setLanguageCookie(selectedLang);
-      localStorage.setItem('am_selected_language', selectedLang);
+      if (!supportedLanguages.includes(selectedLang)) return;
 
-      // Trigger translation
+      localStorage.setItem('am_selected_language', selectedLang);
+      setLanguageCookie(selectedLang);
+      document.documentElement.lang = selectedLang;
+
+      languageSelects.forEach((otherSelect) => {
+        otherSelect.value = selectedLang;
+      });
+
       applyGoogleTranslation(selectedLang);
     });
   });
 }
 
-function applyGoogleTranslation(targetLang) {
-  const gtCombo = document.querySelector('.goog-te-combo');
-  if (gtCombo) {
-    gtCombo.value = targetLang;
-    gtCombo.dispatchEvent(new Event('change'));
-  } else {
-    // If google translate script is still loading, set cookie and reload
-    setLanguageCookie(targetLang);
-    window.location.reload();
+function applyGoogleTranslation(targetLang, attempt = 0) {
+  const combo = document.querySelector('#google_translate_element .goog-te-combo');
+
+  if (!combo) {
+    // Wait up to 10 seconds for Google's asynchronously-created select.
+    if (attempt < 40) {
+      window.setTimeout(() => applyGoogleTranslation(targetLang, attempt + 1), 250);
+    }
+    return;
   }
+
+  // Dispatch even when the combo already shows the requested language:
+  // the cookie can preselect it before the page content is translated.
+  combo.value = targetLang;
+  combo.dispatchEvent(new Event('change', { bubbles: true }));
 }
 
 function getLanguageCookie() {
-  const match = document.cookie.match(/(?:^|; )googtrans=([^;]*)/);
-  if (match) {
-    const val = decodeURIComponent(match[1]);
-    const parts = val.split('/');
-    return parts[parts.length - 1] || 'en';
+  const cookies = document.cookie.split(';');
+  for (const cookie of cookies) {
+    const [name, ...valueParts] = cookie.trim().split('=');
+    if (name === 'googtrans') {
+      const parts = decodeURIComponent(valueParts.join('=')).split('/');
+      const language = parts[parts.length - 1];
+      if (['en', 'hi', 'mr'].includes(language)) return language;
+    }
   }
   return null;
 }
@@ -308,10 +360,12 @@ function setLanguageCookie(lang) {
   const host = window.location.hostname;
   const targetVal = `/en/${lang}`;
 
-  // Set cookie for path and domain variations
-  document.cookie = `googtrans=${targetVal}; path=/;`;
+  // Remove older domain-scoped variants created by previous versions.
   if (host && host !== 'localhost' && !host.startsWith('127.')) {
-    document.cookie = `googtrans=${targetVal}; path=/; domain=${host}`;
-    document.cookie = `googtrans=${targetVal}; path=/; domain=.${host}`;
+    document.cookie = `googtrans=; path=/; domain=${host}; expires=Thu, 01 Jan 1970 00:00:00 GMT`;
+    document.cookie = `googtrans=; path=/; domain=.${host}; expires=Thu, 01 Jan 1970 00:00:00 GMT`;
   }
+
+  // A host-only cookie is sufficient and avoids conflicting duplicate values.
+  document.cookie = `googtrans=${targetVal}; path=/; SameSite=Lax`;
 }
