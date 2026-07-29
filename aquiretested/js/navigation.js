@@ -244,6 +244,14 @@ function initLanguageSwitcher() {
       },
       'google_translate_element'
     );
+
+    // Auto-apply stored language once Google Translate initializes
+    const savedLang = getLanguageCookie() || localStorage.getItem('am_selected_language') || 'en';
+    if (savedLang !== 'en') {
+      setTimeout(() => {
+        applyGoogleTranslation(savedLang);
+      }, 300);
+    }
   };
 
   // 4. Load Google Translate script dynamically if not already present
@@ -280,7 +288,8 @@ function applyGoogleTranslation(targetLang) {
     gtCombo.value = targetLang;
     gtCombo.dispatchEvent(new Event('change'));
   } else {
-    // If google translate script is still initializing, reload to pick up googtrans cookie
+    // If google translate script is still loading, set cookie and reload
+    setLanguageCookie(targetLang);
     window.location.reload();
   }
 }
@@ -296,7 +305,13 @@ function getLanguageCookie() {
 }
 
 function setLanguageCookie(lang) {
-  const domain = window.location.hostname;
-  document.cookie = `googtrans=/en/${lang}; path=/; domain=${domain}`;
-  document.cookie = `googtrans=/en/${lang}; path=/;`;
+  const host = window.location.hostname;
+  const targetVal = `/en/${lang}`;
+
+  // Set cookie for path and domain variations
+  document.cookie = `googtrans=${targetVal}; path=/;`;
+  if (host && host !== 'localhost' && !host.startsWith('127.')) {
+    document.cookie = `googtrans=${targetVal}; path=/; domain=${host}`;
+    document.cookie = `googtrans=${targetVal}; path=/; domain=.${host}`;
+  }
 }
