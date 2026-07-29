@@ -199,19 +199,104 @@ function initSearchModal() {
   }
 }
 
-/* Language Switcher */
+/* Language Switcher - Google Translate Integration for EN, HI, MR */
 function initLanguageSwitcher() {
+  // 1. Inject hidden google translate element container if missing
+  if (!document.getElementById('google_translate_element')) {
+    const translateDiv = document.createElement('div');
+    translateDiv.id = 'google_translate_element';
+    translateDiv.style.display = 'none';
+    document.body.appendChild(translateDiv);
+  }
+
+  // 2. Hide Google Translate branding bar, banners, tooltips & font shifts via CSS
+  if (!document.getElementById('google-translate-styles')) {
+    const style = document.createElement('style');
+    style.id = 'google-translate-styles';
+    style.innerHTML = `
+      .goog-te-banner-frame, .goog-te-banner, .skiptranslate, #goog-gt-tt, .goog-te-balloon-frame {
+        display: none !important;
+      }
+      body {
+        top: 0px !important;
+        position: static !important;
+      }
+      .goog-text-highlight {
+        background-color: transparent !important;
+        box-shadow: none !important;
+      }
+      font {
+        background-color: transparent !important;
+        box-shadow: none !important;
+      }
+    `;
+    document.head.appendChild(style);
+  }
+
+  // 3. Define global init callback for Google Translate API
+  window.googleTranslateElementInit = function () {
+    new window.google.translate.TranslateElement(
+      {
+        pageLanguage: 'en',
+        includedLanguages: 'en,hi,mr',
+        autoDisplay: false,
+        layout: window.google.translate.TranslateElement.InlineLayout.SIMPLE
+      },
+      'google_translate_element'
+    );
+  };
+
+  // 4. Load Google Translate script dynamically if not already present
+  if (!document.querySelector('script[src*="translate.google.com"]')) {
+    const gtScript = document.createElement('script');
+    gtScript.type = 'text/javascript';
+    gtScript.async = true;
+    gtScript.src = 'https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit';
+    document.head.appendChild(gtScript);
+  }
+
+  // 5. Get stored language or cookie language
+  const currentLang = getLanguageCookie() || localStorage.getItem('am_selected_language') || 'en';
+
+  // Synchronize all select elements on page
   const languageSelects = document.querySelectorAll('.language-select');
   languageSelects.forEach((select) => {
+    select.value = currentLang;
+
     select.addEventListener('change', (e) => {
-      const lang = e.target.value;
-      setLanguageCookie(lang);
-      window.location.reload();
+      const selectedLang = e.target.value;
+      setLanguageCookie(selectedLang);
+      localStorage.setItem('am_selected_language', selectedLang);
+
+      // Trigger translation
+      applyGoogleTranslation(selectedLang);
     });
   });
 }
 
+function applyGoogleTranslation(targetLang) {
+  const gtCombo = document.querySelector('.goog-te-combo');
+  if (gtCombo) {
+    gtCombo.value = targetLang;
+    gtCombo.dispatchEvent(new Event('change'));
+  } else {
+    // If google translate script is still initializing, reload to pick up googtrans cookie
+    window.location.reload();
+  }
+}
+
+function getLanguageCookie() {
+  const match = document.cookie.match(/(?:^|; )googtrans=([^;]*)/);
+  if (match) {
+    const val = decodeURIComponent(match[1]);
+    const parts = val.split('/');
+    return parts[parts.length - 1] || 'en';
+  }
+  return null;
+}
+
 function setLanguageCookie(lang) {
-  document.cookie = `googtrans=/en/${lang}; path=/; domain=${window.location.hostname}`;
+  const domain = window.location.hostname;
+  document.cookie = `googtrans=/en/${lang}; path=/; domain=${domain}`;
   document.cookie = `googtrans=/en/${lang}; path=/;`;
 }
