@@ -359,13 +359,25 @@ function getLanguageCookie() {
 function setLanguageCookie(lang) {
   const host = window.location.hostname;
   const targetVal = `/en/${lang}`;
+  const cookieLifetime = 60 * 60 * 24 * 365;
+  const supportedRootDomains = ['aquireandmanage.in', 'aquireandmanage.com'];
+  const rootDomain = supportedRootDomains.find(
+    (domain) => host === domain || host.endsWith(`.${domain}`)
+  );
 
-  // Remove older domain-scoped variants created by previous versions.
+  // Remove older host/domain-scoped variants before writing synchronized values.
   if (host && host !== 'localhost' && !host.startsWith('127.')) {
     document.cookie = `googtrans=; path=/; domain=${host}; expires=Thu, 01 Jan 1970 00:00:00 GMT`;
     document.cookie = `googtrans=; path=/; domain=.${host}; expires=Thu, 01 Jan 1970 00:00:00 GMT`;
   }
+  if (rootDomain) {
+    document.cookie = `googtrans=; path=/; domain=.${rootDomain}; expires=Thu, 01 Jan 1970 00:00:00 GMT`;
+  }
 
-  // A host-only cookie is sufficient and avoids conflicting duplicate values.
-  document.cookie = `googtrans=${targetVal}; path=/; SameSite=Lax`;
+  // Keep a host cookie and a root-domain cookie in sync. The root cookie
+  // preserves the language across www/non-www page navigation.
+  document.cookie = `googtrans=${targetVal}; path=/; max-age=${cookieLifetime}; SameSite=Lax`;
+  if (rootDomain) {
+    document.cookie = `googtrans=${targetVal}; path=/; domain=.${rootDomain}; max-age=${cookieLifetime}; SameSite=Lax`;
+  }
 }
