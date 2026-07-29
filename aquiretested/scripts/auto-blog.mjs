@@ -8,7 +8,7 @@ const projectDirectory = join(currentDirectory, '..');
 const blogsDirectory = join(projectDirectory, 'public', 'blogs');
 const indexPath = join(blogsDirectory, 'blogs-list.json');
 const apiKey = process.env.NEWS_API_KEY;
-const query = 'Mumbai real estate OR slum rehabilitation OR SRA redevelopment';
+const query = 'Mumbai real estate OR slum rehabilitation';
 const endpoint = new URL('https://newsapi.org/v2/everything');
 
 endpoint.search = new URLSearchParams({

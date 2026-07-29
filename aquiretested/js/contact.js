@@ -1,9 +1,9 @@
 /**
- * A&M Advisory - Multi-Channel Contact & Lead Management System
+ * A&M Advisory - Multi-Channel Contact and Lead Management System
  * Integrates: 
  * 1. Email Dispatch (Web3Forms API -> info@aquireandmanage.com)
  * 2. WhatsApp Direct Chat Redirect (+91 022-45648350)
- * 3. Lead Storage Database & Google Sheet Sync (localStorage + Webhook)
+ * 3. Lead Storage Database and Google Sheet Sync (localStorage + Webhook)
  */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initLeadStorageManager();
 });
 
-/* 1. Phone Input 10-Digit & Non-Numeric Restriction */
+/* 1. Phone Input 10-Digit and Non-Numeric Restriction */
 function initPhoneInputRestriction() {
   const phoneInputs = document.querySelectorAll('input[type="tel"], input[name="phone"], #brochure-phone, #quick-phone');
   
@@ -42,7 +42,7 @@ const FEEDBACK_API_URL = 'https://aquiretested-2.onrender.com/api/feedback';
 const OFFICE_EMAIL = 'info@aquireandmanage.com';
 const WHATSAPP_NUMBER = '919167485843';
 
-/* 2. Main Contact & Quick Enquiry Multi-Channel Form */
+/* 2. Main Contact and Quick Enquiry Multi-Channel Form */
 function initContactForm() {
   const contactForms = document.querySelectorAll('.contact-form');
 
@@ -57,7 +57,7 @@ function initContactForm() {
       const name = form.querySelector('[name="name"]')?.value.trim();
       const email = form.querySelector('[name="email"]')?.value.trim();
       const phone = form.querySelector('[name="phone"]')?.value.trim();
-      const projectDetails = form.querySelector('[name="message"], [name="project_requirement"]')?.value.trim() || 'SRA Redevelopment Advisory Inquiry';
+      const projectDetails = form.querySelector('[name="message"], [name="project_requirement"]')?.value.trim() || 'Slum Rehabilitation Advisory Inquiry';
 
       if (!name || !email || !phone) {
         showStatus(statusMessage, 'Please fill in all required fields.', 'error');
@@ -133,7 +133,7 @@ function initContactForm() {
   });
 }
 
-/* 3. Lead Storage & Google Sheet Database Handler */
+/* 3. Lead Storage and Google Sheet Database Handler */
 function saveLeadToDatabase(lead) {
   let existingLeads = [];
   try {
@@ -153,7 +153,7 @@ window.getAMLeads = function () {
   return leads;
 };
 
-/* Feedback Form & Star Rating Picker */
+/* Feedback Form and Star Rating Picker */
 function initFeedbackForm() {
   const feedbackForm = document.getElementById('feedback-form');
   if (!feedbackForm) return;
@@ -212,7 +212,7 @@ function initFeedbackForm() {
       });
 
       if (!response.ok) throw new Error('API submission failed');
-      showStatus(statusMsg, 'Thank you for your rating & feedback! 🎉', 'success');
+      showStatus(statusMsg, 'Thank you for your rating and feedback! 🎉', 'success');
       feedbackForm.reset();
     } catch {
       showStatus(statusMsg, 'Thank you! Your feedback has been recorded.', 'success');

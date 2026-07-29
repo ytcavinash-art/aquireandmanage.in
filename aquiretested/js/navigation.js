@@ -1,5 +1,5 @@
 /**
- * A&M Advisory - Navigation & Search Handler
+ * A&M Advisory - Navigation and Search Handler
  * ES6 Vanilla JavaScript for header navigation, mobile menu, search modal, and language switcher.
  */
 
@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initLanguageSwitcher();
 });
 
-/* Dropdown Menu Click & Touch Toggle Handler */
+/* Dropdown Menu Click and Touch Toggle Handler */
 function initDropdowns() {
   const dropdownItems = document.querySelectorAll('.nav-dropdown-item');
 
@@ -155,7 +155,7 @@ const searchTargets = [
   { label: 'Facility Management', href: '/facility-management.html', terms: ['facility', 'maintenance'] },
   { label: 'A&M Projects Gallery', href: '/gallery.html', terms: ['gallery', 'projects', 'images'] },
   { label: 'A&M Advisory Blog', href: '/blog.html', terms: ['blog', 'insights', 'articles'] },
-  { label: 'SRA & Real Estate News', href: '/news.html', terms: ['news', 'sra news', 'real estate news'] },
+  { label: 'SRA and Real Estate News', href: '/news.html', terms: ['news', 'sra news', 'real estate news'] },
   { label: 'Contact Us', href: '/contact.html', terms: ['contact', 'phone', 'email', 'office'] },
 ];
 

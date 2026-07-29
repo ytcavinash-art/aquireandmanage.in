@@ -1,6 +1,6 @@
 /**
- * Automated Blog Fetching & Dynamic UI Renderer
- * Powered by ES6 Fetch API & A&M Advisory Blog Endpoint
+ * Automated Blog Fetching and Dynamic UI Renderer
+ * Powered by ES6 Fetch API and A&M Advisory Blog Endpoint
  */
 
 (function () {
@@ -11,9 +11,9 @@
       "id": "sra-redevelopment-2026",
       "slug": "blog-sra-redevelopment.html",
       "title": "Mumbai SRA Policy 2026: Comprehensive Guide to Slum Redevelopment",
-      "description": "An in-depth analysis of latest SRA redevelopment guidelines, eligibility cutoff dates, Annexure II certification, and tenant rights across MMR.",
+      "description": "An in-depth analysis of latest slum rehabilitation guidelines, eligibility cutoff dates, Annexure II certification, and tenant rights across MMR.",
       "author": "Dr. Manoj Harlikar",
-      "authorRole": "CEO & SRA Operations Specialist",
+      "authorRole": "CEO and SRA Operations Specialist",
       "authorAvatar": "images/manoj-harlikar.jpg",
       "date": "28 July 2026",
       "readTime": "5 min read",
@@ -23,33 +23,33 @@
     {
       "id": "community-engagement",
       "slug": "blog-community-engagement.html",
-      "title": "Building Trust: Community Engagement & IEC in SRA Projects",
+      "title": "Building Trust: Community Engagement and IEC in SRA Projects",
       "description": "How Information, Education, and Communication (IEC) initiatives resolve resident queries, prevent disputes, and accelerate consensus building.",
       "author": "Srinivasan Mohan",
-      "authorRole": "COO & Stakeholder Leader",
+      "authorRole": "COO and Stakeholder Leader",
       "authorAvatar": "images/srinivasan-mohan.jpg",
       "date": "24 July 2026",
       "readTime": "4 min read",
-      "category": "Community & IEC",
+      "category": "Community and IEC",
       "image": "images/iec-activities.jpg"
     },
     {
       "id": "regulatory-compliance",
       "slug": "blog-regulatory-compliance.html",
-      "title": "Navigating Statutory Clearances: LOI, IOD & Annexure II Processing",
+      "title": "Navigating Statutory Clearances: LOI, IOD and Annexure II Processing",
       "description": "Step-by-step breakdown of obtaining statutory approvals, Letter of Intent (LOI), Intimation of Disapproval (IOD), and Commencement Certificate (CC).",
       "author": "Mayilvanan Pandi",
       "authorRole": "HOD - Annexure",
       "authorAvatar": "images/mayilvanan-pandi.jpg",
       "date": "20 July 2026",
       "readTime": "6 min read",
-      "category": "Compliance & Liaisoning",
+      "category": "Compliance and Liaisoning",
       "image": "images/liaisoning-service-card.jpg"
     },
     {
       "id": "tenant-relocation-rights",
       "slug": "contact.html",
-      "title": "Tenant Transit Rent Allowances & Relocation Guidelines in MMR",
+      "title": "Tenant Transit Rent Allowances and Relocation Guidelines in MMR",
       "description": "Understanding monthly transit rent disbursements, alternative transit accommodation standards, and tenant protection mechanisms during construction.",
       "author": "A&M Advisory Research",
       "authorRole": "Urban Policy Desk",
@@ -115,7 +115,7 @@
     }
   }
 
-  // Filter Blogs based on Search Query & Category
+  // Filter Blogs based on Search Query and Category
   function getFilteredBlogs() {
     return allBlogs.filter((blog) => {
       const matchesCategory = currentCategory === 'All' || blog.category.toLowerCase() === currentCategory.toLowerCase();
@@ -247,7 +247,7 @@
     }
   }
 
-  // Bind Search & Event Listeners
+  // Bind Search and Event Listeners
   function bindEvents() {
     const searchInput = document.getElementById('blog-search-input');
     if (searchInput) {

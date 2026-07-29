@@ -1,6 +1,6 @@
 /**
  * A&M Advisory - Automated Live News Feed Handler
- * ES6 Vanilla JavaScript fetching real-time Mumbai SRA & Redevelopment News via API & embedded database.
+ * ES6 Vanilla JavaScript fetching real-time Mumbai SRA and Redevelopment News via API and embedded database.
  */
 
 (function () {
@@ -9,7 +9,7 @@
   const EMBEDDED_NEWS_DATABASE = [
     {
       "id": "news-jul-28-2026",
-      "title": "SRA Mumbai Streamlines Annexure II Qualification & Biometric Verification Process",
+      "title": "SRA Mumbai Streamlines Annexure II Qualification and Biometric Verification Process",
       "description": "The Slum Rehabilitation Authority (SRA) Maharashtra has issued updated directives to expedite biometric household surveys and Annexure II eligibility verification for slum dwellers across Mumbai Metropolitan Region.",
       "source": "SRA Official Portal",
       "url": "https://www.sra.gov.in/",
@@ -29,7 +29,7 @@
     },
     {
       "id": "news-jun-24-2026",
-      "title": "MHADA & SRA Joint Framework Released for Self-Redevelopment Housing Societies",
+      "title": "MHADA and SRA Joint Framework Released for Self-Redevelopment Housing Societies",
       "description": "New joint policy guidelines offer single-window clearances, expedited NOC issuance, and financial assistance to cooperative housing societies seeking self-redevelopment in suburban Mumbai.",
       "source": "Free Press Journal",
       "url": "https://www.freepressjournal.in/mumbai",
@@ -49,7 +49,7 @@
     },
     {
       "id": "news-may-20-2026",
-      "title": "SRA Introduces Digital Portal for Tenant Grievance Redressal & Rent Status Tracking",
+      "title": "SRA Introduces Digital Portal for Tenant Grievance Redressal and Rent Status Tracking",
       "description": "Eligible slum dwellers can now verify their Annexure II listing, track monthly transit rent payouts, and log maintenance complaints through an official online portal and WhatsApp helpline.",
       "source": "Financial Express",
       "url": "https://www.financialexpress.com/",
@@ -59,7 +59,7 @@
     },
     {
       "id": "news-may-05-2026",
-      "title": "BMC & SRA Coordinate Clearances for Environmental & Infrastructure NOCs in Bandra & Kurla",
+      "title": "BMC and SRA Coordinate Clearances for Environmental and Infrastructure NOCs in Bandra and Kurla",
       "description": "Joint task forces set up to resolve water supply, sewage line connectivity, and fire safety NOC approvals for newly constructed SRA rehabilitation towers.",
       "source": "Hindustan Times",
       "url": "https://www.hindustantimes.com/mumbai-news",
@@ -69,8 +69,8 @@
     },
     {
       "id": "news-apr-18-2026",
-      "title": "Zone Launch & Community Town Hall Meetings Held for Suburban Redevelopment Clusters",
-      "description": "Information, Education & Communication (IEC) teams conduct town-hall workshops with chawl committees to address consent queries and explain project execution timelines.",
+      "title": "Zone Launch and Community Town Hall Meetings Held for Suburban Redevelopment Clusters",
+      "description": "Information, Education and Communication (IEC) teams conduct town-hall workshops with chawl committees to address consent queries and explain project execution timelines.",
       "source": "Mumbai Express",
       "url": "https://www.maharashtra.gov.in/",
       "imageUrl": "images/iec-activities/Zone launch and mobilisation events.jpg",
@@ -79,7 +79,7 @@
     },
     {
       "id": "news-apr-02-2026",
-      "title": "Post-Demolition Demarcation & Site Fencing Begins for Phase 2 Slum Rehabilitation",
+      "title": "Post-Demolition Demarcation and Site Fencing Begins for Phase 2 Slum Rehabilitation",
       "description": "Following successful tenant relocation to transit housing, demolition teams initiate site clearance and boundary fencing for high-rise rehabilitation tower construction.",
       "source": "Urban Infra Gazette",
       "url": "https://www.sra.gov.in/",
@@ -110,7 +110,7 @@
     {
       "id": "news-feb-16-2026",
       "title": "Clarification Issued on Cutoff Date Proofs Required for SRA Commercial Tenement Eligibility",
-      "description": "SRA releases detailed notification clarifying acceptable GST registrations, Shops & Establishments licences, and electricity meter proofs for commercial hutment eligibility.",
+      "description": "SRA releases detailed notification clarifying acceptable GST registrations, Shops and Establishments licences, and electricity meter proofs for commercial hutment eligibility.",
       "source": "SRA Legal Desk",
       "url": "https://www.sra.gov.in/",
       "imageUrl": "images/liaisoning/Legal regulatory & compliance documentation.jpg",
