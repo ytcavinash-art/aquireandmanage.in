@@ -31,12 +31,10 @@ function initBulletinBoards() {
 
   document.querySelectorAll('[data-bulletin-board]').forEach((board) => {
     const track = board.querySelector('.bulletin-track');
-    const entries = board.querySelectorAll('.bulletin-entry');
     const previousButton = board.querySelector('[data-bulletin-prev]');
     const nextButton = board.querySelector('[data-bulletin-next]');
     const pauseButton = board.querySelector('[data-bulletin-pause]');
     const pauseIcon = board.querySelector('[data-pause-icon]');
-    const lastIndex = Math.max(0, entries.length - 2);
     let currentIndex = 0;
     let paused = reduceMotion;
     let rotationTimer;
@@ -46,6 +44,7 @@ function initBulletinBoards() {
     };
 
     const move = (direction) => {
+      const lastIndex = Math.max(0, board.querySelectorAll('.bulletin-entry').length - 2);
       currentIndex = direction > 0
         ? (currentIndex >= lastIndex ? 0 : currentIndex + 1)
         : (currentIndex <= 0 ? lastIndex : currentIndex - 1);
@@ -58,6 +57,7 @@ function initBulletinBoards() {
 
     const startRotation = () => {
       stopRotation();
+      const lastIndex = Math.max(0, board.querySelectorAll('.bulletin-entry').length - 2);
       if (!paused && lastIndex > 0) {
         rotationTimer = window.setInterval(() => move(1), 5000);
       }

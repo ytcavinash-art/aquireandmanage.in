@@ -19,6 +19,7 @@ const BlogPost = require('./models/BlogPost');
 const cron = require('node-cron');
 const { syncAutomatedBlogs, slugify } = require('./services/blogSync');
 const { answerQuestion } = require('./services/chatbot');
+const { fetchSraUpdates } = require('./services/sraUpdates');
 
 const app = express();
 app.use(express.json());
@@ -48,6 +49,17 @@ app.get('/', (req, res) => {
 
 app.get('/api/users', (req, res) => {
   res.json({ message: 'User list route working fine!' });
+});
+
+app.get('/api/sra-updates', async (req, res) => {
+  try {
+    const updates = await fetchSraUpdates();
+    res.set('Cache-Control', 'public, max-age=300, stale-while-revalidate=900');
+    res.json(updates);
+  } catch (error) {
+    console.error('SRA updates request failed:', error);
+    res.status(502).json({ error: 'Unable to load official SRA updates right now.' });
+  }
 });
 
 app.post('/api/chat', chatRateLimit, async (req, res) => {

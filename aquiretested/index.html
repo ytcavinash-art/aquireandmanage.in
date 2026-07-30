@@ -609,21 +609,11 @@
     </section>
 
     <!-- Latest Orders, Circulars and News -->
-    <section class="bg-slate-50 py-14 md:py-20" aria-labelledby="latest-updates-heading">
-      <div class="mx-auto max-w-7xl px-6">
-        <div class="mb-9 flex flex-col justify-between gap-4 md:flex-row md:items-end">
-          <div>
-            <p class="mb-2 text-sm font-bold uppercase tracking-[0.2em] text-crimson">Stay Informed</p>
-            <h2 id="latest-updates-heading" class="text-3xl font-bold text-navy md:text-4xl">Latest Updates &amp; Resources</h2>
-          </div>
-          <p class="max-w-xl text-sm leading-6 text-slate-600">
-            Important orders, regulatory circulars and redevelopment updates—all in one place.
-          </p>
-        </div>
-
+    <section id="sra-updates" class="scroll-mt-20 bg-slate-50 py-10 md:py-14" aria-label="Latest SRA orders, circulars, news and updates">
+      <div class="bulletin-section-shell px-6">
         <div class="grid gap-7 lg:grid-cols-3">
           <!-- Latest Orders -->
-          <article class="bulletin-board" data-bulletin-board>
+          <article class="bulletin-board" data-bulletin-board data-bulletin-type="orders">
             <header class="bulletin-header">
               <span class="bulletin-icon" aria-hidden="true">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
@@ -660,11 +650,11 @@
               </button>
               <button type="button" data-bulletin-next aria-label="Next orders">&rarr;</button>
             </div>
-            <a href="news.html" class="bulletin-view-all">View All <span aria-hidden="true">&rarr;</span></a>
+            <a href="https://www.sra.gov.in/archive" target="_blank" rel="noopener noreferrer" class="bulletin-view-all">View All <span aria-hidden="true">&rarr;</span></a>
           </article>
 
           <!-- Latest Circulars -->
-          <article class="bulletin-board" data-bulletin-board>
+          <article class="bulletin-board" data-bulletin-board data-bulletin-type="circulars">
             <header class="bulletin-header">
               <span class="bulletin-icon" aria-hidden="true">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
@@ -702,11 +692,11 @@
               </button>
               <button type="button" data-bulletin-next aria-label="Next circulars">&rarr;</button>
             </div>
-            <a href="news.html" class="bulletin-view-all">View All <span aria-hidden="true">&rarr;</span></a>
+            <a href="https://www.sra.gov.in/archive" target="_blank" rel="noopener noreferrer" class="bulletin-view-all">View All <span aria-hidden="true">&rarr;</span></a>
           </article>
 
           <!-- News and Updates -->
-          <article class="bulletin-board" data-bulletin-board>
+          <article class="bulletin-board" data-bulletin-board data-bulletin-type="news">
             <header class="bulletin-header">
               <span class="bulletin-icon" aria-hidden="true">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
@@ -745,7 +735,7 @@
               </button>
               <button type="button" data-bulletin-next aria-label="Next news">&rarr;</button>
             </div>
-            <a href="news.html" class="bulletin-view-all">View All <span aria-hidden="true">&rarr;</span></a>
+            <a href="https://www.sra.gov.in/archive" target="_blank" rel="noopener noreferrer" class="bulletin-view-all">View All <span aria-hidden="true">&rarr;</span></a>
           </article>
         </div>
       </div>
@@ -1819,6 +1809,7 @@
   <!-- Scripts -->
   <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
   <script src="js/navigation.js"></script>
+  <script src="js/sra-updates.js"></script>
   <script src="js/slider.js"></script>
   <script src="js/news.js"></script>
   <script src="js/contact.js"></script>

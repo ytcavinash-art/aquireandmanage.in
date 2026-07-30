@@ -1,8 +1,15 @@
 /* Latest orders, circulars and news boards */
+.bulletin-section-shell {
+  width: 100%;
+  max-width: 1480px;
+  margin-right: auto;
+  margin-left: auto;
+}
+
 .bulletin-board {
   position: relative;
   display: flex;
-  min-height: 500px;
+  min-height: 530px;
   flex-direction: column;
   overflow: hidden;
   border: 1px solid #e2e8f0;
