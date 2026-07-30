@@ -36,6 +36,13 @@
   border-radius: 0.55rem;
   background: #fff;
   box-shadow: 0 4px 12px rgba(15, 31, 92, 0.1);
+  cursor: pointer;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.bulletin-header:hover {
+  border-color: rgba(200, 16, 46, 0.3);
+  box-shadow: 0 5px 14px rgba(15, 31, 92, 0.14);
 }
 
 .bulletin-header h3 {

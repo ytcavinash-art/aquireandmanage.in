@@ -88,6 +88,10 @@ body {
     @apply m-3.5 mb-0 flex min-h-[50px] items-center gap-2.5 rounded-lg border border-slate-100 bg-white px-3.5 shadow-md;
   }
 
+  .bulletin-header:hover {
+    @apply border-crimson/30;
+  }
+
   .bulletin-header h3 {
     @apply text-sm font-bold uppercase tracking-tight text-navy;
   }
