@@ -1,9 +1,55 @@
+const crypto = require('node:crypto');
+
 const SRA_HOME_URL = 'https://www.sra.gov.in/en';
+const SRA_API_URL = 'https://apis.sra.gov.in';
+const SRA_RESPONSE_KEY = Buffer.from(
+  '1f8bce02a9d6e4f5837cbfb814e4c8a3f4e9bcf12d6a4c7b2e6e4f982a5f7d93',
+  'hex',
+);
+const RECORD_LIMIT = 20;
 const CACHE_TTL_MS = 15 * 60 * 1000;
 const REQUEST_TIMEOUT_MS = 15_000;
 
 let cachedResult = null;
 let cachedAt = 0;
+
+function decryptSraResponse(rawResponse) {
+  const encryptedValue = rawResponse.replace(/^"|"$/g, '');
+  const [ivHex, encryptedHex] = encryptedValue.split(':');
+  if (!ivHex || !encryptedHex) throw new Error('Invalid SRA API response.');
+
+  const decipher = crypto.createDecipheriv(
+    'aes-256-cbc',
+    SRA_RESPONSE_KEY,
+    Buffer.from(ivHex, 'hex'),
+  );
+  const decrypted = decipher.update(encryptedHex, 'hex', 'utf8') + decipher.final('utf8');
+  const parsed = JSON.parse(decrypted);
+  return typeof parsed === 'string' ? JSON.parse(parsed) : parsed;
+}
+
+async function fetchSraDataset(path, signal) {
+  const url = new URL(path, SRA_API_URL);
+  url.searchParams.set('page', '1');
+  url.searchParams.set('limit', String(RECORD_LIMIT));
+  url.searchParams.set('language', 'English');
+
+  const response = await fetch(url, {
+    signal,
+    headers: {
+      Accept: 'application/json',
+      'User-Agent': 'Mozilla/5.0 (compatible; A&M-Advisory-SRA-Updates/1.0)',
+    },
+  });
+  if (!response.ok) throw new Error(`SRA API responded with status ${response.status}.`);
+
+  const result = decryptSraResponse(await response.text());
+  const documents = result?.data?.docs;
+  if (!Array.isArray(documents) || documents.length < RECORD_LIMIT) {
+    throw new Error(`SRA API returned fewer than ${RECORD_LIMIT} records.`);
+  }
+  return documents;
+}
 
 function getFlightPayload(html) {
   const chunks = [];
@@ -85,25 +131,17 @@ async function fetchSraUpdates({ force = false } = {}) {
   const timeout = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
 
   try {
-    const response = await fetch(SRA_HOME_URL, {
-      signal: controller.signal,
-      headers: {
-        Accept: 'text/html,application/xhtml+xml',
-        'User-Agent': 'Mozilla/5.0 (compatible; A&M-Advisory-SRA-Updates/1.0)',
-      },
-    });
-
-    if (!response.ok) {
-      throw new Error(`SRA responded with status ${response.status}.`);
-    }
-
-    const payload = getFlightPayload(await response.text());
+    const [orders, circulars, news] = await Promise.all([
+      fetchSraDataset('/web/latest-orders', controller.signal),
+      fetchSraDataset('/web/circulars', controller.signal),
+      fetchSraDataset('/web/news-and-publications', controller.signal),
+    ]);
     const result = {
       source: SRA_HOME_URL,
       fetchedAt: new Date().toISOString(),
-      orders: extractArray(payload, 'latestOrdersData').map(normalizeItem),
-      circulars: extractArray(payload, 'latestCircularData').map(normalizeItem),
-      news: extractArray(payload, 'newsUpdateData').map(normalizeItem),
+      orders: orders.map(normalizeItem),
+      circulars: circulars.map(normalizeItem),
+      news: news.map(normalizeItem),
     };
 
     cachedResult = result;

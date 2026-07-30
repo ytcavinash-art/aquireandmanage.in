@@ -9,7 +9,7 @@
     '/api/sra-updates',
     'https://aquiretested-2.onrender.com/api/sra-updates',
   ];
-  const MAX_ITEMS_PER_BOARD = 10;
+  const MAX_ITEMS_PER_BOARD = 20;
 
   function escapeHtml(value) {
     return String(value || '')

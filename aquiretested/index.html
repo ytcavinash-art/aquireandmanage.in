@@ -442,7 +442,7 @@
     </section>
 
     <!-- Recent Projects Section -->
-    <section id="recent-projects" class="scroll-mt-20 bg-white py-16 md:py-24" aria-labelledby="projects-heading">
+    <section id="recent-projects" class="scroll-mt-20 bg-white py-16 md:py-24" aria-labelledby="projects-heading" hidden>
       <div class="mx-auto max-w-7xl px-6">
         <div class="mb-11 flex flex-col justify-between gap-6 md:flex-row md:items-end">
           <div class="max-w-3xl">
@@ -1104,6 +1104,8 @@
           </ol>
         </div>
       </div>
+    </section>
+
     <!-- Our Clients Scrolling Marquee Section -->
     <section id="clients" class="py-16 bg-slate-50 overflow-hidden border-t border-b border-slate-200">
       <div class="max-w-7xl mx-auto px-6">
@@ -1537,8 +1539,8 @@
       </div>
     </div>
 
-    <!-- Leave Your Feedback Form Section -->
-    <section class="bg-slate-50 px-6 py-16" aria-labelledby="feedback-heading">
+    <!-- Feedback form is placed inside Client Experiences by js/main.js -->
+    <div id="client-feedback" class="mt-16 border-t border-slate-200 px-6 pt-12" aria-labelledby="feedback-heading">
       <div class="mx-auto max-w-lg rounded-2xl bg-white p-8 border border-slate-200 shadow-xl">
         <h2 id="feedback-heading" class="mb-6 text-center text-2xl font-bold text-navy font-serif">
           Leave Your Feedback
@@ -1599,7 +1601,7 @@
           </button>
         </form>
       </div>
-    </section>
+    </div>
 
     <!-- Contact A&M Advisory and Quick Enquiry Section -->
     <section id="contact" class="scroll-mt-16 bg-white py-16 md:py-24" aria-labelledby="contact-heading">

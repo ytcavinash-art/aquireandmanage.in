@@ -1,5 +1,52 @@
+import { Buffer } from 'node:buffer';
+import { createDecipheriv } from 'node:crypto';
+
 const SRA_HOME_URL = 'https://www.sra.gov.in/en';
+const SRA_API_URL = 'https://apis.sra.gov.in';
+const SRA_RESPONSE_KEY = Buffer.from(
+  '1f8bce02a9d6e4f5837cbfb814e4c8a3f4e9bcf12d6a4c7b2e6e4f982a5f7d93',
+  'hex',
+);
+const RECORD_LIMIT = 20;
 const REQUEST_TIMEOUT_MS = 15_000;
+
+function decryptSraResponse(rawResponse) {
+  const encryptedValue = rawResponse.replace(/^"|"$/g, '');
+  const [ivHex, encryptedHex] = encryptedValue.split(':');
+  if (!ivHex || !encryptedHex) throw new Error('Invalid SRA API response.');
+
+  const decipher = createDecipheriv(
+    'aes-256-cbc',
+    SRA_RESPONSE_KEY,
+    Buffer.from(ivHex, 'hex'),
+  );
+  const decrypted = decipher.update(encryptedHex, 'hex', 'utf8') + decipher.final('utf8');
+  const parsed = JSON.parse(decrypted);
+  return typeof parsed === 'string' ? JSON.parse(parsed) : parsed;
+}
+
+async function fetchSraDataset(path, signal) {
+  const url = new URL(path, SRA_API_URL);
+  url.searchParams.set('page', '1');
+  url.searchParams.set('limit', String(RECORD_LIMIT));
+  url.searchParams.set('language', 'English');
+
+  const response = await fetch(url, {
+    signal,
+    headers: {
+      Accept: 'application/json',
+      'User-Agent': 'Mozilla/5.0 (compatible; A&M-Advisory-SRA-Updates/1.0)',
+    },
+  });
+  if (!response.ok) throw new Error(`SRA API responded with status ${response.status}.`);
+
+  const result = decryptSraResponse(await response.text());
+  const documents = result?.data?.docs;
+  if (!Array.isArray(documents) || documents.length < RECORD_LIMIT) {
+    throw new Error(`SRA API returned fewer than ${RECORD_LIMIT} records.`);
+  }
+  return documents;
+}
 
 function getFlightPayload(html) {
   const chunks = [];
@@ -65,23 +112,18 @@ export default async function handler(request, response) {
   const timeout = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
 
   try {
-    const sraResponse = await fetch(SRA_HOME_URL, {
-      signal: controller.signal,
-      headers: {
-        Accept: 'text/html,application/xhtml+xml',
-        'User-Agent': 'Mozilla/5.0 (compatible; A&M-Advisory-SRA-Updates/1.0)',
-      },
-    });
-    if (!sraResponse.ok) throw new Error(`SRA responded with status ${sraResponse.status}.`);
-
-    const payload = getFlightPayload(await sraResponse.text());
+    const [orders, circulars, news] = await Promise.all([
+      fetchSraDataset('/web/latest-orders', controller.signal),
+      fetchSraDataset('/web/circulars', controller.signal),
+      fetchSraDataset('/web/news-and-publications', controller.signal),
+    ]);
     response.setHeader('Cache-Control', 's-maxage=900, stale-while-revalidate=3600');
     return response.status(200).json({
       source: SRA_HOME_URL,
       fetchedAt: new Date().toISOString(),
-      orders: extractArray(payload, 'latestOrdersData').map(normalize),
-      circulars: extractArray(payload, 'latestCircularData').map(normalize),
-      news: extractArray(payload, 'newsUpdateData').map(normalize),
+      orders: orders.map(normalize),
+      circulars: circulars.map(normalize),
+      news: news.map(normalize),
     });
   } catch (error) {
     return response.status(502).json({

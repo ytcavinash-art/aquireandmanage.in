@@ -4,6 +4,7 @@
  */
 
 document.addEventListener('DOMContentLoaded', () => {
+  initHomepageSectionOrder();
   initPageLoader();
   initFaqAccordion();
   initMumbaiMap();
@@ -11,6 +12,27 @@ document.addEventListener('DOMContentLoaded', () => {
   initTimelineAnimation();
   initStatsCounter();
 });
+
+/* Keep the homepage's priority sections in the requested visible sequence. */
+function initHomepageSectionOrder() {
+  const statistics = document.getElementById('hero-statistics');
+  const clients = document.getElementById('clients');
+  const updates = document.getElementById('sra-updates');
+  const process = document.getElementById('process');
+  const testimonials = document.getElementById('testimonials');
+  const feedback = document.getElementById('client-feedback');
+
+  if (!statistics || !clients || !updates || !process) return;
+
+  statistics.after(clients);
+  clients.after(updates);
+  updates.after(process);
+
+  const testimonialsContent = testimonials?.querySelector(':scope > div');
+  if (testimonialsContent && feedback) {
+    testimonialsContent.append(feedback);
+  }
+}
 
 /* Page Loader Fadeout */
 function initPageLoader() {
@@ -400,6 +422,4 @@ function initVideoModal() {
     });
   }
 }
-
-
 
