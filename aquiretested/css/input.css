@@ -77,15 +77,15 @@ body {
 @layer components {
   .bulletin-section-shell {
     @apply mx-auto w-full;
-    max-width: 1480px;
+    max-width: 1280px;
   }
 
   .bulletin-board {
-    @apply relative flex min-h-[365px] flex-col overflow-hidden bg-slate-50 transition duration-300;
+    @apply relative flex h-[335px] min-h-[335px] flex-col overflow-hidden bg-slate-50 transition duration-300;
   }
 
   .bulletin-header {
-    @apply m-4 mb-0 flex min-h-[54px] items-center gap-2.5 rounded-lg border border-slate-100 bg-white px-3.5 shadow-md;
+    @apply m-3.5 mb-0 flex min-h-[50px] items-center gap-2.5 rounded-lg border border-slate-100 bg-white px-3.5 shadow-md;
   }
 
   .bulletin-header h3 {
@@ -109,8 +109,8 @@ body {
   }
 
   .bulletin-viewport {
-    @apply mx-4 mt-2.5 flex-1 overflow-hidden rounded bg-white shadow-sm;
-    height: 240px;
+    @apply mx-3.5 mt-2 flex-1 overflow-hidden rounded bg-white shadow-sm;
+    height: 210px;
   }
 
   .bulletin-track {
@@ -118,8 +118,8 @@ body {
   }
 
   .bulletin-entry {
-    @apply block border-b border-slate-100 px-3 py-3 text-slate-600 transition hover:bg-slate-50;
-    height: 120px;
+    @apply block border-b border-slate-100 px-3 py-2.5 text-slate-600 transition hover:bg-slate-50;
+    height: 105px;
   }
 
   .bulletin-entry h4 {

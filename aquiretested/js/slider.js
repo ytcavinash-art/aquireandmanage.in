@@ -38,7 +38,7 @@ function initBulletinBoards() {
     let rotationTimer;
 
     const render = () => {
-      const entryHeight = board.querySelector('.bulletin-entry')?.offsetHeight || 120;
+      const entryHeight = board.querySelector('.bulletin-entry')?.offsetHeight || 105;
       track.style.transform = `translateY(-${currentIndex * entryHeight}px)`;
     };
 

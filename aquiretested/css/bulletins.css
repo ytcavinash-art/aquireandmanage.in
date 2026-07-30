@@ -1,7 +1,7 @@
 /* Latest orders, circulars and news boards */
 .bulletin-section-shell {
   width: 100%;
-  max-width: 1480px;
+  max-width: 1280px;
   margin-right: auto;
   margin-left: auto;
 }
@@ -9,7 +9,8 @@
 .bulletin-board {
   position: relative;
   display: flex;
-  min-height: 365px;
+  height: 335px;
+  min-height: 335px;
   flex-direction: column;
   overflow: hidden;
   border: 0;
@@ -26,10 +27,10 @@
 
 .bulletin-header {
   display: flex;
-  min-height: 54px;
+  min-height: 50px;
   align-items: center;
   gap: 0.65rem;
-  margin: 1rem 1rem 0;
+  margin: 0.875rem 0.875rem 0;
   padding: 0 0.85rem;
   border: 1px solid #f1f5f9;
   border-radius: 0.55rem;
@@ -79,10 +80,10 @@
 }
 
 .bulletin-viewport {
-  height: 240px;
+  height: 210px;
   flex: 1;
   overflow: hidden;
-  margin: 0.65rem 1rem 0;
+  margin: 0.5rem 0.875rem 0;
   border-radius: 0.3rem;
   background: #fff;
   box-shadow: 0 2px 8px rgba(15, 31, 92, 0.06);
@@ -94,8 +95,8 @@
 
 .bulletin-entry {
   display: block;
-  height: 120px;
-  padding: 0.75rem 0.8rem;
+  height: 105px;
+  padding: 0.6rem 0.75rem;
   border-bottom: 1px solid #f1f5f9;
   color: #475569;
   transition: background-color 0.15s ease;
@@ -134,7 +135,7 @@
 
 .bulletin-entry time {
   display: block;
-  margin-top: 0.55rem;
+  margin-top: 0.4rem;
   color: #c8102e;
   font-size: 8px;
   font-weight: 600;
@@ -142,8 +143,8 @@
 
 .bulletin-controls {
   position: absolute;
-  right: 2rem;
-  bottom: 3.15rem;
+  right: 1.75rem;
+  bottom: 2.85rem;
   z-index: 10;
   display: flex;
   align-items: center;
@@ -179,11 +180,11 @@
 
 .bulletin-view-all {
   display: flex;
-  min-height: 36px;
+  min-height: 34px;
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  margin: auto 1rem 1rem;
+  margin: auto 0.875rem 0.875rem;
   padding: 0 1.25rem;
   background: #0f1f5c;
   color: #fff;
