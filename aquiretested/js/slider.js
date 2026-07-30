@@ -27,8 +27,6 @@ function initHeroSlider() {
 
 /* Orders, circulars and news vertical tickers */
 function initBulletinBoards() {
-  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
   document.querySelectorAll('[data-bulletin-board]').forEach((board) => {
     const track = board.querySelector('.bulletin-track');
     const previousButton = board.querySelector('[data-bulletin-prev]');
@@ -36,11 +34,12 @@ function initBulletinBoards() {
     const pauseButton = board.querySelector('[data-bulletin-pause]');
     const pauseIcon = board.querySelector('[data-pause-icon]');
     let currentIndex = 0;
-    let paused = reduceMotion;
+    let paused = false;
     let rotationTimer;
 
     const render = () => {
-      track.style.transform = `translateY(-${currentIndex * 160}px)`;
+      const entryHeight = board.querySelector('.bulletin-entry')?.offsetHeight || 120;
+      track.style.transform = `translateY(-${currentIndex * entryHeight}px)`;
     };
 
     const move = (direction) => {
@@ -59,7 +58,7 @@ function initBulletinBoards() {
       stopRotation();
       const lastIndex = Math.max(0, board.querySelectorAll('.bulletin-entry').length - 2);
       if (!paused && lastIndex > 0) {
-        rotationTimer = window.setInterval(() => move(1), 5000);
+        rotationTimer = window.setInterval(() => move(1), 3500);
       }
     };
 
@@ -81,15 +80,13 @@ function initBulletinBoards() {
       startRotation();
     });
 
-    board.addEventListener('mouseenter', stopRotation);
-    board.addEventListener('mouseleave', startRotation);
     board.addEventListener('focusin', stopRotation);
     board.addEventListener('focusout', startRotation);
-
-    if (paused) {
-      pauseButton?.setAttribute('aria-pressed', 'true');
-      if (pauseIcon) pauseIcon.textContent = '▶';
-    }
+    board.addEventListener('bulletin:updated', () => {
+      currentIndex = 0;
+      render();
+      startRotation();
+    });
 
     render();
     startRotation();

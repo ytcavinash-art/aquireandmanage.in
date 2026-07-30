@@ -68,6 +68,7 @@
 
     track.style.transform = 'translateY(0)';
     board.dataset.live = 'true';
+    board.dispatchEvent(new CustomEvent('bulletin:updated'));
   }
 
   async function requestUpdates(endpoint) {
