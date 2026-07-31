@@ -159,50 +159,54 @@
   // Render Blog Cards HTML
   function createBlogCardHTML(blog) {
     return `
-      <article class="group flex flex-col justify-between overflow-hidden rounded-2xl border border-slate-200 bg-white p-6 shadow-md transition-all duration-300 hover:-translate-y-1.5 hover:shadow-2xl">
-        <div>
-          <div class="relative mb-5 overflow-hidden rounded-xl bg-slate-100 aspect-video">
+      <article class="group h-full flex flex-col justify-between rounded-2xl border border-slate-200 bg-white p-5 sm:p-6 shadow-md transition-all duration-300 hover:-translate-y-1.5 hover:shadow-2xl">
+        <div class="flex-1 flex flex-col mb-2">
+          <div class="relative mb-4 overflow-hidden rounded-xl bg-slate-100 aspect-video shrink-0">
             <img 
               src="${blog.image}" 
-              alt="${blog.title}" 
+              alt="${escapeHtml(blog.title)}" 
               class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
               loading="lazy"
               onerror="this.src='images/sra-project-optimized.jpg'"
             />
             <span class="absolute top-3 left-3 rounded-full bg-navy/90 backdrop-blur-md px-3 py-1 text-[11px] font-bold text-white shadow-sm">
-              ${blog.category}
+              ${escapeHtml(blog.category)}
             </span>
           </div>
 
-          <div class="flex items-center gap-3 text-[11px] text-slate-500 font-medium mb-3">
-            <span>📅 ${blog.date}</span>
+          <div class="flex items-center gap-2.5 text-[11px] text-slate-500 font-medium mb-2">
+            <span>📅 ${escapeHtml(blog.date)}</span>
             <span>•</span>
-            <span>⏱️ ${blog.readTime || '4 min read'}</span>
+            <span>⏱️ ${escapeHtml(blog.readTime || '4 min read')}</span>
           </div>
 
-          <h3 class="mb-3 text-lg font-bold leading-snug text-navy font-serif transition group-hover:text-crimson">
-            <a href="${blog.slug}">${blog.title}</a>
+          <h3 class="mb-2 text-base sm:text-lg font-bold leading-snug text-navy font-serif transition group-hover:text-crimson line-clamp-2">
+            <a href="${blog.slug}">${escapeHtml(blog.title)}</a>
           </h3>
 
-          <p class="mb-6 text-xs text-slate-600 leading-relaxed text-justify line-clamp-3">
-            ${blog.description}
+          <p class="mb-3 text-xs text-slate-600 leading-relaxed text-justify line-clamp-3 flex-1">
+            ${escapeHtml(blog.description)}
           </p>
         </div>
 
-        <div class="flex items-center justify-between border-t border-slate-100 pt-4 mt-auto">
+        <div class="flex items-center justify-between border-t border-slate-100 pt-3.5 mt-auto shrink-0">
           <div class="flex items-center gap-2.5">
-            <img src="${blog.authorAvatar}" alt="${blog.author}" class="h-8 w-8 rounded-full object-cover border border-slate-200" onerror="this.src='images/am-logo.png'" />
+            <img src="${blog.authorAvatar}" alt="${escapeHtml(blog.author)}" class="h-8 w-8 rounded-full object-cover border border-slate-200" onerror="this.src='images/am-logo.png'" />
             <div>
-              <p class="text-xs font-bold text-navy leading-tight">${blog.author}</p>
-              <p class="text-[10px] text-slate-500">${blog.authorRole || 'Author'}</p>
+              <p class="text-xs font-bold text-navy leading-tight">${escapeHtml(blog.author)}</p>
+              <p class="text-[10px] text-slate-500">${escapeHtml(blog.authorRole || 'Author')}</p>
             </div>
           </div>
-          <a href="${blog.slug}" class="inline-flex items-center gap-1 text-xs font-bold text-crimson hover:underline">
+          <a href="${blog.slug}" class="inline-flex items-center gap-1 text-xs font-bold text-crimson hover:underline shrink-0">
             Read Article &rarr;
           </a>
         </div>
       </article>
     `;
+  }
+
+  function escapeHtml(str) {
+    return (str || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
   }
 
   // Main Render Function
