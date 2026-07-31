@@ -670,44 +670,44 @@
     const latest = dailyBriefs[0];
 
     const summaryBullets = (latest.executiveSummary || []).slice(0, 3).map(
-      (bullet) => `<li class="flex items-start gap-2 text-xs text-slate-300 leading-relaxed"><span class="text-crimson font-bold">›</span><span>${escapeHtml(bullet)}</span></li>`
+      (bullet) => `<li class="flex items-start gap-2 text-xs sm:text-sm text-slate-700 leading-relaxed"><span class="text-crimson font-bold text-base">›</span><span>${escapeHtml(bullet)}</span></li>`
     ).join('');
 
     container.innerHTML = `
-      <div class="rounded-3xl bg-gradient-to-r from-[#0b183b] via-[#06102e] to-[#111c3a] p-6 sm:p-8 border border-white/10 shadow-2xl relative overflow-hidden">
+      <div class="rounded-3xl bg-white p-6 sm:p-8 border-2 border-slate-200 shadow-xl relative overflow-hidden text-slate-800">
         <div class="flex flex-wrap items-center justify-between gap-4 mb-4">
           <div class="flex items-center gap-3">
-            <span class="rounded-full bg-crimson px-3 py-1 text-[11px] font-bold text-white uppercase tracking-wider">
+            <span class="rounded-full bg-crimson px-3.5 py-1 text-[11px] font-bold text-white uppercase tracking-wider shadow-sm">
               ⚡ LATEST 8:00 AM IST INTELLIGENCE EDITION
             </span>
-            <span class="text-xs text-slate-300 font-semibold">📅 ${escapeHtml(latest.date)}</span>
+            <span class="text-xs text-slate-500 font-bold">📅 ${escapeHtml(latest.date)}</span>
           </div>
-          <span class="text-[11px] font-bold text-emerald-400 bg-emerald-950/80 border border-emerald-800/80 px-3 py-1 rounded-full">
-            ● Active Monitoring Unit
+          <span class="text-[11px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-3 py-1 rounded-full shadow-sm flex items-center gap-1.5">
+            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> Active Monitoring Unit
           </span>
         </div>
 
-        <h2 class="text-2xl sm:text-3xl font-bold font-serif text-white leading-snug mb-2">
+        <h2 class="text-2xl sm:text-3xl font-bold font-serif text-navy leading-snug mb-2">
           ${escapeHtml(latest.title)}
         </h2>
-        <p class="text-xs sm:text-sm text-red-300 font-medium mb-6">
+        <p class="text-xs sm:text-sm text-crimson font-semibold mb-6">
           Focus: ${escapeHtml(latest.focus)}
         </p>
 
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 pt-4 border-t border-white/10 items-center">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 pt-5 border-t border-slate-200 items-center">
           <div class="md:col-span-2">
-            <h4 class="text-xs font-bold text-white uppercase tracking-wider mb-2">Executive Summary &amp; Highest Impact Signals:</h4>
-            <ul class="space-y-2">
+            <h4 class="text-xs font-bold text-navy uppercase tracking-wider mb-3">Executive Summary &amp; Highest Impact Signals:</h4>
+            <ul class="space-y-2.5">
               ${summaryBullets}
             </ul>
           </div>
 
-          <div class="flex flex-col gap-3 justify-center items-start md:items-end border-t md:border-t-0 md:border-l border-white/10 pt-4 md:pt-0 md:pl-6">
-            <span class="text-[11px] text-slate-400">Includes DPR, Feasibility &amp; Action Matrix</span>
+          <div class="flex flex-col gap-3 justify-center items-start md:items-end border-t md:border-t-0 md:border-l border-slate-200 pt-5 md:pt-0 md:pl-6">
+            <span class="text-[11px] text-slate-500 font-medium">Includes DPR, Feasibility &amp; Action Matrix</span>
             <button 
               type="button" 
               data-open-brief="${escapeHtml(latest.briefId)}" 
-              class="rounded-full bg-crimson hover:bg-navy-light text-white font-bold px-6 py-3 text-xs shadow-lg transition-all hover:scale-105"
+              class="rounded-full bg-crimson hover:bg-navy text-white font-bold px-6 py-3 text-xs shadow-md transition-all hover:scale-105"
             >
               📖 Read Full Deep-Dive Brief →
             </button>
