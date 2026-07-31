@@ -32,6 +32,12 @@ const FAQS = [
     hindi: 'A&M Advisory SRA और municipal approvals, सरकारी विभागों से liaisoning, दस्तावेज़ीकरण, compliance और project coordination में सहायता करता है। अनुमोदन की आवश्यकताएँ और समय-सीमा परियोजना तथा संबंधित प्राधिकरण पर निर्भर करती हैं।',
   },
   {
+    id: 'gbr-poa-da-cc',
+    keywords: ['gbr', 'general body resolution', 'poa', 'power of attorney', 'development agreement', 'commencement certificate'],
+    english: 'A&M Advisory supports meeting and document coordination for General Body Resolutions (GBR), execution-readiness for Power of Attorney (POA) and Development Agreements (DA), and submission tracking and liaisoning for the Commencement Certificate (CC). Legal instruments should be reviewed by qualified legal professionals, and CC is issued only by the competent authority.',
+    hindi: 'A&M Advisory General Body Resolution (GBR) के meeting records और दस्तावेज़ coordination, Power of Attorney (POA) तथा Development Agreement (DA) की execution-readiness, और Commencement Certificate (CC) के submission tracking व liaisoning में सहायता करता है। कानूनी दस्तावेज़ों की समीक्षा योग्य legal professionals से करानी चाहिए और CC केवल सक्षम प्राधिकरण जारी करता है।',
+  },
+  {
     id: 'contact',
     keywords: ['contact', 'phone', 'call', 'email', 'whatsapp', 'site office', 'संपर्क', 'फ़ोन', 'फोन', 'कॉल', 'ईमेल'],
     english: 'You can contact A&M Advisory through the website contact form, phone, email, WhatsApp or the site office. Call +91 022-45648350 or email info@aquireandmanage.com, and the team will help with your project-related concern.',

@@ -90,6 +90,12 @@ function getAssistantReply(message, selectedLanguage = getSelectedChatLanguage()
       'Tenant management में सर्वे, डेटा संग्रह, निवासियों से संवाद, दस्तावेज़ीकरण, consent coordination, शिकायत समाधान, सत्यापन और प्रगति की निगरानी शामिल है।'
     );
   }
+  if (['gbr', 'general body resolution', 'poa', 'power of attorney', 'development agreement', 'commencement certificate'].some((word) => text.includes(word))) {
+    return reply(
+      'A&M Advisory supports meeting and document coordination for General Body Resolutions (GBR), execution-readiness for Power of Attorney (POA) and Development Agreements (DA), and submission tracking and liaisoning for the Commencement Certificate (CC). Legal instruments require qualified legal review, and CC is issued only by the competent authority.',
+      'A&M Advisory General Body Resolution (GBR) के meeting records और document coordination, Power of Attorney (POA) तथा Development Agreement (DA) की execution-readiness, और Commencement Certificate (CC) के submission tracking व liaisoning में सहायता करता है। Legal documents की समीक्षा qualified professionals से करानी चाहिए और CC केवल सक्षम प्राधिकरण जारी करता है।'
+    );
+  }
   if (['approval', 'municipal', 'liaison', 'noc', 'मंजूरी', 'अनुमोदन'].some((word) => text.includes(word))) {
     return reply(
       'A&M Advisory assists with SRA and municipal approvals, government liaisoning, documentation, compliance and project coordination. Requirements and timelines depend on the relevant authorities.',
