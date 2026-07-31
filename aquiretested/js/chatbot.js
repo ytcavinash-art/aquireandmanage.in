@@ -160,6 +160,9 @@ function initChatbot() {
   if (!chatbotModal) return;
 
   chatToggleBtn?.classList.add('didi-launcher');
+  if (chatToggleBtn) {
+    chatToggleBtn.innerHTML = '<img src="images/didi-avatar.png" alt="" width="52" height="52" />';
+  }
   chatToggleBtn?.setAttribute('aria-label', 'Open A&M Advisory DiDi');
   chatToggleBtn?.setAttribute('aria-expanded', 'false');
   chatbotModal.classList.add('didi-chat');
@@ -169,7 +172,7 @@ function initChatbot() {
   chatbotModal.innerHTML = `
     <header class="didi-header">
       <div class="didi-profile">
-        <div class="didi-avatar"><img src="images/am-logo.png" alt="" /></div>
+        <div class="didi-avatar"><img src="images/didi-avatar.png" alt="" /></div>
         <div>
           <h2 id="didi-chat-title" class="didi-title">A&amp;M Advisory DiDi</h2>
           <p class="didi-status"><span id="didi-status-text">Virtual Assistant</span></p>
@@ -363,7 +366,7 @@ function initChatbot() {
     }).format(new Date());
     messagesContainer.innerHTML = `<div class="didi-timestamp">${escapeHtml(timestamp)}</div>${messages.map((message) => `
       <div class="didi-message-row ${message.sender === 'user' ? 'user' : 'assistant'}">
-        ${message.sender === 'assistant' ? '<div class="didi-message-avatar"><img src="images/am-logo.png" alt="" /></div>' : ''}
+        ${message.sender === 'assistant' ? '<div class="didi-message-avatar"><img src="images/didi-avatar.png" alt="" /></div>' : ''}
         <div class="didi-bubble">${escapeHtml(message.text)}</div>
       </div>
     `).join('')}`;
