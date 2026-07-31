@@ -9,10 +9,10 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function ensureChatbotStyles() {
-  if (document.querySelector('link[href$="css/chatbot.css"]')) return;
+  if (document.querySelector('link[href*="css/chatbot.css"]')) return;
   const stylesheet = document.createElement('link');
   stylesheet.rel = 'stylesheet';
-  stylesheet.href = 'css/chatbot.css';
+  stylesheet.href = 'css/chatbot.css?v=32394f1';
   document.head.appendChild(stylesheet);
 }
 
