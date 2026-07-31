@@ -734,9 +734,23 @@
       const matchesSearch = !currentSearch || fullText.includes(currentSearch.toLowerCase());
       
       let matchesFilter = true;
-      if (currentFilter === 'Daily Briefs') matchesFilter = true;
-      else if (currentFilter !== 'All') {
-        matchesFilter = fullText.includes(currentFilter.toLowerCase());
+      const f = (currentFilter || 'All').toLowerCase();
+      if (f === 'daily briefs') {
+        matchesFilter = true;
+      } else if (f === 'sra') {
+        matchesFilter = fullText.includes('sra') || fullText.includes('slum');
+      } else if (f === 'mhada') {
+        matchesFilter = fullText.includes('mhada');
+      } else if (f === 'bmc') {
+        matchesFilter = fullText.includes('bmc') || fullText.includes('mcgm') || fullText.includes('collector') || fullText.includes('municipal');
+      } else if (f === 'construction') {
+        matchesFilter = fullText.includes('construction') || fullText.includes('cement') || fullText.includes('steel') || fullText.includes('rmc') || fullText.includes('debris') || fullText.includes('aqi') || fullText.includes('waste');
+      } else if (f === 'developer') {
+        matchesFilter = fullText.includes('developer') || fullText.includes('realty') || fullText.includes('investor') || fullText.includes('jda') || fullText.includes('raymond') || fullText.includes('reliance') || fullText.includes('shanti');
+      } else if (f === 'tenders') {
+        matchesFilter = fullText.includes('tender') || fullText.includes('msib') || fullText.includes('mbrrb') || fullText.includes('eoi') || fullText.includes('bid');
+      } else if (f !== 'all') {
+        matchesFilter = fullText.includes(f);
       }
 
       return matchesSearch && matchesFilter;
@@ -751,7 +765,24 @@
       const fullText = `${title} ${desc}`;
 
       const matchesSearch = !currentSearch || fullText.includes(currentSearch.toLowerCase());
-      const matchesFilter = currentFilter === 'All' || fullText.includes(currentFilter.toLowerCase());
+      
+      let matchesFilter = true;
+      const f = (currentFilter || 'All').toLowerCase();
+      if (f === 'sra') {
+        matchesFilter = fullText.includes('sra') || fullText.includes('slum');
+      } else if (f === 'mhada') {
+        matchesFilter = fullText.includes('mhada');
+      } else if (f === 'bmc') {
+        matchesFilter = fullText.includes('bmc') || fullText.includes('mcgm') || fullText.includes('collector');
+      } else if (f === 'construction') {
+        matchesFilter = fullText.includes('construction') || fullText.includes('real estate') || fullText.includes('housing');
+      } else if (f === 'developer') {
+        matchesFilter = fullText.includes('developer') || fullText.includes('realty') || fullText.includes('investor');
+      } else if (f === 'tenders') {
+        matchesFilter = fullText.includes('tender') || fullText.includes('eoi') || fullText.includes('notice');
+      } else if (f !== 'all') {
+        matchesFilter = fullText.includes(f);
+      }
 
       return matchesSearch && matchesFilter;
     });
