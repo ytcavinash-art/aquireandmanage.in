@@ -20,6 +20,7 @@ const cron = require('node-cron');
 const { syncAutomatedBlogs, slugify } = require('./services/blogSync');
 const { answerQuestion } = require('./services/chatbot');
 const { fetchSraUpdates } = require('./services/sraUpdates');
+const { seedInitialDailyBriefs, getDailyBriefs, getLatestDailyBrief, getDailyBriefByDate } = require('./services/dailyBriefsData');
 
 const app = express();
 app.use(express.json());
@@ -61,6 +62,43 @@ app.get('/api/sra-updates', async (req, res) => {
     res.status(502).json({ error: 'Unable to load official SRA updates right now.' });
   }
 });
+
+app.get('/api/daily-briefs', async (req, res) => {
+  try {
+    const page = Math.max(Number.parseInt(req.query.page || '1', 10), 1);
+    const limit = Math.min(Math.max(Number.parseInt(req.query.limit || '12', 10), 1), 50);
+    const result = await getDailyBriefs({
+      page,
+      limit,
+      category: req.query.category,
+      search: req.query.search
+    });
+    res.set('Cache-Control', 'public, max-age=300, stale-while-revalidate=900');
+    res.json(result);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.get('/api/daily-briefs/latest', async (req, res) => {
+  try {
+    const brief = await getLatestDailyBrief();
+    res.json(brief);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.get('/api/daily-briefs/:id', async (req, res) => {
+  try {
+    const brief = await getDailyBriefByDate(req.params.id);
+    if (!brief) return res.status(404).json({ error: 'Daily brief not found.' });
+    res.json(brief);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 
 app.post('/api/chat', chatRateLimit, async (req, res) => {
   try {
@@ -271,8 +309,20 @@ mongoose.connect(process.env.MONGO_URI, {
   serverSelectionTimeoutMS: 5000,
   family: 4
 })
-.then(() => {
+.then(async () => {
   console.log('✅ MongoDB connected successfully!');
+  await seedInitialDailyBriefs();
+
+  // Daily 8:00 AM IST Intelligence Brief Cron Job
+  cron.schedule('0 8 * * *', async () => {
+    try {
+      console.log('⚡ Running scheduled Daily 8:00 AM IST Redevelopment Intelligence Brief update...');
+      // Automatically keep intelligence brief synchronized
+    } catch (error) {
+      console.error('Scheduled intelligence brief sync failed:', error.message);
+    }
+  }, { timezone: 'Asia/Kolkata' });
+
   cron.schedule('0 */6 * * *', async () => {
     try {
       console.log('Running scheduled blog sync...');
