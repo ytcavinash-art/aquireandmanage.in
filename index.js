@@ -22,9 +22,12 @@ const { answerQuestion } = require('./services/chatbot');
 const { fetchSraUpdates } = require('./services/sraUpdates');
 const { seedInitialDailyBriefs, getDailyBriefs, getLatestDailyBrief, getDailyBriefByDate } = require('./services/dailyBriefsData');
 
+const path = require('path');
+
 const app = express();
 app.use(express.json());
 app.use(cors());
+app.use(express.static(path.join(__dirname, 'aquiretested')));
 
 const requireAdmin = (req, res, next) => {
   if (!process.env.ADMIN_API_KEY || req.get('x-admin-key') !== process.env.ADMIN_API_KEY) {
