@@ -64,6 +64,7 @@ app.get('/api/sra-updates', async (req, res) => {
 
 app.post('/api/chat', chatRateLimit, async (req, res) => {
   try {
+    const language = req.body.language === 'hi' ? 'hi' : 'en';
     const messages = Array.isArray(req.body.messages) ? req.body.messages.slice(-8) : [];
     const validMessages = messages
       .filter((message) => ['user', 'assistant'].includes(message?.role) && typeof message?.content === 'string')
@@ -72,7 +73,7 @@ app.post('/api/chat', chatRateLimit, async (req, res) => {
     if (!validMessages.length || validMessages.at(-1).role !== 'user') {
       return res.status(400).json({ error: 'A valid user message is required.' });
     }
-    res.json(await answerQuestion(validMessages));
+    res.json(await answerQuestion(validMessages, language));
   } catch (error) {
     res.status(500).json({ error: 'Unable to answer right now.' });
   }

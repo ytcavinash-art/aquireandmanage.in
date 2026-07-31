@@ -307,6 +307,10 @@ function initLanguageSwitcher() {
   // Synchronize desktop and mobile selects.
   const languageSelects = document.querySelectorAll('.language-select');
   languageSelects.forEach((select) => {
+    const labels = { en: 'English', hi: 'हिन्दी', mr: 'मराठी' };
+    Array.from(select.options).forEach((option) => {
+      if (labels[option.value]) option.textContent = labels[option.value];
+    });
     select.value = currentLang;
 
     select.addEventListener('change', (e) => {
