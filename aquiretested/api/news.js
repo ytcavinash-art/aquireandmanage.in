@@ -179,7 +179,11 @@ export default async function handler(request, response) {
       'Cache-Control',
       's-maxage=900, stale-while-revalidate',
     );
-    return response.status(200).json({ articles: articlesWithImages, nextPage });
+    return response.status(200).json({
+      articles: articlesWithImages,
+      nextPage,
+      totalPages: Math.ceil(uniqueArticles.length / PAGE_SIZE),
+    });
   } catch (error) {
     console.error('News RSS request failed:', error);
     return response.status(500).json({

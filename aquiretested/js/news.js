@@ -129,36 +129,28 @@
     }
   ];
 
-  let allArticles = [...EMBEDDED_NEWS_DATABASE];
+  let allArticles = [];
   let currentSearch = '';
   let currentFilter = 'All';
 
-  // Topic specific image fallback mapping
-  const topicImages = [
-    'images/tenant-management/Documentation, Eligibility and application support.jpg',
-    'images/tenant-management/Survey (Lane Raccee, Numbering, Lidar & Base Map).jpg',
-    'images/liaisoning/Obtain necessary NOCs, LOI, and IOA approvals.jpg',
-    'images/tenant-management/Rent readiness  bank  KYC support.jpg',
-    'images/iec-activities/Digital  WhatsApp  SMS  IVR communication.jpg',
-    'images/liaisoning/coordinate-sra-municipal-approvals-v2.jpg',
-    'images/iec-activities/Zone launch and mobilisation events.jpg',
-    'images/tenant-management/Post closure Demolition & fencing.jpg'
-  ];
+  async function fetchAllLiveNews() {
+    const firstResponse = await fetch('/api/news?page=1');
+    if (!firstResponse.ok) throw new Error('Unable to load live news.');
 
-  function getExactArticleImage(article, index) {
-    if (article.imageUrl && !article.imageUrl.includes('sra-project-optimized.jpg')) {
-      return article.imageUrl;
-    }
-    const text = (article.title + ' ' + (article.description || '')).toLowerCase();
-    if (text.includes('dharavi')) return 'images/tenant-management/Survey (Lane Raccee, Numbering, Lidar & Base Map).jpg';
-    if (text.includes('annexure') || text.includes('biometric')) return 'images/tenant-management/Documentation, Eligibility and application support.jpg';
-    if (text.includes('rent') || text.includes('allowance')) return 'images/tenant-management/Rent readiness  bank  KYC support.jpg';
-    if (text.includes('mhada')) return 'images/liaisoning/Obtain necessary NOCs, LOI, and IOA approvals.jpg';
-    if (text.includes('digital') || text.includes('portal') || text.includes('helpline')) return 'images/iec-activities/Digital  WhatsApp  SMS  IVR communication.jpg';
-    if (text.includes('demolition') || text.includes('fencing')) return 'images/tenant-management/Post closure Demolition & fencing.jpg';
-    if (text.includes('town hall') || text.includes('meeting')) return 'images/iec-activities/Zone launch and mobilisation events.jpg';
-    
-    return topicImages[index % topicImages.length];
+    const firstPage = await firstResponse.json();
+    const totalPages = Math.max(1, Number(firstPage.totalPages) || 1);
+    const remainingRequests = Array.from(
+      { length: totalPages - 1 },
+      (_, index) => fetch(`/api/news?page=${index + 2}`).then((response) => {
+        if (!response.ok) throw new Error('Unable to load a live news page.');
+        return response.json();
+      }),
+    );
+    const remainingPages = await Promise.all(remainingRequests);
+
+    return [firstPage, ...remainingPages].flatMap((page) =>
+      Array.isArray(page.articles) ? page.articles : [],
+    );
   }
 
   // Initialize News Feed
@@ -169,16 +161,9 @@
     showLoader(true);
 
     try {
-      let response = await fetch('/api/news');
-      if (response.ok) {
-        const data = await response.json();
-        const liveArticles = Array.isArray(data.articles) ? data.articles : (data.pages ? data.pages.flatMap(p => p.articles) : []);
-        if (liveArticles && liveArticles.length > 0) {
-          allArticles = liveArticles;
-        }
-      }
+      allArticles = await fetchAllLiveNews();
     } catch (err) {
-      console.log('Using embedded 6-month news database (offline/local mode).');
+      console.error('Live news API request failed.', err);
     } finally {
       showLoader(false);
       renderFeed();
@@ -231,28 +216,33 @@
       return;
     }
 
-    newsContainer.innerHTML = filtered.map((article, idx) => {
+    newsContainer.innerHTML = filtered.map((article) => {
       const dateStr = article.publishedAt
         ? new Date(article.publishedAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })
         : 'Recent';
 
-      const imageSrc = getExactArticleImage(article, idx);
-
-      return `
-        <article class="group flex flex-col justify-between overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-md transition-all duration-300 hover:-translate-y-1.5 hover:shadow-2xl">
-          <div>
+      const articleImage = article.imageUrl
+        ? `
             <div class="relative overflow-hidden bg-slate-100 aspect-video">
-              <img 
-                src="${imageSrc}" 
-                alt="${escapeHtml(article.title)}" 
+              <img
+                src="${escapeHtml(article.imageUrl)}"
+                alt="${escapeHtml(article.title)}"
                 class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                 loading="lazy"
-                onerror="this.src='images/sra-project-optimized.jpg'"
+                referrerpolicy="no-referrer"
+                onerror="this.closest('div').remove()"
               />
               <span class="absolute top-3 left-3 rounded-full bg-navy/90 backdrop-blur-md px-3 py-1 text-[11px] font-bold text-white shadow-sm">
                 ${escapeHtml(article.source || 'Mumbai SRA News')}
               </span>
             </div>
+          `
+        : '';
+
+      return `
+        <article class="group flex flex-col justify-between overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-md transition-all duration-300 hover:-translate-y-1.5 hover:shadow-2xl">
+          <div>
+            ${articleImage}
 
             <div class="p-6">
               <div class="flex items-center justify-between text-[11px] font-semibold text-slate-500 mb-3">
