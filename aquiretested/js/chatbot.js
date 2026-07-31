@@ -3,9 +3,18 @@
  */
 
 document.addEventListener('DOMContentLoaded', () => {
+  ensureChatbotStyles();
   initScrollToTop();
   initChatbot();
 });
+
+function ensureChatbotStyles() {
+  if (document.querySelector('link[href$="css/chatbot.css"]')) return;
+  const stylesheet = document.createElement('link');
+  stylesheet.rel = 'stylesheet';
+  stylesheet.href = 'css/chatbot.css';
+  document.head.appendChild(stylesheet);
+}
 
 const chatApiUrl = 'https://aquiretested-2.onrender.com/api/chat';
 const chatCopy = {
@@ -147,64 +156,178 @@ function initScrollToTop() {
 
 function initChatbot() {
   const chatToggleBtn = document.getElementById('chatbot-toggle-btn');
-  const chatCloseBtn = document.getElementById('chatbot-close-btn');
   const chatbotModal = document.getElementById('chatbot-dialog');
+  if (!chatbotModal) return;
+
+  chatToggleBtn?.classList.add('didi-launcher');
+  chatToggleBtn?.setAttribute('aria-label', 'Open A&M Advisory DiDi');
+  chatToggleBtn?.setAttribute('aria-expanded', 'false');
+  chatbotModal.classList.add('didi-chat');
+  chatbotModal.setAttribute('role', 'dialog');
+  chatbotModal.setAttribute('aria-modal', 'false');
+  chatbotModal.setAttribute('aria-labelledby', 'didi-chat-title');
+  chatbotModal.innerHTML = `
+    <header class="didi-header">
+      <div class="didi-profile">
+        <div class="didi-avatar"><img src="images/am-logo.png" alt="" /></div>
+        <div>
+          <h2 id="didi-chat-title" class="didi-title">A&amp;M Advisory DiDi</h2>
+          <p class="didi-status"><span id="didi-status-text">Virtual Assistant</span></p>
+        </div>
+      </div>
+      <button id="chatbot-close-btn" type="button" class="didi-close" aria-label="Minimize chatbot">−</button>
+    </header>
+    <section class="didi-panel">
+      <div id="chatbot-messages" class="didi-messages" aria-live="polite" aria-label="Chat messages"></div>
+      <div id="chatbot-suggestions" class="didi-suggestions" aria-label="Suggested questions"></div>
+      <button id="didi-scroll-messages" type="button" class="didi-scroll-messages" aria-label="Scroll to first message">↑</button>
+      <div class="didi-chat-tools">
+        <div id="didi-language-menu" class="didi-language-menu" hidden>
+          <button type="button" class="didi-language-option" data-language="en">◎ English</button>
+          <button type="button" class="didi-language-option" data-language="hi">◎ हिन्दी (Hindi)</button>
+        </div>
+        <form id="chatbot-form" class="didi-form">
+          <button id="didi-language-toggle" type="button" class="didi-icon-button" aria-label="Choose chat language" aria-expanded="false">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a15 15 0 0 1 0 18M12 3a15 15 0 0 0 0 18"/></svg>
+          </button>
+          <input id="chatbot-input" class="didi-input" type="text" maxlength="600" autocomplete="off" />
+          <button id="didi-mic" type="button" class="didi-icon-button" aria-label="Speak your question">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 10a7 7 0 0 0 14 0M12 17v4M9 21h6"/></svg>
+          </button>
+          <button id="didi-send" type="submit" class="didi-send" aria-label="Send message">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>
+          </button>
+        </form>
+      </div>
+    </section>
+  `;
+
+  const chatCloseBtn = document.getElementById('chatbot-close-btn');
   const chatForm = document.getElementById('chatbot-form');
   const chatInput = document.getElementById('chatbot-input');
+  const sendButton = document.getElementById('didi-send');
+  const micButton = document.getElementById('didi-mic');
   const messagesContainer = document.getElementById('chatbot-messages');
   const suggestionsContainer = document.getElementById('chatbot-suggestions');
-  if (!chatbotModal) return;
+  const languageToggle = document.getElementById('didi-language-toggle');
+  const languageMenu = document.getElementById('didi-language-menu');
+  const scrollMessagesButton = document.getElementById('didi-scroll-messages');
+  const statusText = document.getElementById('didi-status-text');
   let activeLanguage = getSelectedChatLanguage();
+  let isSending = false;
   const messages = [{ sender: 'assistant', text: chatCopy[activeLanguage].welcome, isWelcome: true }];
 
-  chatToggleBtn?.addEventListener('click', () => {
-    chatbotModal.classList.toggle('hidden');
-    if (!chatbotModal.classList.contains('hidden')) chatInput?.focus();
-  });
-  chatCloseBtn?.addEventListener('click', () => chatbotModal.classList.add('hidden'));
-  chatForm?.addEventListener('submit', (event) => {
-    event.preventDefault();
-    const userText = chatInput?.value.trim();
-    if (userText) sendMessage(userText);
+  function setOpen(open) {
+    chatbotModal.classList.toggle('hidden', !open);
+    chatToggleBtn?.setAttribute('aria-expanded', String(open));
+    if (open) window.setTimeout(() => chatInput?.focus(), 80);
+  }
+
+  chatToggleBtn?.addEventListener('click', () => setOpen(chatbotModal.classList.contains('hidden')));
+  chatCloseBtn?.addEventListener('click', () => setOpen(false));
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && !chatbotModal.classList.contains('hidden')) setOpen(false);
   });
 
   function applyChatLanguage(language, replaceWelcome = false) {
     activeLanguage = language === 'hi' ? 'hi' : 'en';
     const copy = chatCopy[activeLanguage];
-    if (chatInput) {
-      chatInput.placeholder = copy.placeholder;
-      chatInput.setAttribute('aria-label', copy.inputLabel);
-    }
+    chatInput.placeholder = copy.placeholder;
+    chatInput.setAttribute('aria-label', copy.inputLabel);
+    sendButton.setAttribute('aria-label', activeLanguage === 'hi' ? 'संदेश भेजें' : 'Send message');
+    statusText.textContent = activeLanguage === 'hi' ? 'आपकी वर्चुअल सहायक' : 'Your virtual assistant';
+    languageMenu.querySelectorAll('[data-language]').forEach((option) => {
+      option.classList.toggle('selected', option.dataset.language === activeLanguage);
+    });
     if (replaceWelcome && messages.length === 1 && messages[0].isWelcome) {
       messages[0].text = copy.welcome;
       renderMessages();
     }
-    if (!suggestionsContainer) return;
-    suggestionsContainer.innerHTML = copy.suggestions.map((question) => `
-      <button type="button" class="chat-suggestion-chip rounded-full border border-slate-300 bg-white px-3 py-1.5 text-left text-[11px] font-semibold text-navy transition hover:border-crimson hover:text-crimson">${question}</button>
+    suggestionsContainer.innerHTML = copy.suggestions.slice(0, 3).map((question) => `
+      <button type="button" class="didi-suggestion" data-question="${escapeHtml(question)}">${escapeHtml(question)}</button>
     `).join('');
   }
 
-  applyChatLanguage(activeLanguage);
+  function selectLanguage(language) {
+    const websiteLanguage = language === 'hi' ? 'hi' : 'en';
+    const websiteSelect = document.querySelector('.language-select');
+    if (websiteSelect) {
+      websiteSelect.value = websiteLanguage;
+      websiteSelect.dispatchEvent(new Event('change', { bubbles: true }));
+    } else {
+      localStorage.setItem('am_selected_language', websiteLanguage);
+      document.documentElement.lang = websiteLanguage;
+      applyChatLanguage(websiteLanguage, true);
+    }
+    languageMenu.hidden = true;
+    languageToggle.setAttribute('aria-expanded', 'false');
+  }
 
+  applyChatLanguage(activeLanguage);
   document.querySelectorAll('.language-select').forEach((select) => {
     select.addEventListener('change', (event) => {
       applyChatLanguage(event.target.value === 'en' ? 'en' : 'hi', true);
     });
   });
 
-  if (suggestionsContainer) {
-    suggestionsContainer.addEventListener('click', (event) => {
-      const chip = event.target.closest('.chat-suggestion-chip');
-      if (chip) sendMessage(chip.textContent.trim());
+  languageToggle.addEventListener('click', () => {
+    languageMenu.hidden = !languageMenu.hidden;
+    languageToggle.setAttribute('aria-expanded', String(!languageMenu.hidden));
+  });
+  languageMenu.addEventListener('click', (event) => {
+    const option = event.target.closest('[data-language]');
+    if (option) selectLanguage(option.dataset.language);
+  });
+  document.addEventListener('click', (event) => {
+    if (!languageMenu.contains(event.target) && !languageToggle.contains(event.target)) {
+      languageMenu.hidden = true;
+      languageToggle.setAttribute('aria-expanded', 'false');
+    }
+  });
+
+  suggestionsContainer.addEventListener('click', (event) => {
+    const suggestion = event.target.closest('[data-question]');
+    if (suggestion) sendMessage(suggestion.dataset.question);
+  });
+  chatForm.addEventListener('submit', (event) => {
+    event.preventDefault();
+    const userText = chatInput.value.trim();
+    if (userText) sendMessage(userText);
+  });
+
+  messagesContainer.addEventListener('scroll', () => {
+    scrollMessagesButton.classList.toggle('visible', messagesContainer.scrollTop > 100);
+  }, { passive: true });
+  scrollMessagesButton.addEventListener('click', () => {
+    messagesContainer.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (SpeechRecognition) {
+    micButton.addEventListener('click', () => {
+      const recognition = new SpeechRecognition();
+      recognition.lang = activeLanguage === 'hi' ? 'hi-IN' : 'en-IN';
+      recognition.interimResults = false;
+      recognition.addEventListener('start', () => micButton.setAttribute('aria-pressed', 'true'));
+      recognition.addEventListener('end', () => micButton.removeAttribute('aria-pressed'));
+      recognition.addEventListener('result', (event) => {
+        chatInput.value = event.results[0][0].transcript;
+        chatInput.focus();
+      });
+      recognition.start();
     });
+  } else {
+    micButton.hidden = true;
   }
 
   async function sendMessage(text) {
+    if (isSending) return;
     const selectedLanguage = getSelectedChatLanguage();
     activeLanguage = selectedLanguage;
+    isSending = true;
+    sendButton.disabled = true;
     messages.push({ sender: 'user', text });
-    if (chatInput) chatInput.value = '';
+    chatInput.value = '';
     renderMessages();
     showTypingIndicator();
     try {
@@ -225,27 +348,34 @@ function initChatbot() {
     } catch {
       messages.push({ sender: 'assistant', text: getAssistantReply(text, selectedLanguage) });
     } finally {
+      isSending = false;
+      sendButton.disabled = false;
       removeTypingIndicator();
       renderMessages();
+      chatInput.focus();
     }
   }
 
   function renderMessages() {
-    if (!messagesContainer) return;
-    messagesContainer.innerHTML = messages.map((message) => `
-      <div class="max-w-[85%] whitespace-pre-line rounded-xl px-4 py-2.5 text-xs leading-5 mb-2 ${
-        message.sender === 'user' ? 'ml-auto bg-navy text-white' : 'bg-white text-slate-700 shadow-sm border border-slate-100'
-      }">${escapeHtml(message.text)}</div>
-    `).join('');
+    const timestamp = new Intl.DateTimeFormat(activeLanguage === 'hi' ? 'hi-IN' : 'en-IN', {
+      hour: 'numeric',
+      minute: '2-digit',
+    }).format(new Date());
+    messagesContainer.innerHTML = `<div class="didi-timestamp">${escapeHtml(timestamp)}</div>${messages.map((message) => `
+      <div class="didi-message-row ${message.sender === 'user' ? 'user' : 'assistant'}">
+        ${message.sender === 'assistant' ? '<div class="didi-message-avatar"><img src="images/am-logo.png" alt="" /></div>' : ''}
+        <div class="didi-bubble">${escapeHtml(message.text)}</div>
+      </div>
+    `).join('')}`;
     messagesContainer.scrollTop = messagesContainer.scrollHeight;
   }
 
   function showTypingIndicator() {
-    if (!messagesContainer) return;
     const typing = document.createElement('div');
     typing.id = 'chat-typing';
-    typing.className = 'flex items-center gap-1 bg-white px-4 py-2.5 rounded-xl text-xs text-slate-400 w-fit mb-2 shadow-sm';
-    typing.innerHTML = `<span>${chatCopy[activeLanguage].typing}</span><span class="animate-pulse">...</span>`;
+    typing.className = 'didi-typing';
+    typing.setAttribute('aria-label', chatCopy[activeLanguage].typing);
+    typing.innerHTML = '<span class="didi-dot"></span><span class="didi-dot"></span><span class="didi-dot"></span>';
     messagesContainer.appendChild(typing);
     messagesContainer.scrollTop = messagesContainer.scrollHeight;
   }
