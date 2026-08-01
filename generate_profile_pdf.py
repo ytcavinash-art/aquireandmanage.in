@@ -23,6 +23,9 @@ try:
     font_body_bold = ImageFont.truetype("arialbd.ttf", 22)
     font_small = ImageFont.truetype("arial.ttf", 18)
     font_badge = ImageFont.truetype("arialbd.ttf", 16)
+    font_cover = ImageFont.truetype("arialbd.ttf", 52)
+    font_card_title = ImageFont.truetype("arialbd.ttf", 27)
+    font_contact = ImageFont.truetype("arial.ttf", 24)
 except Exception:
     font_hero = ImageFont.load_default()
     font_title = ImageFont.load_default()
@@ -31,6 +34,38 @@ except Exception:
     font_body_bold = ImageFont.load_default()
     font_small = ImageFont.load_default()
     font_badge = ImageFont.load_default()
+    font_cover = ImageFont.load_default()
+    font_card_title = ImageFont.load_default()
+    font_contact = ImageFont.load_default()
+
+def wrap_text(draw, text, font, max_width):
+    """Wrap text by rendered pixel width without splitting words."""
+    lines = []
+    for paragraph in text.splitlines() or ['']:
+        words = paragraph.split()
+        if not words:
+            lines.append('')
+            continue
+        line = words[0]
+        for word in words[1:]:
+            candidate = f"{line} {word}"
+            if draw.textlength(candidate, font=font) <= max_width:
+                line = candidate
+            else:
+                lines.append(line)
+                line = word
+        lines.append(line)
+    return lines
+
+def draw_wrapped_text(draw, xy, text, font, fill, max_width, line_spacing=8):
+    """Draw wrapped text and return the next available vertical position."""
+    x, y = xy
+    bbox = draw.textbbox((0, 0), "Ag", font=font)
+    line_height = (bbox[3] - bbox[1]) + line_spacing
+    for line in wrap_text(draw, text, font, max_width):
+        draw.text((x, y), line, fill=fill, font=font)
+        y += line_height
+    return y
 
 def load_and_contain(path, max_w, max_h):
     if not os.path.exists(path):
@@ -104,11 +139,11 @@ if logo1:
 else:
     draw1.text((180, 220), "A&M ADVISORY", fill=NAVY, font=font_hero)
 
-draw1.text((180, 420), "Advisory Excellence", fill=NAVY, font=font_hero)
-draw1.text((180, 520), "Building The Future Together", fill=CRIMSON, font=font_hero)
+draw_wrapped_text(draw1, (180, 420), "Advisory Excellence", font_hero, NAVY, 760, 8)
+draw_wrapped_text(draw1, (180, 520), "Building The Future Together", font_cover, CRIMSON, 760, 6)
 
-draw1.text((180, 670), "MUMBAI SRA REDEVELOPMENT & CORPORATE ADVISORY", fill=SLATE_MUTED, font=font_body_bold)
-draw1.text((180, 720), "Official Corporate Company Profile & Capability Deck", fill=SLATE_DARK, font=font_subtitle)
+draw_wrapped_text(draw1, (180, 680), "MUMBAI SRA REDEVELOPMENT & CORPORATE ADVISORY", font_body_bold, SLATE_MUTED, 760, 5)
+draw_wrapped_text(draw1, (180, 730), "Official Corporate Company Profile & Capability Deck", font_body_bold, SLATE_DARK, 760, 5)
 
 slides.append(img1)
 
@@ -125,8 +160,7 @@ p1 = ("A&M Private Limited specializes in end-to-end advisory and execution supp
       "(SRA) projects in Mumbai. We play a vital role in managing the entire project lifecycle—from initial surveys and "
       "documentation to approvals, coordination, and final handover.")
 draw2.text((140, 260), "End-to-End SRA Project Management", fill=CRIMSON, font=font_subtitle)
-draw2.text((140, 310), p1[:130], fill=SLATE_DARK, font=font_body)
-draw2.text((140, 345), p1[130:], fill=SLATE_DARK, font=font_body)
+draw_wrapped_text(draw2, (140, 310), p1, font_body, SLATE_DARK, 1640, 7)
 
 # Card 2
 draw2.rectangle([100, 450, W - 100, 670], fill=WHITE, outline=SLATE_BORDER, width=2)
@@ -135,17 +169,14 @@ p2 = ("Our expertise lies in liaisoning with government authorities, ensuring co
       "transparency, efficiency, and accountability, we help transform redevelopment visions into successful, legally "
       "compliant, and socially impactful outcomes.")
 draw2.text((140, 490), "Regulatory Expertise & Stakeholder Bridge", fill=NAVY, font=font_subtitle)
-draw2.text((140, 540), p2[:140], fill=SLATE_DARK, font=font_body)
-draw2.text((140, 575), p2[140:270], fill=SLATE_DARK, font=font_body)
-draw2.text((140, 610), p2[270:], fill=SLATE_DARK, font=font_body)
+draw_wrapped_text(draw2, (140, 540), p2, font_body, SLATE_DARK, 1640, 7)
 
 # Card 3
 draw2.rectangle([100, 700, W - 100, 880], fill=WHITE, outline=SLATE_BORDER, width=2)
 p3 = ("Driven by Advisory Excellence, we are committed to Building The Future Together by contributing to structured "
       "urban development and improved living standards across the Mumbai Metropolitan Region (MMR).")
 draw2.text((140, 740), "Commitment to Sustainable Urban Growth", fill=CRIMSON, font=font_subtitle)
-draw2.text((140, 790), p3[:130], fill=SLATE_DARK, font=font_body)
-draw2.text((140, 825), p3[130:], fill=SLATE_DARK, font=font_body)
+draw_wrapped_text(draw2, (140, 790), p3, font_body, SLATE_DARK, 1640, 7)
 
 slides.append(img2)
 
@@ -163,9 +194,7 @@ draw3.line([150, 390, 350, 390], fill=WHITE, width=4)
 v_text = ("To contribute towards a slum-free Mumbai by enabling inclusive, sustainable, and well-executed "
           "urban redevelopment.")
 draw3.text((150, 450), "Slum-Free Mumbai Goal", fill=WHITE, font=font_subtitle)
-draw3.text((150, 520), v_text[:50], fill=WHITE, font=font_subtitle)
-draw3.text((150, 570), v_text[50:95], fill=WHITE, font=font_subtitle)
-draw3.text((150, 620), v_text[95:], fill=WHITE, font=font_subtitle)
+draw_wrapped_text(draw3, (150, 520), v_text, font_body_bold, WHITE, 700, 12)
 
 # Mission Card
 draw3.rectangle([(W // 2) + 30, 240, W - 100, 850], fill=NAVY)
@@ -174,9 +203,7 @@ draw3.line([(W // 2) + 80, 390, (W // 2) + 280, 390], fill=WHITE, width=4)
 m_text = ("To transform complex redevelopment challenges into executable solutions through strategic advisory and "
           "disciplined project execution.")
 draw3.text([(W // 2) + 80, 450], "Executable Advisory Solutions", fill=WHITE, font=font_subtitle)
-draw3.text([(W // 2) + 80, 520], m_text[:55], fill=WHITE, font=font_subtitle)
-draw3.text([(W // 2) + 80, 570], m_text[55:105], fill=WHITE, font=font_subtitle)
-draw3.text([(W // 2) + 80, 620], m_text[105:], fill=WHITE, font=font_subtitle)
+draw_wrapped_text(draw3, ((W // 2) + 80, 520), m_text, font_body_bold, WHITE, 700, 12)
 
 slides.append(img3)
 
@@ -289,7 +316,7 @@ def create_service_slide(title_text, intro_text, items, icon_code="⚡"):
         
         # Module badge number
         draw.rectangle([cx + 20, cy + 25, cx + 70, cy + 55], fill=LIGHT_BG)
-        draw.text((cx + 32, cy + 30), f"0{idx+1}", fill=CRIMSON, font=font_badge)
+        draw.text((cx + 32, cy + 30), f"{idx+1:02d}", fill=CRIMSON, font=font_badge)
         
         # Wrap item text
         words_item = item.split()
@@ -454,25 +481,8 @@ for idx, (num, g_title, g_desc) in enumerate(goals):
     draw10.rectangle([gx, 260, gx + 540, 360], fill=NAVY if idx % 2 == 0 else CRIMSON)
     
     draw10.text((gx + 40, 285), num, fill=WHITE, font=font_hero)
-    draw10.text((gx + 40, 390), g_title, fill=NAVY, font=font_subtitle)
-    
-    # Wrap text
-    g_words = g_desc.split()
-    g_lines = []
-    cg = ""
-    for w in g_words:
-        if len(cg + " " + w) > 38:
-            g_lines.append(cg)
-            cg = w
-        else:
-            cg = (cg + " " + w).strip()
-    if cg:
-        g_lines.append(cg)
-        
-    gy = 460
-    for gl in g_lines:
-        draw10.text((gx + 40, gy), gl, fill=SLATE_DARK, font=font_body)
-        gy += 32
+    title_bottom = draw_wrapped_text(draw10, (gx + 40, 390), g_title, font_card_title, NAVY, 460, 5)
+    draw_wrapped_text(draw10, (gx + 40, max(475, title_bottom + 18)), g_desc, font_body, SLATE_DARK, 460, 10)
 
 slides.append(img10)
 
@@ -490,15 +500,12 @@ cn1 = ("A&M Advisory Pvt. Ltd Stands as a Reliable Partner in Delivering Success
        "Planning, Regulatory Expertise, and Efficient Execution. Our Commitment to Transparency, Compliance, and "
        "Stakeholder Coordination Ensures Smooth Project Delivery at every stage.")
 draw11.text((160, 300), "A Reliable Partner for SRA Redevelopment", fill=CRIMSON, font=font_subtitle)
-draw11.text((160, 360), cn1[:110], fill=SLATE_DARK, font=font_body)
-draw11.text((160, 400), cn1[110:220], fill=SLATE_DARK, font=font_body)
-draw11.text((160, 440), cn1[220:], fill=SLATE_DARK, font=font_body)
+draw_wrapped_text(draw11, (160, 360), cn1, font_body, SLATE_DARK, 1580, 10)
 
 cn2 = ("With a Focus on Quality, Accountability, and Timely Completion, we Contribute to Sustainable Urban Redevelopment "
        "and Improved Living Standards. Guided by Advisory Excellence, we Remain Dedicated to Building The Future Together.")
 draw11.text((160, 540), "Guided by Advisory Excellence", fill=NAVY, font=font_subtitle)
-draw11.text((160, 600), cn2[:115], fill=SLATE_DARK, font=font_body)
-draw11.text((160, 640), cn2[115:], fill=SLATE_DARK, font=font_body)
+draw_wrapped_text(draw11, (160, 600), cn2, font_body, SLATE_DARK, 1580, 10)
 
 slides.append(img11)
 
@@ -517,17 +524,19 @@ draw12.text((120, 370), "Contact Us", fill=CRIMSON, font=font_hero)
 
 draw12.line([120, 470, 600, 470], fill=WHITE, width=3)
 
-draw12.text((120, 520), "📞 Phone:", fill=WHITE, font=font_subtitle)
-draw12.text((320, 520), "022- 45648350", fill=LIGHT_BG, font=font_subtitle)
-
-draw12.text((120, 590), "✉️ Mail:", fill=WHITE, font=font_subtitle)
-draw12.text((320, 590), "info@aquireandmanage.com / aquireandmanage@gmail.com", fill=LIGHT_BG, font=font_subtitle)
-
-draw12.text((120, 660), "🌐 Website:", fill=WHITE, font=font_subtitle)
-draw12.text((320, 660), "www.aquireandmanage.com", fill=LIGHT_BG, font=font_subtitle)
-
-draw12.text((120, 730), "📍 Corporate Office:", fill=WHITE, font=font_subtitle)
-draw12.text((320, 730), "102B, Hallmark Business Plaza, Jagat Vidya Marg, Bandra East, Mumbai, MS 400051", fill=LIGHT_BG, font=font_body)
+contact_rows = [
+    ("Phone", "+91 022-45648350"),
+    ("Email", "info@aquireandmanage.com / aquireandmanage@gmail.com"),
+    ("Website", "www.aquireandmanage.com"),
+    ("Corporate Office", "206 Hallmark Business Plaza, Opp. Guru Nanak Hospital, Jagat Vidya Marg, Bandra East, Mumbai 400051"),
+]
+row_y = 520
+for label, value in contact_rows:
+    draw12.text((120, row_y), f"{label}:", fill=WHITE, font=font_body_bold)
+    row_y = max(
+        row_y + 62,
+        draw_wrapped_text(draw12, (400, row_y), value, font_contact, LIGHT_BG, 1380, 8) + 22,
+    )
 
 slides.append(img12)
 
@@ -536,6 +545,6 @@ os.makedirs('aquiretested/assets', exist_ok=True)
 pdf_path = 'aquiretested/assets/AM_Advisory_Company_Profile.pdf'
 
 # Save all 12 slides as high-quality PDF
-slides[0].save(pdf_path, save_all=True, append_images=slides[1:], format="PDF")
+slides[0].save(pdf_path, save_all=True, append_images=slides[1:], format="PDF", resolution=150.0)
 
-print(f"✅ Successfully generated official 12-page company profile PDF at {pdf_path}")
+print(f"Successfully generated official 12-page company profile PDF at {pdf_path}")

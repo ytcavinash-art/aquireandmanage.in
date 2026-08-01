@@ -349,7 +349,7 @@ function initBrochureModal() {
 
   function triggerProfileDownload() {
     const link = document.createElement('a');
-    link.href = 'assets/AM_Advisory_Company_Profile.pdf';
+    link.href = 'assets/AM_Advisory_Company_Profile.pdf?v=20260801-2';
     link.download = 'AM_Advisory_Company_Profile.pdf';
     document.body.appendChild(link);
     link.click();
@@ -432,4 +432,3 @@ function initVideoModal() {
     });
   }
 }
-
