@@ -32,7 +32,34 @@ const chatCopy = {
     typing: 'सहायक उत्तर तैयार कर रहा है',
     suggestions: ['आप कौन-सी सेवाएँ देते हैं?', 'Tenant management में क्या शामिल है?', 'Liaisoning और approvals में क्या सहायता मिलती है?'],
   },
+  mr: {
+    welcome: 'नमस्कार 👋 A&M Advisory मध्ये आपले स्वागत आहे. मी SRA redevelopment, tenant आणि property management, कागदपत्रे, approvals, liaisoning, IEC आणि facility management विषयी मदत करू शकते. मी आपली कशी मदत करू?',
+    placeholder: 'तुमचा प्रश्न मराठीत विचारा...',
+    inputLabel: 'A&M Advisory ला मराठीत प्रश्न विचारा',
+    typing: 'सहाय्यक उत्तर तयार करत आहे',
+    suggestions: ['तुम्ही कोणत्या सेवा देता?', 'Tenant management मध्ये काय समाविष्ट आहे?', 'Move-in प्रक्रिया काय आहे?'],
+  },
 };
+
+const propertyManagementFaqs = window.AM_PROPERTY_MANAGEMENT_FAQS || [];
+
+function getFaqReplyById(id, language) {
+  const faq = propertyManagementFaqs.find((item) => item.id === id);
+  const languageKey = language === 'mr' ? 'marathi' : language === 'hi' ? 'hindi' : 'english';
+  return faq?.[languageKey] || '';
+}
+
+function isOutsideWorkingHours(date = new Date()) {
+  const parts = Object.fromEntries(new Intl.DateTimeFormat('en-GB', {
+    timeZone: 'Asia/Kolkata',
+    weekday: 'short',
+    hour: '2-digit',
+    minute: '2-digit',
+    hourCycle: 'h23',
+  }).formatToParts(date).map((part) => [part.type, part.value]));
+  const minutes = (Number(parts.hour) * 60) + Number(parts.minute);
+  return parts.weekday === 'Sun' || minutes < 570 || minutes > 1110;
+}
 
 const instantServiceAnswers = [
   {
@@ -74,19 +101,30 @@ const instantServiceAnswers = [
 
 function getInstantServiceReply(message, language) {
   const text = message.toLocaleLowerCase('en-IN');
+  const propertyMatch = propertyManagementFaqs
+    .map((faq) => ({
+      faq,
+      score: faq.keywords.reduce((total, keyword) => (
+        total + (text.includes(keyword.toLocaleLowerCase('en-IN')) ? keyword.length : 0)
+      ), 0),
+    }))
+    .sort((a, b) => b.score - a.score)[0];
+  const languageKey = language === 'mr' ? 'marathi' : language === 'hi' ? 'hindi' : 'english';
+  if (propertyMatch?.score > 0) return propertyMatch.faq[languageKey] || '';
+
   const match = instantServiceAnswers.find((service) => (
     service.keywords.some((keyword) => text.includes(keyword))
   ));
-  return match ? match[language === 'hi' ? 'hi' : 'en'] : '';
+  return match ? (match[language] || '') : '';
 }
 
 function getSelectedChatLanguage() {
   const selectedValue = document.querySelector('.language-select')?.value;
   const savedValue = localStorage.getItem('am_selected_language');
   const pageLanguage = document.documentElement.lang?.split('-')[0];
-  if (selectedValue) return selectedValue === 'en' ? 'en' : 'hi';
-  if (savedValue) return savedValue === 'en' ? 'en' : 'hi';
-  return pageLanguage === 'en' ? 'en' : 'hi';
+  if (['en', 'hi', 'mr'].includes(selectedValue)) return selectedValue;
+  if (['en', 'hi', 'mr'].includes(savedValue)) return savedValue;
+  return ['en', 'hi', 'mr'].includes(pageLanguage) ? pageLanguage : 'en';
 }
 
 function getAssistantReply(message, selectedLanguage = getSelectedChatLanguage()) {
@@ -246,6 +284,7 @@ function initChatbot() {
         <div id="didi-language-menu" class="didi-language-menu" hidden>
           <button type="button" class="didi-language-option" data-language="en">◎ English</button>
           <button type="button" class="didi-language-option" data-language="hi">◎ हिन्दी (Hindi)</button>
+          <button type="button" class="didi-language-option" data-language="mr">◎ मराठी (Marathi)</button>
         </div>
         <form id="chatbot-form" class="didi-form">
           <button id="didi-language-toggle" type="button" class="didi-icon-button" aria-label="Choose chat language" aria-expanded="false">
@@ -276,6 +315,7 @@ function initChatbot() {
   const statusText = document.getElementById('didi-status-text');
   let activeLanguage = getSelectedChatLanguage();
   let isSending = false;
+  let afterHoursNoticeShown = false;
   const messages = [{ sender: 'assistant', text: chatCopy[activeLanguage].welcome, isWelcome: true }];
 
   function setOpen(open) {
@@ -292,13 +332,15 @@ function initChatbot() {
   });
 
   function applyChatLanguage(language, replaceWelcome = false) {
-    activeLanguage = language === 'hi' ? 'hi' : 'en';
+    activeLanguage = ['en', 'hi', 'mr'].includes(language) ? language : 'en';
     localStorage.setItem('am_selected_language', activeLanguage);
     const copy = chatCopy[activeLanguage];
     chatInput.placeholder = copy.placeholder;
     chatInput.setAttribute('aria-label', copy.inputLabel);
-    sendButton.setAttribute('aria-label', activeLanguage === 'hi' ? 'संदेश भेजें' : 'Send message');
-    statusText.textContent = activeLanguage === 'hi' ? 'आपकी वर्चुअल सहायक' : 'Your virtual assistant';
+    const sendLabels = { en: 'Send message', hi: 'संदेश भेजें', mr: 'संदेश पाठवा' };
+    const statusLabels = { en: 'Your virtual assistant', hi: 'आपकी वर्चुअल सहायक', mr: 'तुमची व्हर्च्युअल सहाय्यक' };
+    sendButton.setAttribute('aria-label', sendLabels[activeLanguage]);
+    statusText.textContent = statusLabels[activeLanguage];
     languageMenu.querySelectorAll('[data-language]').forEach((option) => {
       option.classList.toggle('selected', option.dataset.language === activeLanguage);
     });
@@ -312,7 +354,7 @@ function initChatbot() {
   }
 
   function selectLanguage(language) {
-    const websiteLanguage = language === 'hi' ? 'hi' : 'en';
+    const websiteLanguage = ['en', 'hi', 'mr'].includes(language) ? language : 'en';
     const websiteSelect = document.querySelector('.language-select');
     localStorage.setItem('am_selected_language', websiteLanguage);
     applyChatLanguage(websiteLanguage, true);
@@ -329,7 +371,7 @@ function initChatbot() {
   applyChatLanguage(activeLanguage);
   document.querySelectorAll('.language-select').forEach((select) => {
     select.addEventListener('change', (event) => {
-      applyChatLanguage(event.target.value === 'en' ? 'en' : 'hi', true);
+      applyChatLanguage(event.target.value, true);
     });
   });
 
@@ -369,7 +411,7 @@ function initChatbot() {
   if (SpeechRecognition) {
     micButton.addEventListener('click', () => {
       const recognition = new SpeechRecognition();
-      recognition.lang = activeLanguage === 'hi' ? 'hi-IN' : 'en-IN';
+      recognition.lang = activeLanguage === 'mr' ? 'mr-IN' : activeLanguage === 'hi' ? 'hi-IN' : 'en-IN';
       recognition.interimResults = false;
       recognition.addEventListener('start', () => micButton.setAttribute('aria-pressed', 'true'));
       recognition.addEventListener('end', () => micButton.removeAttribute('aria-pressed'));
@@ -392,6 +434,12 @@ function initChatbot() {
     renderMessages();
 
     const instantReply = getInstantServiceReply(text, selectedLanguage);
+    const afterHoursReply = getFaqReplyById('navigation-after-hours', selectedLanguage);
+    if (!afterHoursNoticeShown && isOutsideWorkingHours() && afterHoursReply && instantReply !== afterHoursReply) {
+      afterHoursNoticeShown = true;
+      messages.push({ sender: 'assistant', text: afterHoursReply });
+      renderMessages();
+    }
     if (instantReply) {
       messages.push({ sender: 'assistant', text: instantReply });
       renderMessages();
@@ -429,7 +477,7 @@ function initChatbot() {
   }
 
   function renderMessages() {
-    const timestamp = new Intl.DateTimeFormat(activeLanguage === 'hi' ? 'hi-IN' : 'en-IN', {
+    const timestamp = new Intl.DateTimeFormat(activeLanguage === 'mr' ? 'mr-IN' : activeLanguage === 'hi' ? 'hi-IN' : 'en-IN', {
       hour: 'numeric',
       minute: '2-digit',
     }).format(new Date());

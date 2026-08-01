@@ -1,6 +1,9 @@
 const OpenAI = require('openai');
+require('../aquiretested/js/property-management-faqs');
+const PROPERTY_MANAGEMENT_FAQS = globalThis.AM_PROPERTY_MANAGEMENT_FAQS || [];
 
 const FAQS = [
+  ...PROPERTY_MANAGEMENT_FAQS,
   {
     id: 'sra',
     keywords: ['sra', 'slum rehabilitation', 'redevelopment', 'पुनर्विकास', 'झुग्गी पुनर्वास'],
@@ -141,22 +144,26 @@ function findFaq(message) {
 
 function fallbackAnswer(message, selectedLanguage) {
   const match = findFaq(message);
-  const hindi = selectedLanguage === 'hi' || (!selectedLanguage && isHindi(message));
-  if (match?.score > 0) return match.faq[hindi ? 'hindi' : 'english'];
-  return hindi
-    ? 'क्षमा करें, मुझे आपके प्रश्न का सटीक उत्तर नहीं मिला। कृपया अपना नाम और संपर्क विवरण Quick Enquiry form में साझा करें; A&M Advisory की टीम आपसे संपर्क करेगी।'
-    : "I'm sorry, I couldn't find an exact answer. Please share your name and contact details through the Quick Enquiry form, and an A&M Advisory expert will get in touch with you.";
+  const language = selectedLanguage === 'mr' ? 'mr' : selectedLanguage === 'hi' || (!selectedLanguage && isHindi(message)) ? 'hi' : 'en';
+  const languageKey = language === 'mr' ? 'marathi' : language === 'hi' ? 'hindi' : 'english';
+  if (match?.score > 0 && match.faq[languageKey]) return match.faq[languageKey];
+  const fallbacks = {
+    en: "I'm sorry, I couldn't find an exact answer. Please share your name and contact details through the Quick Enquiry form, and an A&M Advisory expert will get in touch with you.",
+    hi: 'क्षमा करें, मुझे आपके प्रश्न का सटीक उत्तर नहीं मिला। कृपया अपना नाम और संपर्क विवरण Quick Enquiry form में साझा करें; A&M Advisory की टीम आपसे संपर्क करेगी।',
+    mr: 'क्षमस्व, मला तुमच्या प्रश्नाचे अचूक उत्तर मिळाले नाही. कृपया Quick Enquiry form मध्ये तुमचे नाव आणि संपर्क तपशील द्या; A&M Advisory ची टीम तुमच्याशी संपर्क साधेल.',
+  };
+  return fallbacks[language];
 }
 
 function buildKnowledge() {
   return FAQS.map((faq, index) => (
-    `${index + 1}. ${faq.id}\nEnglish: ${faq.english}\nHindi: ${faq.hindi}`
+    `${index + 1}. ${faq.id}\nEnglish: ${faq.english}\nHindi: ${faq.hindi || 'Not supplied'}\nMarathi: ${faq.marathi || 'Translate the English answer faithfully when Marathi is selected.'}`
   )).join('\n\n');
 }
 
 async function answerQuestion(messages, selectedLanguage) {
   const latestMessage = messages.at(-1)?.content || '';
-  const responseLanguage = selectedLanguage === 'hi' ? 'Hindi' : 'English';
+  const responseLanguage = selectedLanguage === 'mr' ? 'Marathi' : selectedLanguage === 'hi' ? 'Hindi' : 'English';
   if (!process.env.OPENAI_API_KEY) {
     return { answer: fallbackAnswer(latestMessage, selectedLanguage), mode: 'knowledge-base' };
   }
@@ -165,7 +172,7 @@ async function answerQuestion(messages, selectedLanguage) {
   try {
     const response = await client.responses.create({
       model: process.env.OPENAI_CHAT_MODEL || 'gpt-5.6-sol',
-      instructions: `You are A&M Advisory's website assistant for Mumbai SRA and urban redevelopment.
+      instructions: `You are A&M Advisory DiDi, the website assistant for Mumbai SRA, tenant and property management, and urban redevelopment.
 The website language selected by the user is ${responseLanguage}. Reply only in ${responseLanguage},
 regardless of the language or script used in the user's message. Keep answers concise, practical and
 empathetic. Use only the supplied company knowledge. Never invent project claims, legal decisions,

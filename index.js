@@ -105,7 +105,7 @@ app.get('/api/daily-briefs/:id', async (req, res) => {
 
 app.post('/api/chat', chatRateLimit, async (req, res) => {
   try {
-    const language = req.body.language === 'hi' ? 'hi' : 'en';
+    const language = ['en', 'hi', 'mr'].includes(req.body.language) ? req.body.language : 'en';
     const messages = Array.isArray(req.body.messages) ? req.body.messages.slice(-8) : [];
     const validMessages = messages
       .filter((message) => ['user', 'assistant'].includes(message?.role) && typeof message?.content === 'string')
