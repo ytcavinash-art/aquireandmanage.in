@@ -12,7 +12,7 @@ function ensureChatbotStyles() {
   if (document.querySelector('link[href*="css/chatbot.css"]')) return;
   const stylesheet = document.createElement('link');
   stylesheet.rel = 'stylesheet';
-  stylesheet.href = 'css/chatbot.css?v=32394f1';
+  stylesheet.href = 'css/chatbot.css?v=20260801-1';
   document.head.appendChild(stylesheet);
 }
 
@@ -168,6 +168,12 @@ function initChatbot() {
   chatToggleBtn?.classList.add('didi-launcher');
   if (chatToggleBtn) {
     chatToggleBtn.innerHTML = '<img src="images/didi-avatar.png" alt="" width="52" height="52" />';
+
+    const launcherLabel = document.createElement('div');
+    launcherLabel.id = 'didi-launcher-label';
+    launcherLabel.className = 'didi-launcher-label';
+    launcherLabel.textContent = 'A&M Advisory DiDi Hai';
+    chatToggleBtn.parentElement?.insertBefore(launcherLabel, chatToggleBtn);
   }
   chatToggleBtn?.setAttribute('aria-label', 'Open A&M Advisory DiDi');
   chatToggleBtn?.setAttribute('aria-expanded', 'false');
@@ -229,6 +235,7 @@ function initChatbot() {
   function setOpen(open) {
     chatbotModal.classList.toggle('hidden', !open);
     chatToggleBtn?.setAttribute('aria-expanded', String(open));
+    document.getElementById('didi-launcher-label')?.classList.toggle('hidden', open);
     if (open) window.setTimeout(() => chatInput?.focus(), 80);
   }
 
