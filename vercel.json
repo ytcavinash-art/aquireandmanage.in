@@ -3,6 +3,12 @@
   "outputDirectory": "dist",
   "cleanUrls": true,
   "trailingSlash": false,
+  "crons": [
+    {
+      "path": "/api/daily-briefs?limit=50",
+      "schedule": "30 2 * * *"
+    }
+  ],
   "headers": [
     {
       "source": "/(.*)\\.(css|js|png|jpg|jpeg|webp|gif|svg|ico|woff2)",

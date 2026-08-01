@@ -1,3 +1,177 @@
+import Parser from 'rss-parser';
+
+const parser = new Parser({
+  customFields: {
+    item: [['source', 'source']],
+  },
+});
+
+const LIVE_BRIEF_FEED_URL =
+  'https://news.google.com/rss/search?q=(Mumbai+OR+MMR)+(SRA+OR+MHADA+OR+redevelopment+OR+slum+rehabilitation+OR+BMC+housing+OR+Dharavi)&hl=en-IN&gl=IN&ceid=IN:en';
+const LIVE_BRIEF_KEYWORDS = [
+  'mumbai', 'mmr', 'sra', 'slum', 'redevelopment', 'rehabilitation',
+  'mhada', 'bmc', 'mcgm', 'dharavi', 'housing', 'real estate',
+];
+
+function getArticleSource(item) {
+  if (typeof item.source === 'string') return item.source;
+  if (item.source && typeof item.source === 'object') {
+    return item.source._ || item.source.title || item.source.name || 'Google News';
+  }
+  return item.creator || 'Google News';
+}
+
+function cleanArticleTitle(title, source) {
+  const value = String(title || 'Mumbai redevelopment update').trim();
+  const suffix = ` - ${source}`;
+  return value.endsWith(suffix) ? value.slice(0, -suffix.length).trim() : value;
+}
+
+function classifySignal(text) {
+  const value = text.toLowerCase();
+  if (value.includes('mhada')) return 'MHADA & Regulatory';
+  if (value.includes('sra') || value.includes('slum') || value.includes('rehabilitation')) {
+    return 'SRA & Rehabilitation';
+  }
+  if (value.includes('bmc') || value.includes('mcgm') || value.includes('municipal')) {
+    return 'BMC & Infrastructure';
+  }
+  if (value.includes('tender') || value.includes('bid') || value.includes('eoi')) {
+    return 'Tenders & Procurement';
+  }
+  if (value.includes('developer') || value.includes('realty') || value.includes('jda')) {
+    return 'Developer Signals';
+  }
+  return 'Mumbai & MMR Redevelopment';
+}
+
+function getSignalGuidance(category) {
+  if (category.includes('MHADA')) {
+    return {
+      whyItMatters: 'The update may affect authority-led redevelopment permissions, society strategy, timelines, and regulatory due diligence.',
+      dprImplication: 'Review applicable MHADA ownership, layout, FSI, consent, approval, and premium conditions in the project DPR.',
+      clientAction: 'Check the underlying MHADA notice or order and map its impact on active and proposed projects.',
+    };
+  }
+  if (category.includes('SRA')) {
+    return {
+      whyItMatters: 'The signal can affect rehabilitation obligations, tenant coordination, approvals, project viability, and developer risk.',
+      dprImplication: 'Revalidate eligibility, rehab commitments, transit rent, approval status, sale potential, and scheme-level liabilities.',
+      clientAction: 'Confirm the primary SRA record and add the change to the relevant project feasibility and risk tracker.',
+    };
+  }
+  if (category.includes('BMC')) {
+    return {
+      whyItMatters: 'Municipal policy and infrastructure changes can affect approvals, access, utilities, reservations, and construction planning.',
+      dprImplication: 'Check municipal remarks, infrastructure interfaces, site access, utility constraints, and approval dependencies.',
+      clientAction: 'Map the update against current project locations and verify it with the relevant BMC department.',
+    };
+  }
+  if (category.includes('Tender')) {
+    return {
+      whyItMatters: 'The opportunity may create a time-bound advisory, contracting, or project-participation requirement.',
+      dprImplication: 'Review scope, eligibility, deadlines, BOQ, technical conditions, and commercial exposure before participation.',
+      clientAction: 'Download the official tender documents and assign bid/no-bid review with deadline ownership.',
+    };
+  }
+  return {
+    whyItMatters: 'The update is a current market signal for redevelopment feasibility, stakeholder strategy, and project risk in Mumbai and MMR.',
+    dprImplication: 'Validate the primary source and reflect any material land, approval, cost, timeline, or stakeholder impact in the DPR.',
+    clientAction: 'Add the signal to the opportunity and risk tracker, then verify it with the relevant authority or counterparty.',
+  };
+}
+
+function formatIstDate(date) {
+  return new Intl.DateTimeFormat('en-IN', {
+    timeZone: 'Asia/Kolkata',
+    weekday: 'short',
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric',
+  }).format(date);
+}
+
+function getIstDateKey(date) {
+  const parts = new Intl.DateTimeFormat('en-CA', {
+    timeZone: 'Asia/Kolkata',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  }).formatToParts(date);
+  const values = Object.fromEntries(parts.map(part => [part.type, part.value]));
+  return `${values.year}-${values.month}-${values.day}`;
+}
+
+async function createAutomaticDailyBrief() {
+  const feed = await parser.parseURL(LIVE_BRIEF_FEED_URL);
+  const seenTitles = new Set();
+  const articles = [];
+
+  for (const item of feed.items || []) {
+    const source = getArticleSource(item);
+    const title = cleanArticleTitle(item.title, source);
+    const description = String(item.contentSnippet || '').trim();
+    const searchableText = `${title} ${description}`.toLowerCase();
+    const titleKey = title.toLowerCase();
+
+    if (!LIVE_BRIEF_KEYWORDS.some(keyword => searchableText.includes(keyword))) continue;
+    if (!item.link || seenTitles.has(titleKey)) continue;
+
+    seenTitles.add(titleKey);
+    articles.push({
+      title,
+      description,
+      source,
+      url: item.link,
+      publishedAt: item.isoDate || item.pubDate || '',
+    });
+  }
+
+  articles.sort(
+    (first, second) =>
+      new Date(second.publishedAt).getTime() - new Date(first.publishedAt).getTime(),
+  );
+
+  const topArticles = articles.slice(0, 5);
+  if (topArticles.length === 0) return null;
+
+  const now = new Date();
+  const dateKey = getIstDateKey(now);
+  const rankedItems = topArticles.map((article, index) => {
+    const category = classifySignal(`${article.title} ${article.description}`);
+    const guidance = getSignalGuidance(category);
+    const summary = article.description && article.description !== article.title
+      ? article.description
+      : article.title;
+
+    return {
+      id: `auto-${dateKey}-${index + 1}`,
+      title: article.title,
+      category,
+      whatHappened: summary,
+      whyItMatters: guidance.whyItMatters,
+      dprImplication: guidance.dprImplication,
+      clientAction: guidance.clientAction,
+      sources: [article.source],
+      sourceUrl: article.url,
+    };
+  });
+
+  return {
+    briefId: `brief-${dateKey}-auto`,
+    date: formatIstDate(now),
+    publishedAt: now.toISOString(),
+    title: 'Daily Mumbai & MMR Redevelopment Intelligence Brief',
+    focus: topArticles.slice(0, 3).map(article => article.title).join(' | '),
+    executiveSummary: rankedItems.slice(0, 3).map(item => item.whatHappened),
+    rankedItems,
+    urgentDeadlines: [],
+    immediateActionList: rankedItems.slice(0, 3).map(item => item.clientAction),
+    automated: true,
+    generatedAt: now.toISOString(),
+  };
+}
+
 const INITIAL_DAILY_BRIEFS = [
   {
     briefId: 'brief-2026-07-21',
@@ -612,12 +786,22 @@ export default async function handler(request, response) {
   }
 
   try {
+    let automaticBrief = null;
+    try {
+      automaticBrief = await createAutomaticDailyBrief();
+    } catch (error) {
+      console.warn('Automatic daily brief generation failed; serving historical fallback.', error);
+    }
+
+    const availableBriefs = automaticBrief
+      ? [automaticBrief, ...INITIAL_DAILY_BRIEFS.filter(brief => brief.briefId !== automaticBrief.briefId)]
+      : INITIAL_DAILY_BRIEFS;
     const page = Math.max(Number.parseInt(String(request.query?.page || '1'), 10), 1);
     const limit = Math.min(Math.max(Number.parseInt(String(request.query?.limit || '12'), 10), 1), 50);
     const category = request.query?.category;
     const search = request.query?.search;
 
-    let filtered = INITIAL_DAILY_BRIEFS;
+    let filtered = availableBriefs;
 
     if (category && category !== 'All' && category !== 'Daily Briefs') {
       filtered = filtered.filter(b => {
@@ -637,12 +821,14 @@ export default async function handler(request, response) {
     const start = (page - 1) * limit;
     const paginated = filtered.slice(start, start + limit);
 
-    response.setHeader('Cache-Control', 's-maxage=300, stale-while-revalidate=900');
+    response.setHeader('Cache-Control', 's-maxage=3600, stale-while-revalidate=21600');
     return response.status(200).json({
       briefs: paginated,
       page,
       total: filtered.length,
-      totalPages: Math.ceil(filtered.length / limit)
+      totalPages: Math.ceil(filtered.length / limit),
+      automatic: Boolean(automaticBrief),
+      generatedAt: automaticBrief?.generatedAt || null
     });
   } catch (error) {
     return response.status(500).json({ error: 'Unable to fetch daily intelligence briefs.' });
