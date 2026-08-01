@@ -347,6 +347,15 @@ function initBrochureModal() {
   const closeBtn = document.getElementById('close-brochure-modal-btn');
   const form = document.getElementById('brochure-download-form');
 
+  function triggerProfileDownload() {
+    const link = document.createElement('a');
+    link.href = 'assets/AM_Advisory_Company_Profile.pdf';
+    link.download = 'AM_Advisory_Company_Profile.pdf';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  }
+
   if (openBtn && modal) {
     openBtn.addEventListener('click', () => modal.classList.remove('hidden'));
   }
@@ -375,14 +384,15 @@ function initBrochureModal() {
         sourcePage: window.location.pathname
       };
 
-      // Save to database
       try {
         let existing = JSON.parse(localStorage.getItem('am_advisory_leads')) || [];
         existing.unshift(leadPayload);
         localStorage.setItem('am_advisory_leads', JSON.stringify(existing));
       } catch (err) {}
 
-      alert('Thank you ' + bName + '! The official A&M Advisory Company Profile (PPT / PDF) is downloading. Opening WhatsApp to connect with our Bandra East office...');
+      // Trigger automatic PDF file download immediately
+      triggerProfileDownload();
+
       modal.classList.add('hidden');
 
       // WhatsApp Redirect
@@ -392,7 +402,7 @@ function initBrochureModal() {
           `*Name:* ${bName}\n` +
           `*Mobile:* ${bPhone}\n` +
           `*Email:* ${bEmail}\n` +
-          `*Request:* Downloaded Company Profile Presentation`
+          `*Request:* Downloaded Official Company Profile Presentation`
         );
         window.open(`https://wa.me/919167485843?text=${waMsg}`, '_blank');
       }, 1000);

@@ -1518,32 +1518,38 @@
       <div class="relative w-full max-w-lg rounded-2xl bg-white p-6 md:p-8 shadow-2xl border border-slate-200">
         <button id="close-brochure-modal-btn" type="button" class="absolute top-4 right-4 text-slate-400 hover:text-navy text-2xl font-bold">&times;</button>
         <div class="text-center">
-          <span class="mx-auto mb-3 grid h-12 w-12 place-items-center rounded-full bg-emerald-100 text-emerald-600 text-2xl">
+          <span class="mx-auto mb-3 grid h-12 w-12 place-items-center rounded-full bg-crimson/10 text-crimson text-2xl">
             📊
           </span>
           <h3 class="text-2xl font-bold text-navy font-serif">Download Company Profile</h3>
           <p class="mt-2 text-xs text-slate-600 leading-relaxed">
-            Get instant access to our official <strong>A&amp;M Advisory Corporate Profile and SRA Capability Deck (PPT / PDF)</strong>.
+            Get instant access to our official <strong>A&amp;M Advisory Corporate Profile &amp; SRA Capability Deck (PDF)</strong>.
           </p>
         </div>
 
         <form id="brochure-download-form" class="mt-6 space-y-4">
           <div>
             <label class="block text-xs font-bold uppercase text-navy mb-1" for="brochure-name">Your Full Name</label>
-            <input type="text" id="brochure-name" required placeholder="e.g. Rahul Mehta (Developer / Housing Society Committee)" class="w-full rounded-xl border border-slate-300 p-3 text-xs focus:border-emerald-600 focus:outline-none bg-slate-50" />
+            <input type="text" id="brochure-name" required placeholder="e.g. Rahul Mehta (Developer / Housing Society Committee)" class="w-full rounded-xl border border-slate-300 p-3 text-xs focus:border-crimson focus:outline-none bg-slate-50" />
           </div>
           <div>
-            <label class="block text-xs font-bold uppercase text-navy mb-1" for="brochure-email">Email Address (To Receive Profile)</label>
-            <input type="email" id="brochure-email" required placeholder="rahul@example.com" class="w-full rounded-xl border border-slate-300 p-3 text-xs focus:border-emerald-600 focus:outline-none bg-slate-50" />
+            <label class="block text-xs font-bold uppercase text-navy mb-1" for="brochure-email">Email Address</label>
+            <input type="email" id="brochure-email" required placeholder="rahul@example.com" class="w-full rounded-xl border border-slate-300 p-3 text-xs focus:border-crimson focus:outline-none bg-slate-50" />
           </div>
           <div>
             <label class="block text-xs font-bold uppercase text-navy mb-1" for="brochure-phone">Mobile Number</label>
-            <input type="tel" id="brochure-phone" name="phone" inputmode="numeric" pattern="[0-9]{10}" maxlength="10" minlength="10" required placeholder="9876543210" class="w-full rounded-xl border border-slate-300 p-3 text-xs focus:border-emerald-600 focus:outline-none bg-slate-50" />
+            <input type="tel" id="brochure-phone" name="phone" inputmode="numeric" pattern="[0-9]{10}" maxlength="10" minlength="10" required placeholder="9876543210" class="w-full rounded-xl border border-slate-300 p-3 text-xs focus:border-crimson focus:outline-none bg-slate-50" />
           </div>
-          <button type="submit" class="w-full rounded-xl bg-emerald-600 py-3.5 text-xs font-bold text-white shadow-lg hover:bg-emerald-700 transition flex items-center justify-center gap-2">
-            <span>📥 Download Company Profile Now (PPT / PDF)</span>
+          <button type="submit" class="w-full rounded-xl bg-crimson py-3.5 text-xs font-bold text-white shadow-lg hover:bg-navy transition flex items-center justify-center gap-2">
+            <span>📥 Download Company Profile PDF Now</span>
           </button>
         </form>
+
+        <div class="mt-4 text-center border-t border-slate-100 pt-3">
+          <a href="assets/AM_Advisory_Company_Profile.pdf" download="AM_Advisory_Company_Profile.pdf" class="text-xs font-bold text-slate-500 hover:text-crimson underline">
+            Direct Download PDF (Skip Form) &rarr;
+          </a>
+        </div>
       </div>
     </div>
 
