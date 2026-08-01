@@ -172,7 +172,7 @@ function initChatbot() {
     const launcherLabel = document.createElement('div');
     launcherLabel.id = 'didi-launcher-label';
     launcherLabel.className = 'didi-launcher-label';
-    launcherLabel.textContent = 'A&M Advisory DiDi Hai';
+    launcherLabel.textContent = 'A&M Advisory DiDi';
     chatToggleBtn.parentElement?.insertBefore(launcherLabel, chatToggleBtn);
   }
   chatToggleBtn?.setAttribute('aria-label', 'Open A&M Advisory DiDi');
