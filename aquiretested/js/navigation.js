@@ -285,14 +285,14 @@ function initLanguageSwitcher() {
       {
         pageLanguage: 'en',
         includedLanguages: 'en,hi,mr',
-        autoDisplay: false,
-        layout: window.google.translate.TranslateElement.InlineLayout.SIMPLE
+        autoDisplay: false
       },
       'google_translate_element'
     );
 
     // TranslateElement adds .goog-te-combo asynchronously after this callback.
-    applyGoogleTranslation(currentLang);
+    const latestLanguage = localStorage.getItem('am_selected_language');
+    applyGoogleTranslation(supportedLanguages.includes(latestLanguage) ? latestLanguage : currentLang);
   };
 
   // Load Google Translate once.
@@ -301,6 +301,9 @@ function initLanguageSwitcher() {
     gtScript.type = 'text/javascript';
     gtScript.async = true;
     gtScript.src = 'https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit';
+    gtScript.onerror = () => {
+      document.documentElement.dataset.translationStatus = 'unavailable';
+    };
     document.head.appendChild(gtScript);
   }
 
@@ -320,6 +323,7 @@ function initLanguageSwitcher() {
       localStorage.setItem('am_selected_language', selectedLang);
       setLanguageCookie(selectedLang);
       document.documentElement.lang = selectedLang;
+      document.documentElement.dataset.translationStatus = 'loading';
 
       languageSelects.forEach((otherSelect) => {
         otherSelect.value = selectedLang;
@@ -345,6 +349,7 @@ function applyGoogleTranslation(targetLang, attempt = 0) {
   // the cookie can preselect it before the page content is translated.
   combo.value = targetLang;
   combo.dispatchEvent(new Event('change', { bubbles: true }));
+  document.documentElement.dataset.translationStatus = 'ready';
 }
 
 function getLanguageCookie() {
