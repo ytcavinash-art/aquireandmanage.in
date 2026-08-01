@@ -23,16 +23,62 @@ const chatCopy = {
     placeholder: 'Ask your question in English...',
     inputLabel: 'Ask A&M Advisory in English',
     typing: 'Assistant is typing',
-    suggestions: ['What is SRA?', 'Which documents are required?', 'What is Annexure II?', 'How is eligibility decided?'],
+    suggestions: ['What services do you provide?', 'What is included in tenant management?', 'How do you support liaisoning and approvals?'],
   },
   hi: {
     welcome: 'नमस्कार 👋 A&M Advisory में आपका स्वागत है। मैं SRA पुनर्विकास, पात्रता, दस्तावेज़, Annexure II, सहमति, किराया, अनुमोदन और tenant management से जुड़े प्रश्नों में सहायता कर सकता हूँ। मैं आपकी कैसे सहायता करूँ?',
     placeholder: 'अपना प्रश्न हिंदी में पूछें...',
     inputLabel: 'A&M Advisory से हिंदी में प्रश्न पूछें',
     typing: 'सहायक उत्तर तैयार कर रहा है',
-    suggestions: ['SRA क्या है?', 'कौनसे दस्तावेज़ चाहिए?', 'Annexure II क्या है?', 'पात्रता कैसे तय होती है?'],
+    suggestions: ['आप कौन-सी सेवाएँ देते हैं?', 'Tenant management में क्या शामिल है?', 'Liaisoning और approvals में क्या सहायता मिलती है?'],
   },
 };
+
+const instantServiceAnswers = [
+  {
+    keywords: ['tenant management', 'occupancy survey', 'lane recce', 'lidar', 'base map', 'society meeting', 'individual agreement', 'rent readiness', 'evacuation', 'demolition', 'fencing', 'किरायेदार प्रबंधन', 'निवासी सर्वे', 'सोसायटी बैठक'],
+    en: 'A&M Advisory supports tenant management through local facilitator coordination, society meetings, surveys and mapping, documentation and eligibility support, data reporting, special-case assistance, individual-agreement coordination, rent/KYC readiness, shifting and evacuation coordination, and post-closure demolition and fencing oversight.',
+    hi: 'A&M Advisory tenant management में स्थानीय facilitators का coordination, society meetings, survey और mapping, दस्तावेज़ व पात्रता सहायता, data reporting, विशेष मामलों में सहायता, individual agreements, rent/KYC readiness, shifting और evacuation coordination तथा demolition और fencing oversight प्रदान करता है।',
+  },
+  {
+    keywords: ['liaisoning', 'liaison', 'noc', 'loi', 'ioa', 'municipal authority', 'government approval', 'regulatory challenge', 'statutory', 'सरकारी मंजूरी', 'अनुमोदन', 'समन्वय'],
+    en: 'A&M Advisory coordinates with SRA and municipal authorities, manages proposal and document submissions, follows up on NOCs, LOI and IOA approvals, tracks compliance, supports stakeholder communication, helps resolve regulatory issues and coordinates specialist advisors where required. Final approvals are issued by the competent authorities.',
+    hi: 'A&M Advisory SRA और municipal authorities के साथ coordination, proposal व document submission, NOC, LOI और IOA approvals की follow-up, compliance tracking, stakeholder communication, regulatory issues के समाधान और specialist advisors के coordination में सहायता करता है। अंतिम मंजूरी सक्षम प्राधिकरण जारी करता है।',
+  },
+  {
+    keywords: ['iec', 'information education communication', 'town hall', 'micro-meeting', 'micro meeting', 'sms', 'ivr', 'grievance camp', 'misinformation', 'awareness campaign', 'जागरूकता', 'जनसंपर्क', 'शिकायत शिविर'],
+    en: 'A&M Advisory’s IEC services include mobilisation events, community town halls, lane/chawl/society micro-meetings, policy and technical briefings, printed materials, WhatsApp/SMS/IVR communication, audio-visual explainers, grievance camps, media monitoring, misinformation response and awareness campaigns.',
+    hi: 'A&M Advisory की IEC services में mobilisation events, community town halls, lane/chawl/society micro-meetings, policy और technical briefings, printed materials, WhatsApp/SMS/IVR communication, audio-visual explainers, grievance camps, media monitoring, गलत जानकारी का समाधान और awareness campaigns शामिल हैं।',
+  },
+  {
+    keywords: ['facility management', 'maintenance', 'repair', 'vendor management', 'manpower', 'housekeeping', 'janitorial', 'security service', 'utility', 'energy management', 'space planning', 'asset management', 'सुविधा प्रबंधन', 'रखरखाव', 'सुरक्षा सेवा'],
+    en: 'A&M Advisory’s facility-management support covers operations coordination, maintenance and repairs, vendor and manpower management, safety and compliance monitoring, asset and equipment management, preventive maintenance, housekeeping, security, utilities and energy management, and space planning.',
+    hi: 'A&M Advisory की facility-management services में operations coordination, maintenance और repair, vendor व manpower management, safety और compliance monitoring, asset व equipment management, preventive maintenance, housekeeping, security, utilities व energy management और space planning शामिल हैं।',
+  },
+  {
+    keywords: ['project management', 'pmc', 'project coordination', 'redevelopment management', 'construction coordination', 'construction service', 'architecture coordination', 'परियोजना प्रबंधन', 'निर्माण समन्वय'],
+    en: 'A&M Advisory provides redevelopment and project-coordination support covering planning, documentation, stakeholder coordination, authority liaisoning, compliance tracking, architecture coordination and construction-stage coordination. The exact scope is tailored to each project.',
+    hi: 'A&M Advisory redevelopment और project coordination में planning, documentation, stakeholder coordination, authority liaisoning, compliance tracking, architecture coordination और construction-stage coordination की सहायता देता है। सेवा का सही scope प्रत्येक project के अनुसार तय होता है।',
+  },
+  {
+    keywords: ['gbr', 'general body resolution', 'poa', 'power of attorney', 'development agreement', 'commencement certificate'],
+    en: 'A&M Advisory supports meeting records and document coordination for GBR, execution readiness for POA and Development Agreements, and submission tracking and liaisoning for the Commencement Certificate. Legal documents require review by qualified professionals, and the competent authority issues the CC.',
+    hi: 'A&M Advisory GBR के meeting records और document coordination, POA व Development Agreement की execution readiness तथा Commencement Certificate के submission tracking और liaisoning में सहायता करता है। कानूनी दस्तावेज़ qualified professionals से review कराएँ; CC सक्षम प्राधिकरण जारी करता है।',
+  },
+  {
+    keywords: ['services', 'service provide', 'what do you do', 'क्या काम', 'कौन सी सेवा', 'सेवाएं', 'सेवाएँ'],
+    en: 'A&M Advisory provides SRA redevelopment and PMC advisory, tenant management, government liaisoning, documentation and compliance support, IEC activities, architecture and construction coordination, legal-process coordination, and facility management.',
+    hi: 'A&M Advisory SRA redevelopment और PMC advisory, tenant management, government liaisoning, documentation व compliance support, IEC activities, architecture और construction coordination, legal-process coordination तथा facility management services प्रदान करता है।',
+  },
+];
+
+function getInstantServiceReply(message, language) {
+  const text = message.toLocaleLowerCase('en-IN');
+  const match = instantServiceAnswers.find((service) => (
+    service.keywords.some((keyword) => text.includes(keyword))
+  ));
+  return match ? match[language === 'hi' ? 'hi' : 'en'] : '';
+}
 
 function getSelectedChatLanguage() {
   const selectedValue = document.querySelector('.language-select')?.value;
@@ -247,6 +293,7 @@ function initChatbot() {
 
   function applyChatLanguage(language, replaceWelcome = false) {
     activeLanguage = language === 'hi' ? 'hi' : 'en';
+    localStorage.setItem('am_selected_language', activeLanguage);
     const copy = chatCopy[activeLanguage];
     chatInput.placeholder = copy.placeholder;
     chatInput.setAttribute('aria-label', copy.inputLabel);
@@ -267,13 +314,13 @@ function initChatbot() {
   function selectLanguage(language) {
     const websiteLanguage = language === 'hi' ? 'hi' : 'en';
     const websiteSelect = document.querySelector('.language-select');
+    localStorage.setItem('am_selected_language', websiteLanguage);
+    applyChatLanguage(websiteLanguage, true);
     if (websiteSelect) {
       websiteSelect.value = websiteLanguage;
       websiteSelect.dispatchEvent(new Event('change', { bubbles: true }));
     } else {
-      localStorage.setItem('am_selected_language', websiteLanguage);
       document.documentElement.lang = websiteLanguage;
-      applyChatLanguage(websiteLanguage, true);
     }
     languageMenu.hidden = true;
     languageToggle.setAttribute('aria-expanded', 'false');
@@ -338,13 +385,22 @@ function initChatbot() {
 
   async function sendMessage(text) {
     if (isSending) return;
-    const selectedLanguage = getSelectedChatLanguage();
+    const selectedLanguage = activeLanguage;
     activeLanguage = selectedLanguage;
-    isSending = true;
-    sendButton.disabled = true;
     messages.push({ sender: 'user', text });
     chatInput.value = '';
     renderMessages();
+
+    const instantReply = getInstantServiceReply(text, selectedLanguage);
+    if (instantReply) {
+      messages.push({ sender: 'assistant', text: instantReply });
+      renderMessages();
+      chatInput.focus();
+      return;
+    }
+
+    isSending = true;
+    sendButton.disabled = true;
     showTypingIndicator();
     try {
       const response = await fetch(chatApiUrl, {
