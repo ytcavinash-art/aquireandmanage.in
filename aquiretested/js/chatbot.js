@@ -234,6 +234,14 @@ function getAssistantReply(message, selectedLanguage = getSelectedChatLanguage()
   );
 }
 
+function getLanguageSafeReply(answer, originalMessage, selectedLanguage) {
+  if (selectedLanguage !== 'en' || !answer) return answer;
+
+  const hinglishWords = answer.match(/\b(?:aap|aapka|aapke|aapki|aapko|baare|hain|hoon|karein|karna|liye|mein|mujhe|sakta|sakti|sakte)\b/gi) || [];
+  const distinctWords = new Set(hinglishWords.map((word) => word.toLocaleLowerCase('en-IN')));
+  return distinctWords.size >= 2 ? getAssistantReply(originalMessage, 'en') : answer;
+}
+
 function initScrollToTop() {
   const topBtn = document.getElementById('scroll-top-btn');
   if (!topBtn) return;
@@ -464,7 +472,8 @@ function initChatbot() {
       });
       if (!response.ok) throw new Error('API error');
       const data = await response.json();
-      messages.push({ sender: 'assistant', text: data.answer || getAssistantReply(text, selectedLanguage) });
+      const apiAnswer = data.answer || getAssistantReply(text, selectedLanguage);
+      messages.push({ sender: 'assistant', text: getLanguageSafeReply(apiAnswer, text, selectedLanguage) });
     } catch {
       messages.push({ sender: 'assistant', text: getAssistantReply(text, selectedLanguage) });
     } finally {

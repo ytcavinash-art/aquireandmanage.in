@@ -127,9 +127,15 @@ const FAQS = [
 ];
 
 const HINDI_ROMAN_WORDS = /\b(kya|kaise|kaun|kaunsa|kaunse|chahiye|kitna|kitni|hai|hain|mera|meri|mujhe|aap|karna|batao|sahamati|patrata|kiraya)\b/i;
+const HINGLISH_RESPONSE_WORDS = /\b(?:aap|aapka|aapke|aapki|aapko|baare|hain|hoon|karein|karna|liye|mein|mujhe|sakta|sakti|sakte)\b/gi;
 
 function isHindi(message) {
   return /[\u0900-\u097f]/.test(message) || HINDI_ROMAN_WORDS.test(message);
+}
+
+function isHinglishResponse(answer) {
+  const matches = answer.match(HINGLISH_RESPONSE_WORDS) || [];
+  return new Set(matches.map((word) => word.toLocaleLowerCase('en-IN'))).size >= 2;
 }
 
 function findFaq(message) {
@@ -179,6 +185,8 @@ empathetic. Use only the supplied company knowledge. Never invent project claims
 fixed timelines, consent percentages, government guarantees or document requirements. Clearly state when
 requirements vary and recommend verification with the competent authority. For questions outside this
 knowledge, use the matching-language fallback and offer the Quick Enquiry form.
+When English is selected, use standard English only. Never use Hindi words written in the Latin alphabet
+or Hinglish phrases such as "aap", "ke baare mein", "kar sakta hoon", "ke liye" or "karein".
 
 Company knowledge:
 ${buildKnowledge()}`,
@@ -190,7 +198,11 @@ ${buildKnowledge()}`,
       store: false,
     });
 
-    return { answer: response.output_text || fallbackAnswer(latestMessage, selectedLanguage), mode: 'ai' };
+    const generatedAnswer = response.output_text || '';
+    if (selectedLanguage === 'en' && isHinglishResponse(generatedAnswer)) {
+      return { answer: fallbackAnswer(latestMessage, 'en'), mode: 'knowledge-base' };
+    }
+    return { answer: generatedAnswer || fallbackAnswer(latestMessage, selectedLanguage), mode: 'ai' };
   } catch (error) {
     console.error('OpenAI chatbot request failed:', error.message);
     return { answer: fallbackAnswer(latestMessage, selectedLanguage), mode: 'knowledge-base' };
