@@ -55,3 +55,11 @@ test('all local HTML, script, stylesheet and image references resolve', async ()
     }
   }
 });
+
+test('confirmed office address is consistent across public website content', async () => {
+  for (const relativePath of ['index.html', 'contact.html', 'privacy.html', 'js/property-management-faqs.js']) {
+    const source = await fs.readFile(path.join(root, relativePath), 'utf8');
+    assert.match(source, /102B, Hallmark Business Plaza/);
+    assert.doesNotMatch(source, /206 Hallmark Business Plaza|Opp\. Guru Nanak Hospital/);
+  }
+});

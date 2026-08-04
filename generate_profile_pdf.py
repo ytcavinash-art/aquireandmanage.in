@@ -528,7 +528,7 @@ contact_rows = [
     ("Phone", "+91 022-45648350"),
     ("Email", "info@aquireandmanage.com / aquireandmanage@gmail.com"),
     ("Website", "www.aquireandmanage.com"),
-    ("Corporate Office", "206 Hallmark Business Plaza, Opp. Guru Nanak Hospital, Jagat Vidya Marg, Bandra East, Mumbai 400051"),
+    ("Corporate Office", "102B, Hallmark Business Plaza, Jagat Vidya Marg, Bandra East, Mumbai, Maharashtra 400051"),
 ]
 row_y = 520
 for label, value in contact_rows:

@@ -349,8 +349,8 @@
   {
     id: 'navigation-office-contact',
     keywords: ['office location', 'office address', 'contact number', 'phone number', 'email address', 'where is your office', 'ऑफिस कहाँ', 'ऑफिस का पता', 'संपर्क नंबर', 'ऑफिस कुठे', 'ऑफिसचा पत्ता', 'संपर्क क्रमांक'],
-    english: 'A&M Advisory is at 206 Hallmark Business Plaza, Opp. Guru Nanak Hospital, Jagat Vidya Marg, Bandra East, Mumbai 400051. Call +91 22 4564 8350 or email info@aquireandmanage.com. The website Contact section also includes the Google Maps location.',
-    hindi: 'A&M Advisory का office 206 Hallmark Business Plaza, Opp. Guru Nanak Hospital, Jagat Vidya Marg, Bandra East, Mumbai 400051 में है। +91 22 4564 8350 पर कॉल करें या info@aquireandmanage.com पर email करें। Website के Contact section में Google Maps location भी उपलब्ध है।',
-    marathi: 'A&M Advisory चे office 206 Hallmark Business Plaza, Opp. Guru Nanak Hospital, Jagat Vidya Marg, Bandra East, Mumbai 400051 येथे आहे. +91 22 4564 8350 वर कॉल करा किंवा info@aquireandmanage.com वर email करा. Website च्या Contact section मध्ये Google Maps location देखील उपलब्ध आहे.',
+    english: 'A&M Advisory is at 102B, Hallmark Business Plaza, Jagat Vidya Marg, Bandra East, Mumbai, Maharashtra 400051. Call +91 22 4564 8350 or email info@aquireandmanage.com. The website Contact section also includes the Google Maps location.',
+    hindi: 'A&M Advisory का office 102B, Hallmark Business Plaza, Jagat Vidya Marg, Bandra East, Mumbai, Maharashtra 400051 में है। +91 22 4564 8350 पर कॉल करें या info@aquireandmanage.com पर email करें। Website के Contact section में Google Maps location भी उपलब्ध है।',
+    marathi: 'A&M Advisory चे office 102B, Hallmark Business Plaza, Jagat Vidya Marg, Bandra East, Mumbai, Maharashtra 400051 येथे आहे. +91 22 4564 8350 वर कॉल करा किंवा info@aquireandmanage.com वर email करा. Website च्या Contact section मध्ये Google Maps location देखील उपलब्ध आहे.',
   },
 ]));
