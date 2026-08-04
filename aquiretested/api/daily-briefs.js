@@ -1,10 +1,79 @@
 import Parser from 'rss-parser';
+import mongodb from 'mongodb';
+
+const { MongoClient } = mongodb;
 
 const parser = new Parser({
   customFields: {
     item: [['source', 'source']],
   },
 });
+
+const DAILY_BRIEFS_COLLECTION = 'dailybriefs';
+let mongoClientPromise;
+
+function getMongoClient() {
+  if (!process.env.MONGO_URI) return null;
+  if (!mongoClientPromise) {
+    const client = new MongoClient(process.env.MONGO_URI);
+    mongoClientPromise = client.connect().catch((error) => {
+      mongoClientPromise = undefined;
+      throw error;
+    });
+  }
+  return mongoClientPromise;
+}
+
+function prepareBriefForStorage(brief) {
+  return {
+    ...brief,
+    publishedAt: new Date(brief.publishedAt),
+    isAutomated: brief.isAutomated ?? brief.automated ?? true,
+    isPublished: brief.isPublished ?? true,
+  };
+}
+
+function prepareBriefForResponse(brief) {
+  const { _id, ...publicBrief } = brief;
+  return {
+    ...publicBrief,
+    publishedAt: new Date(publicBrief.publishedAt).toISOString(),
+  };
+}
+
+function mergeBriefs(...briefGroups) {
+  const byId = new Map();
+  briefGroups.flat().filter(Boolean).forEach((brief) => {
+    if (!byId.has(brief.briefId)) byId.set(brief.briefId, brief);
+  });
+  return [...byId.values()].sort(
+    (first, second) => new Date(second.publishedAt) - new Date(first.publishedAt),
+  );
+}
+
+async function saveAndLoadDailyBriefs(automaticBrief) {
+  const client = await getMongoClient();
+  if (!client) return null;
+
+  const collection = client.db().collection(DAILY_BRIEFS_COLLECTION);
+
+  if (automaticBrief) {
+    const storedBrief = prepareBriefForStorage(automaticBrief);
+    await collection.updateOne(
+      { briefId: storedBrief.briefId },
+      { $set: storedBrief },
+      { upsert: true },
+    );
+  }
+
+  const storedBriefs = await collection
+    .find({ isPublished: { $ne: false } })
+    .sort({ publishedAt: -1 })
+    .limit(500)
+    .toArray();
+
+  return storedBriefs.map(prepareBriefForResponse);
+}
 
 const LIVE_BRIEF_FEED_URL =
   'https://news.google.com/rss/search?q=(Mumbai+OR+MMR)+(SRA+OR+MHADA+OR+redevelopment+OR+slum+rehabilitation+OR+BMC+housing+OR+Dharavi)&hl=en-IN&gl=IN&ceid=IN:en';
@@ -793,9 +862,18 @@ export default async function handler(request, response) {
       console.warn('Automatic daily brief generation failed; serving historical fallback.', error);
     }
 
-    const availableBriefs = automaticBrief
-      ? [automaticBrief, ...INITIAL_DAILY_BRIEFS.filter(brief => brief.briefId !== automaticBrief.briefId)]
-      : INITIAL_DAILY_BRIEFS;
+    let storedBriefs = null;
+    try {
+      storedBriefs = await saveAndLoadDailyBriefs(automaticBrief);
+    } catch (error) {
+      console.warn('Daily brief persistence unavailable; serving generated and embedded briefs.', error);
+    }
+
+    const availableBriefs = mergeBriefs(
+      storedBriefs || [],
+      automaticBrief ? [automaticBrief] : [],
+      INITIAL_DAILY_BRIEFS,
+    );
     const page = Math.max(Number.parseInt(String(request.query?.page || '1'), 10), 1);
     const limit = Math.min(Math.max(Number.parseInt(String(request.query?.limit || '12'), 10), 1), 50);
     const category = request.query?.category;
@@ -821,14 +899,19 @@ export default async function handler(request, response) {
     const start = (page - 1) * limit;
     const paginated = filtered.slice(start, start + limit);
 
-    response.setHeader('Cache-Control', 's-maxage=3600, stale-while-revalidate=21600');
+    const isScheduledRun = request.query?.cron === '1';
+    response.setHeader(
+      'Cache-Control',
+      isScheduledRun ? 'no-store' : 's-maxage=300, stale-while-revalidate=900',
+    );
     return response.status(200).json({
       briefs: paginated,
       page,
       total: filtered.length,
       totalPages: Math.ceil(filtered.length / limit),
       automatic: Boolean(automaticBrief),
-      generatedAt: automaticBrief?.generatedAt || null
+      generatedAt: automaticBrief?.generatedAt || null,
+      persisted: Boolean(storedBriefs),
     });
   } catch (error) {
     return response.status(500).json({ error: 'Unable to fetch daily intelligence briefs.' });

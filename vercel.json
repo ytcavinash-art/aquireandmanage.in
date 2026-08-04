@@ -5,7 +5,7 @@
   "trailingSlash": false,
   "crons": [
     {
-      "path": "/api/daily-briefs?limit=50",
+      "path": "/api/daily-briefs?limit=50&cron=1",
       "schedule": "30 2 * * *"
     }
   ],
