@@ -42,3 +42,13 @@ test('site search renders an unmatched query with textContent', async () => {
   assert.match(source, /emptyMessage\.textContent/);
   assert.doesNotMatch(source, /innerHTML\s*=\s*`[^`]*No results found[^`]*\$\{query\}/);
 });
+
+test('optional cookies require an explicit stored consent choice', async () => {
+  const consentSource = await fs.readFile(path.join(root, 'js', 'cookie-consent.js'), 'utf8');
+  const navigationSource = await fs.readFile(path.join(root, 'js', 'navigation.js'), 'utf8');
+  assert.match(consentSource, /SameSite=Lax/);
+  assert.match(consentSource, /data-cookie-action="reject"/);
+  assert.match(consentSource, /data-cookie-action="preferences"/);
+  assert.match(navigationSource, /AMCookieConsent\?\.has\('functional'\)/);
+  assert.match(navigationSource, /functionalConsent && !document\.querySelector\('script\[src\*="translate\.google\.com"\]'/);
+});

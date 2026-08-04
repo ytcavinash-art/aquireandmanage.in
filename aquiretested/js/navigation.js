@@ -241,19 +241,20 @@ function initSearchModal() {
 /* Language Switcher - Google Translate Integration for EN, HI, MR */
 function initLanguageSwitcher() {
   const supportedLanguages = ['en', 'hi', 'mr'];
-  const savedLanguage = localStorage.getItem('am_selected_language');
-  const cookieLanguage = getLanguageCookie();
+  const functionalConsent = window.AMCookieConsent?.has('functional') === true;
+  const savedLanguage = functionalConsent ? localStorage.getItem('am_selected_language') : null;
+  const cookieLanguage = functionalConsent ? getLanguageCookie() : null;
   const currentLang = supportedLanguages.includes(savedLanguage)
     ? savedLanguage
     : (supportedLanguages.includes(cookieLanguage) ? cookieLanguage : 'en');
 
-  // Keep the cookie ready before Google's script starts reading it.
-  setLanguageCookie(currentLang);
+  // Google Translate and its language cookie are optional functional services.
+  if (functionalConsent) setLanguageCookie(currentLang);
   document.documentElement.lang = currentLang;
 
   // Google must be able to render its select. Keeping the element off-screen
   // works; display:none can prevent the widget from being initialized.
-  if (!document.getElementById('google_translate_element')) {
+  if (functionalConsent && !document.getElementById('google_translate_element')) {
     const translateDiv = document.createElement('div');
     translateDiv.id = 'google_translate_element';
     translateDiv.setAttribute('inert', '');
@@ -261,7 +262,7 @@ function initLanguageSwitcher() {
   }
 
   // Hide Google's UI without hiding every .skiptranslate element globally.
-  if (!document.getElementById('google-translate-styles')) {
+  if (functionalConsent && !document.getElementById('google-translate-styles')) {
     const style = document.createElement('style');
     style.id = 'google-translate-styles';
     style.innerHTML = `
@@ -295,7 +296,7 @@ function initLanguageSwitcher() {
   }
 
   // Define the callback before loading Google's script.
-  window.googleTranslateElementInit = function () {
+  if (functionalConsent) window.googleTranslateElementInit = function () {
     new window.google.translate.TranslateElement(
       {
         pageLanguage: 'en',
@@ -311,7 +312,7 @@ function initLanguageSwitcher() {
   };
 
   // Load Google Translate once.
-  if (!document.querySelector('script[src*="translate.google.com"]')) {
+  if (functionalConsent && !document.querySelector('script[src*="translate.google.com"]')) {
     const gtScript = document.createElement('script');
     gtScript.type = 'text/javascript';
     gtScript.async = true;
@@ -334,6 +335,17 @@ function initLanguageSwitcher() {
     select.addEventListener('change', (e) => {
       const selectedLang = e.target.value;
       if (!supportedLanguages.includes(selectedLang)) return;
+
+      if (!window.AMCookieConsent?.has('functional')) {
+        if (selectedLang === 'en') {
+          document.documentElement.lang = 'en';
+          languageSelects.forEach((otherSelect) => { otherSelect.value = 'en'; });
+          return;
+        }
+        e.target.value = 'en';
+        window.AMCookieConsent?.openPreferences(e.target);
+        return;
+      }
 
       localStorage.setItem('am_selected_language', selectedLang);
       setLanguageCookie(selectedLang);

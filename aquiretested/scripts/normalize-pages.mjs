@@ -68,6 +68,13 @@ for (const file of files) {
   if (!/name="twitter:image"/i.test(html)) additions.push('  <meta name="twitter:image" content="https://www.aquireandmanage.com/images/am-logo.png" />');
   if (additions.length) html = html.replace(/<\/head>/i, `${additions.join('\n')}\n</head>`);
 
+  if (!/href="css\/cookie-consent\.css"/i.test(html)) {
+    html = html.replace(/<\/head>/i, '  <link rel="stylesheet" href="css/cookie-consent.css" />\n</head>');
+  }
+  if (!/src="js\/cookie-consent\.js"/i.test(html)) {
+    html = html.replace(/<\/body>/i, '  <script src="js/cookie-consent.js"></script>\n</body>');
+  }
+
   html = html.replace(/href="([a-z0-9-]+)\.html([#?][^"]*)?"/gi, 'href="$1$2"');
   html = html.replace(/href="index([#?][^"]*)?"/gi, 'href="/$1"');
   html = html.replace(/\+91 022-45648350/g, '+91 22 4564 8350');

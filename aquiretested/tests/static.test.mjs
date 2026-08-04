@@ -16,6 +16,7 @@ for (const pageName of pageNames) {
       'property="og:title"', 'property="og:description"', 'property="og:url"', 'property="og:image"',
       'name="twitter:card"', 'name="twitter:title"', 'name="twitter:description"',
       'aria-label="Legal"',
+      'href="css/cookie-consent.css"', 'src="js/cookie-consent.js"',
     ]) assert.ok(html.includes(marker), `missing ${marker}`);
 
     assert.doesNotMatch(html, /\sonclick=/i);
