@@ -8,11 +8,29 @@
 
 document.addEventListener('DOMContentLoaded', () => {
   initPhoneInputRestriction();
+  initMeetingRequestLink();
   initContactForm();
   initFeedbackForm();
   initNewsletterForm();
   initLeadStorageManager();
 });
+
+/* Move meeting requests directly to the enquiry form and make it ready to use. */
+function initMeetingRequestLink() {
+  const meetingLink = document.getElementById('request-meeting-link');
+  const enquiryForm = document.getElementById('quick-enquiry-form');
+
+  if (!meetingLink || !enquiryForm) return;
+
+  meetingLink.addEventListener('click', (event) => {
+    event.preventDefault();
+    history.replaceState(null, '', '#quick-enquiry-form');
+    enquiryForm.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+    const firstField = enquiryForm.querySelector('input, textarea, select');
+    window.setTimeout(() => firstField?.focus({ preventScroll: true }), 450);
+  });
+}
 
 /* 1. Phone Input 10-Digit and Non-Numeric Restriction */
 function initPhoneInputRestriction() {
