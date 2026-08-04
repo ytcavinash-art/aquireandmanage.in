@@ -16,7 +16,7 @@ function ensureChatbotStyles() {
   document.head.appendChild(stylesheet);
 }
 
-const chatApiUrl = 'https://aquiretested-2.onrender.com/api/chat';
+const chatApiUrl = '/api/chat';
 const chatCopy = {
   en: {
     welcome: 'Hello 👋 Welcome to A&M Advisory. I can help with SRA redevelopment, eligibility, documents, Annexure II, consent, rent, approvals and tenant management. How can I help you?',
@@ -194,14 +194,14 @@ function getAssistantReply(message, selectedLanguage = getSelectedChatLanguage()
   }
   if (['consultation', 'appointment', 'meeting book', 'परामर्श', 'अपॉइंटमेंट'].some((word) => text.includes(word))) {
     return reply(
-      'Schedule a consultation through the website contact form, phone, email or WhatsApp. Call +91 022-45648350 or email info@aquireandmanage.com, and the team will guide you through the next steps.',
-      'आप website contact form, फ़ोन, ईमेल या WhatsApp से consultation बुक कर सकते हैं। +91 022-45648350 पर कॉल करें या info@aquireandmanage.com पर ईमेल भेजें; हमारी टीम आगे की प्रक्रिया बताएगी।'
+      'Schedule a consultation through the website contact form, phone, email or WhatsApp. Call +91 22 4564 8350 or email info@aquireandmanage.com, and the team will guide you through the next steps.',
+      'आप website contact form, फ़ोन, ईमेल या WhatsApp से consultation बुक कर सकते हैं। +91 22 4564 8350 पर कॉल करें या info@aquireandmanage.com पर ईमेल भेजें; हमारी टीम आगे की प्रक्रिया बताएगी।'
     );
   }
   if (['contact', 'call', 'phone', 'email', 'whatsapp', 'संपर्क', 'फोन'].some((word) => text.includes(word))) {
     return reply(
-      'Call +91 022-45648350, email info@aquireandmanage.com, use WhatsApp, or complete the website Quick Enquiry form.',
-      '+91 022-45648350 पर कॉल करें, info@aquireandmanage.com पर ईमेल भेजें, WhatsApp करें या website का Quick Enquiry form भरें।'
+      'Call +91 22 4564 8350, email info@aquireandmanage.com, use WhatsApp, or complete the website Quick Enquiry form.',
+      '+91 22 4564 8350 पर कॉल करें, info@aquireandmanage.com पर ईमेल भेजें, WhatsApp करें या website का Quick Enquiry form भरें।'
     );
   }
   if (['delay', 'dispute', 'timeline', 'देरी', 'विवाद', 'समय'].some((word) => text.includes(word))) {
@@ -306,6 +306,7 @@ function initChatbot() {
             <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>
           </button>
         </form>
+        <p class="didi-privacy">Do not share Aadhaar, financial or password information. <a href="privacy">Privacy</a></p>
       </div>
     </section>
   `;
@@ -473,7 +474,11 @@ function initChatbot() {
       if (!response.ok) throw new Error('API error');
       const data = await response.json();
       const apiAnswer = data.answer || getAssistantReply(text, selectedLanguage);
-      messages.push({ sender: 'assistant', text: getLanguageSafeReply(apiAnswer, text, selectedLanguage) });
+      messages.push({
+        sender: 'assistant',
+        text: getLanguageSafeReply(apiAnswer, text, selectedLanguage),
+        citations: Array.isArray(data.citations) ? data.citations : [],
+      });
     } catch {
       messages.push({ sender: 'assistant', text: getAssistantReply(text, selectedLanguage) });
     } finally {
@@ -493,7 +498,10 @@ function initChatbot() {
     messagesContainer.innerHTML = `<div class="didi-timestamp">${escapeHtml(timestamp)}</div>${messages.map((message) => `
       <div class="didi-message-row ${message.sender === 'user' ? 'user' : 'assistant'}">
         ${message.sender === 'assistant' ? '<div class="didi-message-avatar"><img src="images/didi-avatar.png" alt="" /></div>' : ''}
-        <div class="didi-bubble">${escapeHtml(message.text)}</div>
+        <div class="didi-bubble">
+          ${escapeHtml(message.text)}
+          ${message.citations?.length ? `<div class="didi-citations">${escapeHtml(`Source: ${message.citations.map((citation) => citation.filename).join(', ')}`)}</div>` : ''}
+        </div>
       </div>
     `).join('')}`;
     messagesContainer.scrollTop = messagesContainer.scrollHeight;

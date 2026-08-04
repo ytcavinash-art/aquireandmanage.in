@@ -8,6 +8,7 @@ const rankedItemSchema = new mongoose.Schema({
   dprImplication: String,
   clientAction: String,
   sources: [String],
+  sourceUrl: String,
   category: { type: String, default: 'General' }
 });
 
@@ -15,6 +16,7 @@ const dailyBriefSchema = new mongoose.Schema({
   briefId: { type: String, required: true, unique: true, index: true },
   date: { type: String, required: true }, // e.g., "2026-07-21" or "Tue, Jul 21, 2026"
   publishedAt: { type: Date, default: Date.now },
+  generatedAt: Date,
   title: { type: String, required: true },
   focus: { type: String, required: true },
   coverageAssumption: String,

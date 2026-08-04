@@ -48,7 +48,7 @@ async function fetchSraDataset(path, signal) {
   return documents;
 }
 
-function getFlightPayload(html) {
+function _getFlightPayload(html) {
   const chunks = [];
   const pattern = /self\.__next_f\.push\((\[1,"(?:\\.|[^"\\])*"\])\)<\/script>/g;
 
@@ -64,7 +64,7 @@ function getFlightPayload(html) {
   return chunks.join('');
 }
 
-function extractArray(payload, key) {
+function _extractArray(payload, key) {
   const marker = `"${key}":`;
   const markerIndex = payload.indexOf(marker);
   const startIndex = payload.indexOf('[', markerIndex + marker.length);

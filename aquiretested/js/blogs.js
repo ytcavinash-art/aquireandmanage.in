@@ -106,7 +106,7 @@
           allBlogs = data.blogs;
         }
       }
-    } catch (err) {
+    } catch {
       console.log('Using embedded blog database (offline/local mode).');
     } finally {
       renderCategories();
@@ -137,12 +137,12 @@
     categoryFilters.innerHTML = categories.map((cat) => {
       const isActive = cat === currentCategory;
       return `
-        <button type="button" data-category="${cat}" class="blog-cat-btn rounded-full px-5 py-2 text-xs font-bold transition-all ${
+        <button type="button" data-category="${escapeHtml(cat)}" class="blog-cat-btn rounded-full px-5 py-2 text-xs font-bold transition-all ${
           isActive 
             ? 'bg-crimson text-white shadow-md' 
             : 'bg-white text-slate-700 border border-slate-200 hover:bg-slate-50 hover:text-crimson'
         }">
-          ${cat}
+          ${escapeHtml(cat)}
         </button>
       `;
     }).join('');
@@ -158,12 +158,15 @@
 
   // Render Blog Cards HTML
   function createBlogCardHTML(blog) {
+    const imageUrl = safeUrl(blog.image, 'images/sra-project-optimized.jpg');
+    const avatarUrl = safeUrl(blog.authorAvatar, 'images/am-logo.png');
+    const articleUrl = safeArticlePath(blog.slug);
     return `
       <article class="group h-full flex flex-col justify-between rounded-2xl border border-slate-200 bg-white p-5 sm:p-6 shadow-md transition-all duration-300 hover:-translate-y-1.5 hover:shadow-2xl">
         <div class="flex-1 flex flex-col mb-2">
           <div class="relative mb-4 overflow-hidden rounded-xl bg-slate-100 aspect-video shrink-0">
             <img 
-              src="${blog.image}" 
+              src="${escapeHtml(imageUrl)}"
               alt="${escapeHtml(blog.title)}" 
               class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
               loading="lazy"
@@ -181,7 +184,7 @@
           </div>
 
           <h3 class="mb-2 text-base sm:text-lg font-bold leading-snug text-navy font-serif transition group-hover:text-crimson line-clamp-2">
-            <a href="${blog.slug}">${escapeHtml(blog.title)}</a>
+            <a href="${escapeHtml(articleUrl)}">${escapeHtml(blog.title)}</a>
           </h3>
 
           <p class="mb-3 text-xs text-slate-600 leading-relaxed text-justify line-clamp-3 flex-1">
@@ -191,13 +194,13 @@
 
         <div class="flex items-center justify-between border-t border-slate-100 pt-3.5 mt-auto shrink-0">
           <div class="flex items-center gap-2.5">
-            <img src="${blog.authorAvatar}" alt="${escapeHtml(blog.author)}" class="h-8 w-8 rounded-full object-cover border border-slate-200" onerror="this.src='images/am-logo.png'" />
+            <img src="${escapeHtml(avatarUrl)}" alt="${escapeHtml(blog.author)}" class="h-8 w-8 rounded-full object-cover border border-slate-200" loading="lazy" width="32" height="32" onerror="this.src='images/am-logo.png'" />
             <div>
               <p class="text-xs font-bold text-navy leading-tight">${escapeHtml(blog.author)}</p>
               <p class="text-[10px] text-slate-500">${escapeHtml(blog.authorRole || 'Author')}</p>
             </div>
           </div>
-          <a href="${blog.slug}" class="inline-flex items-center gap-1 text-xs font-bold text-crimson hover:underline shrink-0">
+          <a href="${escapeHtml(articleUrl)}" class="inline-flex items-center gap-1 text-xs font-bold text-crimson hover:underline shrink-0">
             Read Article &rarr;
           </a>
         </div>
@@ -207,6 +210,20 @@
 
   function escapeHtml(str) {
     return (str || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
+
+  function safeUrl(value, fallback) {
+    try {
+      const url = new URL(String(value || ''), window.location.origin);
+      return ['http:', 'https:'].includes(url.protocol) ? url.href : fallback;
+    } catch {
+      return fallback;
+    }
+  }
+
+  function safeArticlePath(value) {
+    const path = String(value || '').trim();
+    return /^[a-z0-9][a-z0-9/_-]*(?:\.html)?$/i.test(path) ? path : 'blog.html';
   }
 
   // Main Render Function

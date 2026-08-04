@@ -15,7 +15,9 @@ const mongoose = require('mongoose');
 const Item = require('./models/Item');
 const ContactSubmission = require('./models/ContactSubmission');
 const Feedback = require('./models/Feedback');
+const Subscriber = require('./models/Subscriber');
 const BlogPost = require('./models/BlogPost');
+const DailyBrief = require('./models/DailyBrief');
 const cron = require('node-cron');
 const { syncAutomatedBlogs, slugify } = require('./services/blogSync');
 const { answerQuestion } = require('./services/chatbot');
@@ -25,13 +27,40 @@ const { seedInitialDailyBriefs, getDailyBriefs, getLatestDailyBrief, getDailyBri
 const path = require('path');
 
 const app = express();
-app.use(express.json());
-app.use(cors());
+app.disable('x-powered-by');
+app.use(express.json({ limit: '32kb' }));
+const allowedOrigins = new Set([
+  'https://www.aquireandmanage.com',
+  'https://aquireandmanage.com',
+  'http://localhost:5173',
+  'http://localhost:5050',
+  ...(process.env.PUBLIC_SITE_ORIGIN ? [process.env.PUBLIC_SITE_ORIGIN.replace(/\/$/, '')] : []),
+]);
+app.use(cors({
+  origin(origin, callback) {
+    if (!origin || allowedOrigins.has(origin)) return callback(null, true);
+    return callback(new Error('Origin is not allowed.'));
+  },
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+}));
 app.use(express.static(path.join(__dirname, 'aquiretested')));
+
+const cleanText = (value, maxLength) => typeof value === 'string'
+  ? value.replace(/[\u0000-\u001f\u007f]/g, ' ').replace(/\s+/g, ' ').trim().slice(0, maxLength)
+  : '';
+const validEmail = (value) => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i.test(value) && value.length <= 254;
+const validMobile = (value) => /^[6-9]\d{9}$/.test(value);
 
 const requireAdmin = (req, res, next) => {
   if (!process.env.ADMIN_API_KEY || req.get('x-admin-key') !== process.env.ADMIN_API_KEY) {
     return res.status(401).json({ error: 'Admin authorization required.' });
+  }
+  next();
+};
+
+const requireCron = (req, res, next) => {
+  if (!process.env.CRON_SECRET || req.get('authorization') !== `Bearer ${process.env.CRON_SECRET}`) {
+    return res.status(401).json({ error: 'Cron authorization required.' });
   }
   next();
 };
@@ -47,12 +76,19 @@ const chatRateLimit = (req, res, next) => {
   next();
 };
 
+const formRequests = new Map();
+const formRateLimit = (req, res, next) => {
+  const key = req.ip;
+  const now = Date.now();
+  const recent = (formRequests.get(key) || []).filter((time) => now - time < 10 * 60_000);
+  if (recent.length >= 10) return res.status(429).json({ error: 'Too many submissions. Please try again later.' });
+  recent.push(now);
+  formRequests.set(key, recent);
+  next();
+};
+
 app.get('/', (req, res) => {
   res.send('API running fine!');
-});
-
-app.get('/api/users', (req, res) => {
-  res.json({ message: 'User list route working fine!' });
 });
 
 app.get('/api/sra-updates', async (req, res) => {
@@ -102,6 +138,23 @@ app.get('/api/daily-briefs/:id', async (req, res) => {
   }
 });
 
+app.post('/api/internal/daily-briefs', requireCron, async (req, res) => {
+  try {
+    const briefId = cleanText(req.body.briefId, 80);
+    if (!/^brief-\d{4}-\d{2}-\d{2}-auto$/.test(briefId)) {
+      return res.status(400).json({ error: 'A valid automated brief ID is required.' });
+    }
+    const brief = await DailyBrief.findOneAndUpdate(
+      { briefId },
+      { $set: { ...req.body, briefId, isAutomated: true, isPublished: true } },
+      { upsert: true, returnDocument: 'after', runValidators: true },
+    );
+    return res.status(201).json({ success: true, briefId: brief.briefId });
+  } catch {
+    return res.status(400).json({ error: 'Daily brief could not be stored.' });
+  }
+});
+
 
 app.post('/api/chat', chatRateLimit, async (req, res) => {
   try {
@@ -120,19 +173,40 @@ app.post('/api/chat', chatRateLimit, async (req, res) => {
   }
 });
 
-app.post('/api/contact', async (req, res) => {
+app.post('/api/contact', formRateLimit, async (req, res) => {
   try {
-    console.log('Received Form Data:', req.body);
-    const submission = await ContactSubmission.create(req.body);
-    res.status(201).json(submission);
+    const fullName = cleanText(req.body.fullName || req.body.name, 100);
+    const mobileNumber = cleanText(req.body.mobileNumber || req.body.phone, 20).replace(/\D/g, '');
+    const emailAddress = cleanText(req.body.emailAddress || req.body.email, 254).toLowerCase();
+    const message = cleanText(req.body.message || req.body.requirement, 3000);
+    if (req.body.kind === 'newsletter') {
+      if (!validEmail(emailAddress)) return res.status(400).json({ error: 'A valid email address is required.' });
+      const subscriber = await Subscriber.findOneAndUpdate(
+        { emailAddress },
+        { $set: { status: 'subscribed', sourcePage: cleanText(req.body.sourcePage, 300) } },
+        { upsert: true, returnDocument: 'after', runValidators: true },
+      );
+      return res.status(201).json({ success: true, id: subscriber.id });
+    }
+    if (!fullName || !validMobile(mobileNumber) || !validEmail(emailAddress) || !message) {
+      return res.status(400).json({ error: 'Valid name, email, mobile number and message are required.' });
+    }
+    const submission = await ContactSubmission.create({ fullName, mobileNumber, emailAddress, message });
+    res.status(201).json({ success: true, id: submission.id });
   } catch (error) {
-    res.status(400).json({ error: error.message });
+    res.status(400).json({ error: 'Unable to save the enquiry.' });
   }
 });
 
-app.post('/api/feedback', async (req, res) => {
+app.post('/api/feedback', formRateLimit, async (req, res) => {
   try {
-    const { fullName, emailAddress, rating, feedback } = req.body;
+    const fullName = cleanText(req.body.fullName, 100);
+    const emailAddress = cleanText(req.body.emailAddress, 254).toLowerCase();
+    const feedback = cleanText(req.body.feedback, 2000);
+    const rating = Number(req.body.rating);
+    if (!fullName || !validEmail(emailAddress) || !feedback || !Number.isInteger(rating) || rating < 1 || rating > 5) {
+      return res.status(400).json({ error: 'Valid feedback details are required.' });
+    }
     const newFeedback = await Feedback.create({
       fullName,
       emailAddress,
@@ -143,16 +217,16 @@ app.post('/api/feedback', async (req, res) => {
     res.status(201).json({
       success: true,
       message: 'Feedback submitted successfully!',
-      feedback: newFeedback
+      id: newFeedback.id
     });
   } catch (error) {
     res.status(400).json({ success: false, error: error.message });
   }
 });
 
-app.get('/api/feedback', async (req, res) => {
+app.get('/api/feedback', requireAdmin, async (req, res) => {
   try {
-    const feedbacks = await Feedback.find().sort({ createdAt: -1 });
+    const feedbacks = await Feedback.find().sort({ createdAt: -1 }).select('-emailAddress').lean();
     res.status(200).json(feedbacks);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -244,7 +318,7 @@ app.get('/api/items', async (req, res) => {
 });
 
 // 2. POST (CREATE)
-app.post('/api/items', async (req, res) => {
+app.post('/api/items', requireAdmin, async (req, res) => {
   try {
     const isContactSubmission = (
       req.body.fullName &&
@@ -254,7 +328,6 @@ app.post('/api/items', async (req, res) => {
     );
 
     if (isContactSubmission) {
-      console.log('Received Form Data:', req.body);
       const submission = await ContactSubmission.create(req.body);
       return res.status(201).json(submission);
     }
@@ -278,7 +351,7 @@ app.get('/api/items/:id', async (req, res) => {
 });
 
 // 4. PUT (UPDATE) - Warning Fix Applied Here
-app.put('/api/items/:id', async (req, res) => {
+app.put('/api/items/:id', requireAdmin, async (req, res) => {
   try {
     const updatedItem = await Item.findByIdAndUpdate(
       req.params.id,
@@ -293,7 +366,7 @@ app.put('/api/items/:id', async (req, res) => {
 });
 
 // 5. DELETE
-app.delete('/api/items/:id', async (req, res) => {
+app.delete('/api/items/:id', requireAdmin, async (req, res) => {
   try {
     const deletedItem = await Item.findByIdAndDelete(req.params.id);
     if (!deletedItem) return res.status(404).json({ message: 'Item nahi mila' });
@@ -305,6 +378,19 @@ app.delete('/api/items/:id', async (req, res) => {
 
 // --- SERVER & DATABASE CONNECTION ---
 const PORT = process.env.PORT || 5050;
+
+async function generateAndPersistDailyBrief() {
+  const { createAutomaticDailyBrief } = await import('./aquiretested/api/daily-briefs.js');
+  const generated = await createAutomaticDailyBrief();
+  if (!generated) throw new Error('No qualifying RSS items were available.');
+  const { automated, ...brief } = generated;
+  await DailyBrief.findOneAndUpdate(
+    { briefId: brief.briefId },
+    { $set: { ...brief, isAutomated: automated ?? true, isPublished: true } },
+    { upsert: true, returnDocument: 'after', runValidators: true },
+  );
+  return brief.briefId;
+}
 
 console.log('⏳ Connecting to MongoDB Atlas...');
 
@@ -320,11 +406,15 @@ mongoose.connect(process.env.MONGO_URI, {
   cron.schedule('0 8 * * *', async () => {
     try {
       console.log('⚡ Running scheduled Daily 8:00 AM IST Redevelopment Intelligence Brief update...');
-      // Automatically keep intelligence brief synchronized
+      console.log(`Saved ${await generateAndPersistDailyBrief()}`);
     } catch (error) {
       console.error('Scheduled intelligence brief sync failed:', error.message);
     }
   }, { timezone: 'Asia/Kolkata' });
+
+  void generateAndPersistDailyBrief()
+    .then((briefId) => console.log(`Current daily brief ready: ${briefId}`))
+    .catch((error) => console.error('Initial daily brief generation failed:', error.message));
 
   cron.schedule('0 */6 * * *', async () => {
     try {

@@ -51,7 +51,7 @@ function mergeBriefs(...briefGroups) {
   );
 }
 
-async function saveAndLoadDailyBriefs(automaticBrief) {
+export async function saveAndLoadDailyBriefs(automaticBrief) {
   const client = await getMongoClient();
   if (!client) return null;
 
@@ -171,7 +171,7 @@ function getIstDateKey(date) {
   return `${values.year}-${values.month}-${values.day}`;
 }
 
-async function createAutomaticDailyBrief() {
+export async function createAutomaticDailyBrief() {
   const feed = await parser.parseURL(LIVE_BRIEF_FEED_URL);
   const seenTitles = new Set();
   const articles = [];
@@ -855,23 +855,31 @@ export default async function handler(request, response) {
   }
 
   try {
-    let automaticBrief = null;
-    try {
-      automaticBrief = await createAutomaticDailyBrief();
-    } catch (error) {
-      console.warn('Automatic daily brief generation failed; serving historical fallback.', error);
-    }
-
     let storedBriefs = null;
+    let storage = 'primary';
     try {
-      storedBriefs = await saveAndLoadDailyBriefs(automaticBrief);
+      storedBriefs = await saveAndLoadDailyBriefs(null);
     } catch (error) {
-      console.warn('Daily brief persistence unavailable; serving generated and embedded briefs.', error);
+      console.warn('Daily brief persistence unavailable; serving embedded briefs.', error);
+    }
+    if (!storedBriefs) {
+      try {
+        const backendBase = process.env.BACKEND_API_URL || 'https://aquiretested-2.onrender.com';
+        const backendResponse = await fetch(`${backendBase.replace(/\/$/, '')}/api/daily-briefs?limit=50`);
+        if (backendResponse.ok) {
+          const backendData = await backendResponse.json();
+          if (Array.isArray(backendData.briefs)) {
+            storedBriefs = backendData.briefs;
+            storage = 'backend';
+          }
+        }
+      } catch {
+        // Embedded briefs remain available if both persistence services are unavailable.
+      }
     }
 
     const availableBriefs = mergeBriefs(
       storedBriefs || [],
-      automaticBrief ? [automaticBrief] : [],
       INITIAL_DAILY_BRIEFS,
     );
     const page = Math.max(Number.parseInt(String(request.query?.page || '1'), 10), 1);
@@ -899,21 +907,18 @@ export default async function handler(request, response) {
     const start = (page - 1) * limit;
     const paginated = filtered.slice(start, start + limit);
 
-    const isScheduledRun = request.query?.cron === '1';
-    response.setHeader(
-      'Cache-Control',
-      isScheduledRun ? 'no-store' : 's-maxage=300, stale-while-revalidate=900',
-    );
+    response.setHeader('Cache-Control', 's-maxage=300, stale-while-revalidate=900');
     return response.status(200).json({
       briefs: paginated,
       page,
       total: filtered.length,
       totalPages: Math.ceil(filtered.length / limit),
-      automatic: Boolean(automaticBrief),
-      generatedAt: automaticBrief?.generatedAt || null,
+      automatic: false,
+      generatedAt: availableBriefs[0]?.generatedAt || null,
       persisted: Boolean(storedBriefs),
+      storage: storedBriefs ? storage : 'embedded',
     });
-  } catch (error) {
+  } catch {
     return response.status(500).json({ error: 'Unable to fetch daily intelligence briefs.' });
   }
 }

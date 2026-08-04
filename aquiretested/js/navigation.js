@@ -146,17 +146,17 @@ function initStickyHeader() {
 
 /* Search Modal Implementation */
 const searchTargets = [
-  { label: 'About Us', href: '/about.html', terms: ['about', 'company', 'advisory'] },
-  { label: 'Our Leadership Team', href: '/leadership.html', terms: ['leadership', 'team', 'ceo', 'coo'] },
-  { label: 'Services', href: '/services.html', terms: ['services', 'all services', 'offerings'] },
-  { label: 'Tenant Management', href: '/tenant-management.html', terms: ['tenant', 'management'] },
-  { label: 'Liaisoning', href: '/liaisoning.html', terms: ['liaisoning', 'approvals', 'compliance'] },
-  { label: 'IEC Activities', href: '/iec-activities.html', terms: ['iec', 'communication', 'activities'] },
-  { label: 'Facility Management', href: '/facility-management.html', terms: ['facility', 'maintenance'] },
-  { label: 'A&M Projects Gallery', href: '/gallery.html', terms: ['gallery', 'projects', 'images'] },
-  { label: 'A&M Advisory Blog', href: '/blog.html', terms: ['blog', 'insights', 'articles'] },
-  { label: 'SRA and Real Estate News', href: '/news.html', terms: ['news', 'sra news', 'real estate news'] },
-  { label: 'Contact Us', href: '/contact.html', terms: ['contact', 'phone', 'email', 'office'] },
+  { label: 'About Us', href: '/about', terms: ['about', 'company', 'advisory'] },
+  { label: 'Our Leadership Team', href: '/leadership', terms: ['leadership', 'team', 'ceo', 'coo'] },
+  { label: 'Services', href: '/services', terms: ['services', 'all services', 'offerings'] },
+  { label: 'Tenant Management', href: '/tenant-management', terms: ['tenant', 'management'] },
+  { label: 'Liaisoning', href: '/liaisoning', terms: ['liaisoning', 'approvals', 'compliance'] },
+  { label: 'IEC Activities', href: '/iec-activities', terms: ['iec', 'communication', 'activities'] },
+  { label: 'Facility Management', href: '/facility-management', terms: ['facility', 'maintenance'] },
+  { label: 'A&M Projects Gallery', href: '/gallery', terms: ['gallery', 'projects', 'images'] },
+  { label: 'A&M Advisory Blog', href: '/blog', terms: ['blog', 'insights', 'articles'] },
+  { label: 'SRA and Real Estate News', href: '/news', terms: ['news', 'sra news', 'real estate news'] },
+  { label: 'Contact Us', href: '/contact', terms: ['contact', 'phone', 'email', 'office'] },
 ];
 
 function initSearchModal() {
@@ -167,9 +167,20 @@ function initSearchModal() {
   const searchResults = document.getElementById('site-search-results');
 
   if (!searchModal) return;
+  searchModal.setAttribute('role', 'dialog');
+  searchModal.setAttribute('aria-modal', 'true');
+  searchModal.setAttribute('aria-label', 'Search A&M Advisory website');
+  let lastFocusedElement = null;
+
+  const closeSearch = () => {
+    searchModal.classList.add('hidden');
+    searchModal.classList.remove('flex');
+    lastFocusedElement?.focus();
+  };
 
   searchToggleBtns.forEach((btn) => {
     btn.addEventListener('click', () => {
+      lastFocusedElement = btn;
       searchModal.classList.remove('hidden');
       searchModal.classList.add('flex');
       if (searchInput) {
@@ -181,11 +192,12 @@ function initSearchModal() {
   });
 
   if (searchCloseBtn) {
-    searchCloseBtn.addEventListener('click', () => {
-      searchModal.classList.add('hidden');
-      searchModal.classList.remove('flex');
-    });
+    searchCloseBtn.addEventListener('click', closeSearch);
   }
+
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && !searchModal.classList.contains('hidden')) closeSearch();
+  });
 
   if (searchInput) {
     searchInput.addEventListener('input', (e) => {
@@ -208,7 +220,10 @@ function initSearchModal() {
     );
 
     if (matches.length === 0) {
-      searchResults.innerHTML = `<p class="text-xs text-slate-500 py-4 text-center">No results found for "${query}"</p>`;
+      const emptyMessage = document.createElement('p');
+      emptyMessage.className = 'text-xs text-slate-500 py-4 text-center';
+      emptyMessage.textContent = `No results found for "${query}"`;
+      searchResults.replaceChildren(emptyMessage);
       return;
     }
 
@@ -241,7 +256,7 @@ function initLanguageSwitcher() {
   if (!document.getElementById('google_translate_element')) {
     const translateDiv = document.createElement('div');
     translateDiv.id = 'google_translate_element';
-    translateDiv.setAttribute('aria-hidden', 'true');
+    translateDiv.setAttribute('inert', '');
     document.body.appendChild(translateDiv);
   }
 

@@ -324,20 +324,6 @@ function initPhoneInputRestriction() {
       this.value = this.value.replace(/\D/g, '').slice(0, 10);
     });
 
-    // Block non-numeric key presses
-    input.addEventListener('keypress', function (e) {
-      if (!/[0-9]/.test(e.key) || this.value.length >= 10) {
-        e.preventDefault();
-      }
-    });
-
-    // Block paste of non-numeric text
-    input.addEventListener('paste', function (e) {
-      e.preventDefault();
-      const pastedData = (e.clipboardData || window.clipboardData).getData('text');
-      const numericData = pastedData.replace(/\D/g, '').slice(0, 10);
-      this.value = numericData;
-    });
   });
 }
 
@@ -345,90 +331,67 @@ function initBrochureModal() {
   const openBtn = document.getElementById('open-brochure-modal-btn');
   const modal = document.getElementById('brochure-modal');
   const closeBtn = document.getElementById('close-brochure-modal-btn');
-  const form = document.getElementById('brochure-download-form');
-
-  function triggerProfileDownload() {
+  let lastFocusedElement = null;
+  const closeModal = () => {
+    modal?.classList.add('hidden');
+    lastFocusedElement?.focus();
+  };
+  window.triggerProfileDownload = function triggerProfileDownload() {
     const link = document.createElement('a');
     link.href = 'assets/AM_Advisory_Company_Profile.pdf?v=20260801-3';
     link.download = 'A&M Company Profile.pdf';
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
-  }
+  };
 
   if (openBtn && modal) {
-    openBtn.addEventListener('click', () => modal.classList.remove('hidden'));
+    openBtn.addEventListener('click', () => {
+      lastFocusedElement = openBtn;
+      modal.classList.remove('hidden');
+      window.setTimeout(() => closeBtn?.focus(), 50);
+    });
   }
   if (closeBtn && modal) {
-    closeBtn.addEventListener('click', () => modal.classList.add('hidden'));
+    closeBtn.addEventListener('click', closeModal);
   }
   if (modal) {
     modal.addEventListener('click', (e) => {
-      if (e.target === modal) modal.classList.add('hidden');
+      if (e.target === modal) closeModal();
     });
   }
-  if (form) {
-    form.addEventListener('submit', (e) => {
-      e.preventDefault();
-      const bName = document.getElementById('brochure-name')?.value.trim();
-      const bEmail = document.getElementById('brochure-email')?.value.trim();
-      const bPhone = document.getElementById('brochure-phone')?.value.trim();
-
-      const leadPayload = {
-        id: 'company-profile-lead-' + Date.now(),
-        timestamp: new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' }),
-        name: bName,
-        email: bEmail,
-        phone: bPhone,
-        requirement: 'Requested Official A&M Advisory Company Profile (PPT / PDF)',
-        sourcePage: window.location.pathname
-      };
-
-      try {
-        let existing = JSON.parse(localStorage.getItem('am_advisory_leads')) || [];
-        existing.unshift(leadPayload);
-        localStorage.setItem('am_advisory_leads', JSON.stringify(existing));
-      } catch (err) {}
-
-      // Trigger automatic PDF file download immediately
-      triggerProfileDownload();
-
-      modal.classList.add('hidden');
-
-      // WhatsApp Redirect
-      setTimeout(() => {
-        const waMsg = encodeURIComponent(
-          `*Company Profile Request (A&M Advisory)*\n\n` +
-          `*Name:* ${bName}\n` +
-          `*Mobile:* ${bPhone}\n` +
-          `*Email:* ${bEmail}\n` +
-          `*Request:* Downloaded Official Company Profile Presentation`
-        );
-        window.open(`https://wa.me/919167485843?text=${waMsg}`, '_blank');
-      }, 1000);
-
-      form.reset();
-    });
-  }
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && !modal?.classList.contains('hidden')) closeModal();
+  });
 }
 
 function initVideoModal() {
   const playBtns = document.querySelectorAll('.video-play-btn');
   const videoModal = document.getElementById('video-modal');
   const closeVideoBtn = document.getElementById('close-video-modal-btn');
+  let videoTrigger = null;
+  const closeVideo = () => {
+    videoModal?.classList.add('hidden');
+    videoTrigger?.focus();
+  };
 
   playBtns.forEach((btn) => {
     btn.addEventListener('click', () => {
+      videoTrigger = btn;
       if (videoModal) videoModal.classList.remove('hidden');
+      window.setTimeout(() => closeVideoBtn?.focus(), 50);
     });
   });
 
   if (closeVideoBtn && videoModal) {
-    closeVideoBtn.addEventListener('click', () => videoModal.classList.add('hidden'));
+    closeVideoBtn.addEventListener('click', closeVideo);
   }
   if (videoModal) {
     videoModal.addEventListener('click', (e) => {
-      if (e.target === videoModal) videoModal.classList.add('hidden');
+      if (e.target === videoModal) closeVideo();
     });
   }
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && !videoModal?.classList.contains('hidden')) closeVideo();
+  });
 }

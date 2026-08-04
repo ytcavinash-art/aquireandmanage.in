@@ -865,15 +865,17 @@
     }).join('');
 
     const newsCardsHtml = filteredNews.map((article) => {
+      const articleUrl = safeExternalUrl(article.url, '#');
+      const imageUrl = safeExternalUrl(article.imageUrl);
       const dateStr = article.publishedAt
         ? new Date(article.publishedAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })
         : 'Recent';
 
-      const articleImage = article.imageUrl
+      const articleImage = imageUrl
         ? `
             <div class="relative overflow-hidden bg-slate-100 aspect-video">
               <img
-                src="${escapeHtml(article.imageUrl)}"
+                src="${escapeHtml(imageUrl)}"
                 alt="${escapeHtml(article.title)}"
                 class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                 loading="lazy"
@@ -898,7 +900,7 @@
               </div>
 
               <h3 class="text-base font-bold text-navy font-serif mb-3 leading-snug transition group-hover:text-crimson">
-                <a href="${article.url}" target="_blank" rel="noopener noreferrer">${escapeHtml(article.title)}</a>
+                <a href="${escapeHtml(articleUrl)}" target="_blank" rel="noopener noreferrer">${escapeHtml(article.title)}</a>
               </h3>
 
               <p class="text-xs text-slate-600 leading-relaxed text-justify line-clamp-3 mb-4">
@@ -909,7 +911,7 @@
 
           <div class="border-t border-slate-100 px-6 py-4 bg-slate-50/50 mt-auto flex items-center justify-between">
             <span class="text-[11px] font-bold text-slate-500">${escapeHtml(article.source || 'News Desk')}</span>
-            <a href="${article.url}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 text-xs font-bold text-navy hover:text-crimson">
+            <a href="${escapeHtml(articleUrl)}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 text-xs font-bold text-navy hover:text-crimson">
               Read Article ↗
             </a>
           </div>
@@ -1140,6 +1142,15 @@
 
   function escapeHtml(str) {
     return (str || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
+
+  function safeExternalUrl(value, fallback = '') {
+    try {
+      const url = new URL(String(value || ''), window.location.origin);
+      return ['http:', 'https:'].includes(url.protocol) ? url.href : fallback;
+    } catch {
+      return fallback;
+    }
   }
 
   // DOM Ready

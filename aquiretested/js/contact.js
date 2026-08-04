@@ -1,283 +1,214 @@
-/**
- * A&M Advisory - Multi-Channel Contact and Lead Management System
- * Integrates: 
- * 1. Email Dispatch (Web3Forms API -> info@aquireandmanage.com)
- * 2. WhatsApp Direct Chat Redirect (+91 022-45648350)
- * 3. Lead Storage Database and Google Sheet Sync (localStorage + Webhook)
- */
+/** A&M Advisory secure contact, feedback and newsletter forms. */
+const CONTACT_API_URL = '/api/contact';
+const FEEDBACK_API_URL = '/api/feedback';
+const WHATSAPP_NUMBER = '919167485843';
 
 document.addEventListener('DOMContentLoaded', () => {
-  initPhoneInputRestriction();
+  initPhoneInputs();
   initMeetingRequestLink();
-  initContactForm();
+  initContactForms();
+  initBrochureForm();
   initFeedbackForm();
-  initNewsletterForm();
-  initLeadStorageManager();
+  initNewsletterForms();
 });
 
-/* Move meeting requests directly to the enquiry form and make it ready to use. */
 function initMeetingRequestLink() {
   const meetingLink = document.getElementById('request-meeting-link');
   const enquiryForm = document.getElementById('quick-enquiry-form');
-
   if (!meetingLink || !enquiryForm) return;
-
   meetingLink.addEventListener('click', (event) => {
     event.preventDefault();
     history.replaceState(null, '', '#quick-enquiry-form');
     enquiryForm.scrollIntoView({ behavior: 'smooth', block: 'start' });
-
-    const firstField = enquiryForm.querySelector('input, textarea, select');
-    window.setTimeout(() => firstField?.focus({ preventScroll: true }), 450);
+    window.setTimeout(() => enquiryForm.querySelector('input, textarea, select')?.focus({ preventScroll: true }), 450);
   });
 }
 
-/* 1. Phone Input 10-Digit and Non-Numeric Restriction */
-function initPhoneInputRestriction() {
-  const phoneInputs = document.querySelectorAll('input[type="tel"], input[name="phone"], #brochure-phone, #quick-phone');
-  
-  phoneInputs.forEach((input) => {
-    input.addEventListener('input', function () {
-      this.value = this.value.replace(/\D/g, '').slice(0, 10);
-    });
-
-    input.addEventListener('keypress', function (e) {
-      if (!/[0-9]/.test(e.key) || this.value.length >= 10) {
-        e.preventDefault();
-      }
-    });
-
-    input.addEventListener('paste', function (e) {
-      e.preventDefault();
-      const pastedData = (e.clipboardData || window.clipboardData).getData('text');
-      const numericData = pastedData.replace(/\D/g, '').slice(0, 10);
-      this.value = numericData;
+function initPhoneInputs() {
+  document.querySelectorAll('input[type="tel"], input[name="phone"]').forEach((input) => {
+    input.addEventListener('input', () => {
+      input.value = input.value.replace(/\D/g, '').slice(0, 10);
     });
   });
 }
 
-const FEEDBACK_API_URL = 'https://aquiretested-2.onrender.com/api/feedback';
-const OFFICE_EMAIL = 'info@aquireandmanage.com';
-const WHATSAPP_NUMBER = '919167485843';
+async function postJson(url, payload) {
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
+  });
+  const data = await response.json().catch(() => ({}));
+  if (!response.ok) throw new Error(data.error || 'The request could not be saved.');
+  return data;
+}
 
-/* 2. Main Contact and Quick Enquiry Multi-Channel Form */
-function initContactForm() {
-  const contactForms = document.querySelectorAll('.contact-form');
+function initContactForms() {
+  document.querySelectorAll('.contact-form').forEach((form) => {
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const button = form.querySelector('button[type="submit"]');
+      const originalText = button?.textContent || 'Submit';
+      const status = form.querySelector('.form-status-message') || createStatusElement(form);
+      const fullName = form.querySelector('[name="name"]')?.value.trim();
+      const emailAddress = form.querySelector('[name="email"]')?.value.trim();
+      const mobileNumber = form.querySelector('[name="phone"]')?.value.trim();
+      const baseMessage = form.querySelector('[name="message"], [name="project_requirement"]')?.value.trim()
+        || 'Slum Rehabilitation Advisory enquiry';
+      const meetingDate = form.querySelector('[name="meeting_date"]')?.value;
+      const meetingTime = form.querySelector('[name="meeting_time"]')?.value;
+      const meetingPreference = meetingDate
+        ? `\nPreferred meeting: ${meetingDate}${meetingTime ? ` at ${meetingTime}` : ''}`
+        : '';
+      const message = `${baseMessage}${meetingPreference}`;
 
-  contactForms.forEach((form) => {
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
-
-      const submitBtn = form.querySelector('button[type="submit"]');
-      const originalText = submitBtn ? submitBtn.innerText : 'Submit';
-      const statusMessage = form.querySelector('.form-status-message') || createStatusElement(form);
-
-      const name = form.querySelector('[name="name"]')?.value.trim();
-      const email = form.querySelector('[name="email"]')?.value.trim();
-      const phone = form.querySelector('[name="phone"]')?.value.trim();
-      const projectDetails = form.querySelector('[name="message"], [name="project_requirement"]')?.value.trim() || 'Slum Rehabilitation Advisory Inquiry';
-
-      if (!name || !email || !phone) {
-        showStatus(statusMessage, 'Please fill in all required fields.', 'error');
+      if (!fullName || !emailAddress || !/^\d{10}$/.test(mobileNumber || '') || !message) {
+        showStatus(status, 'Please enter your name, email, enquiry details and a valid 10-digit mobile number.', 'error');
         return;
       }
-
-      if (!/^\d{10}$/.test(phone)) {
-        showStatus(statusMessage, 'Please enter a valid 10-digit mobile number.', 'error');
-        return;
-      }
-
-      if (submitBtn) {
-        submitBtn.disabled = true;
-        submitBtn.innerText = 'Processing Inquiry...';
-      }
-
-      const leadPayload = {
-        id: 'lead-' + Date.now(),
-        timestamp: new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' }),
-        name,
-        email,
-        phone,
-        requirement: projectDetails,
-        sourcePage: window.location.pathname
-      };
-
+      setSubmitting(button, true, 'Saving enquiry…');
       try {
-        // --- CHANNEL 3: Save to Lead Storage (Google Sheets Sync Database) ---
-        saveLeadToDatabase(leadPayload);
-
-        // --- CHANNEL 1: Email Notification API Dispatch ---
-        try {
-          await fetch('https://api.web3forms.com/submit', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              access_key: '5c6a1b24-9b5c-4f10-a23b-0123456789ab', // Web3Forms Key placeholder
-              to_email: OFFICE_EMAIL,
-              subject: `New SRA Inquiry from ${name}`,
-              from_name: name,
-              message: `New Lead Details:\nName: ${name}\nMobile: ${phone}\nEmail: ${email}\nRequirement: ${projectDetails}`
-            })
-          });
-        } catch (mailErr) {
-          console.log('Email API dispatch logged.', mailErr);
-        }
-
-        showStatus(statusMessage, '✅ Enquiry Submitted! Opening WhatsApp to connect with our Bandra East advisory desk...', 'success');
-
-        // --- CHANNEL 2: WhatsApp Chat Auto-Redirect ---
-        setTimeout(() => {
-          const waMessage = encodeURIComponent(
-            `*New SRA Project Inquiry (A&M Advisory)*\n\n` +
-            `*Name:* ${name}\n` +
-            `*Mobile:* ${phone}\n` +
-            `*Email:* ${email}\n` +
-            `*Requirement:* ${projectDetails}`
-          );
-          const whatsappURL = `https://wa.me/${WHATSAPP_NUMBER}?text=${waMessage}`;
-          window.open(whatsappURL, '_blank');
-        }, 1200);
-
+        await postJson(CONTACT_API_URL, {
+          kind: 'enquiry', fullName, emailAddress, mobileNumber, message,
+          sourcePage: window.location.pathname,
+        });
+        showStatus(status, 'Enquiry submitted securely. Opening WhatsApp for faster assistance…', 'success');
         form.reset();
-      } catch (err) {
-        showStatus(statusMessage, 'Inquiry recorded! Our team will connect at ' + OFFICE_EMAIL, 'success');
+        window.setTimeout(() => {
+          const whatsappMessage = encodeURIComponent(
+            `*New A&M Advisory Enquiry*\n\n*Name:* ${fullName}\n*Mobile:* ${mobileNumber}\n*Email:* ${emailAddress}\n*Requirement:* ${message}`,
+          );
+          window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${whatsappMessage}`, '_blank', 'noopener,noreferrer');
+        }, 700);
+      } catch (error) {
+        showStatus(status, error.message || 'We could not save your enquiry. Please call or WhatsApp our team.', 'error');
       } finally {
-        if (submitBtn) {
-          submitBtn.disabled = false;
-          submitBtn.innerText = originalText;
-        }
+        setSubmitting(button, false, originalText);
       }
     });
   });
 }
 
-/* 3. Lead Storage and Google Sheet Database Handler */
-function saveLeadToDatabase(lead) {
-  let existingLeads = [];
-  try {
-    existingLeads = JSON.parse(localStorage.getItem('am_advisory_leads')) || [];
-  } catch (e) {
-    existingLeads = [];
-  }
-  existingLeads.unshift(lead);
-  localStorage.setItem('am_advisory_leads', JSON.stringify(existingLeads));
-  console.log('Lead successfully saved to local database:', lead);
-}
-
-// Global helper to view all recorded leads
-window.getAMLeads = function () {
-  const leads = JSON.parse(localStorage.getItem('am_advisory_leads')) || [];
-  console.table(leads);
-  return leads;
-};
-
-/* Feedback Form and Star Rating Picker */
-function initFeedbackForm() {
-  const feedbackForm = document.getElementById('feedback-form');
-  if (!feedbackForm) return;
-
-  const starButtons = feedbackForm.querySelectorAll('.star-rating-btn');
-  const ratingInput = document.getElementById('feedback-rating-val');
-  let currentRating = 5;
-
-  starButtons.forEach((btn) => {
-    btn.addEventListener('click', () => {
-      currentRating = parseInt(btn.getAttribute('data-star'), 10);
-      if (ratingInput) ratingInput.value = currentRating;
-      
-      starButtons.forEach((b) => {
-        const starVal = parseInt(b.getAttribute('data-star'), 10);
-        if (starVal <= currentRating) {
-          b.classList.remove('text-slate-300');
-          b.classList.add('text-amber-400');
-        } else {
-          b.classList.remove('text-amber-400');
-          b.classList.add('text-slate-300');
-        }
-      });
-    });
-  });
-
-  feedbackForm.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const submitBtn = feedbackForm.querySelector('button[type="submit"]');
-    const statusMsg = document.getElementById('feedback-form-status') || createStatusElement(feedbackForm);
-
-    const fullName = document.getElementById('feedback-name')?.value.trim();
-    const emailAddress = document.getElementById('feedback-email')?.value.trim();
-    const feedbackText = document.getElementById('feedback-message')?.value.trim();
-
-    if (!fullName || !emailAddress || !feedbackText) {
-      showStatus(statusMsg, 'Please fill in all required fields.', 'error');
+function initBrochureForm() {
+  const form = document.getElementById('brochure-download-form');
+  if (!form) return;
+  form.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    const button = form.querySelector('button[type="submit"]');
+    const originalText = button?.textContent || 'Download Company Profile';
+    const status = form.querySelector('.form-status-message') || createStatusElement(form);
+    const fullName = document.getElementById('brochure-name')?.value.trim();
+    const emailAddress = document.getElementById('brochure-email')?.value.trim();
+    const mobileNumber = document.getElementById('brochure-phone')?.value.trim();
+    if (!fullName || !emailAddress || !/^\d{10}$/.test(mobileNumber || '')) {
+      showStatus(status, 'Enter your name, email and a valid 10-digit mobile number.', 'error');
       return;
     }
-
-    if (submitBtn) {
-      submitBtn.disabled = true;
-      submitBtn.innerText = 'Submitting Feedback...';
-    }
-
+    setSubmitting(button, true, 'Saving request…');
     try {
-      const response = await fetch(FEEDBACK_API_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          fullName,
-          emailAddress,
-          rating: currentRating,
-          feedback: feedbackText
-        })
+      await postJson(CONTACT_API_URL, {
+        kind: 'brochure', fullName, emailAddress, mobileNumber,
+        message: 'Requested the official A&M Advisory Company Profile PDF',
+        sourcePage: window.location.pathname,
       });
-
-      if (!response.ok) throw new Error('API submission failed');
-      showStatus(statusMsg, 'Thank you for your rating and feedback! 🎉', 'success');
-      feedbackForm.reset();
-    } catch {
-      showStatus(statusMsg, 'Thank you! Your feedback has been recorded.', 'success');
-      feedbackForm.reset();
+      if (typeof window.triggerProfileDownload === 'function') window.triggerProfileDownload();
+      else document.querySelector('#brochure-modal a[download]')?.click();
+      document.getElementById('brochure-modal')?.classList.add('hidden');
+      form.reset();
+    } catch (error) {
+      showStatus(status, error.message || 'The request could not be saved.', 'error');
     } finally {
-      if (submitBtn) {
-        submitBtn.disabled = false;
-        submitBtn.innerText = 'Submit Feedback';
-      }
+      setSubmitting(button, false, originalText);
     }
   });
 }
 
-/* Newsletter Signup */
-function initNewsletterForm() {
-  const newsletterForms = document.querySelectorAll('.newsletter-form');
+function initFeedbackForm() {
+  const form = document.getElementById('feedback-form');
+  if (!form) return;
+  const stars = [...form.querySelectorAll('.star-rating-btn')];
+  const ratingInput = document.getElementById('feedback-rating-val');
+  let rating = Number(ratingInput?.value || 5);
+  const updateStars = () => stars.forEach((star) => {
+    const selected = Number(star.dataset.star) <= rating;
+    star.classList.toggle('text-amber-400', selected);
+    star.classList.toggle('text-slate-300', !selected);
+    star.setAttribute('aria-pressed', String(Number(star.dataset.star) === rating));
+  });
+  stars.forEach((star) => star.addEventListener('click', () => {
+    rating = Number(star.dataset.star);
+    if (ratingInput) ratingInput.value = String(rating);
+    updateStars();
+  }));
+  updateStars();
 
-  newsletterForms.forEach((form) => {
-    form.addEventListener('submit', (e) => {
-      e.preventDefault();
-      const emailInput = form.querySelector('input[type="email"]');
-      if (emailInput && emailInput.value) {
-        alert('Thank you for subscribing to A&M Advisory updates!');
-        emailInput.value = '';
+  form.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    const button = form.querySelector('button[type="submit"]');
+    const status = document.getElementById('feedback-form-status') || createStatusElement(form);
+    const fullName = document.getElementById('feedback-name')?.value.trim();
+    const emailAddress = document.getElementById('feedback-email')?.value.trim();
+    const feedback = document.getElementById('feedback-message')?.value.trim();
+    if (!fullName || !emailAddress || !feedback) {
+      showStatus(status, 'Please fill in all required fields.', 'error');
+      return;
+    }
+    setSubmitting(button, true, 'Submitting feedback…');
+    try {
+      await postJson(FEEDBACK_API_URL, { fullName, emailAddress, rating, feedback });
+      showStatus(status, 'Thank you. Your feedback was submitted for review.', 'success');
+      form.reset();
+      rating = 5;
+      updateStars();
+    } catch (error) {
+      showStatus(status, error.message || 'Feedback could not be saved. Please try again.', 'error');
+    } finally {
+      setSubmitting(button, false, 'Submit Feedback');
+    }
+  });
+}
+
+function initNewsletterForms() {
+  document.querySelectorAll('.newsletter-form').forEach((form) => {
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const input = form.querySelector('input[type="email"]');
+      const button = form.querySelector('button[type="submit"]');
+      if (!input?.value.trim()) return;
+      setSubmitting(button, true, 'Saving…');
+      try {
+        await postJson(CONTACT_API_URL, {
+          kind: 'newsletter', emailAddress: input.value.trim(), sourcePage: window.location.pathname,
+        });
+        input.value = '';
+        alert('Thank you. Your subscription has been saved.');
+      } catch (error) {
+        alert(error.message || 'Subscription could not be saved. Please try again.');
+      } finally {
+        setSubmitting(button, false, 'Subscribe');
       }
     });
   });
 }
 
-function initLeadStorageManager() {
-  console.log('A&M Advisory Multi-Channel Lead Pipeline Initialized.');
+function setSubmitting(button, submitting, text) {
+  if (!button) return;
+  button.disabled = submitting;
+  button.textContent = text;
 }
 
 function createStatusElement(form) {
-  const statusEl = document.createElement('div');
-  statusEl.className = 'form-status-message mt-4 text-sm font-semibold rounded-lg p-3 hidden';
-  form.appendChild(statusEl);
-  return statusEl;
+  const element = document.createElement('div');
+  element.className = 'form-status-message mt-4 text-sm font-semibold rounded-lg p-3 hidden';
+  element.setAttribute('role', 'status');
+  element.setAttribute('aria-live', 'polite');
+  form.appendChild(element);
+  return element;
 }
 
 function showStatus(element, text, type) {
   element.textContent = text;
   element.classList.remove('hidden', 'bg-green-100', 'text-green-800', 'bg-red-100', 'text-red-800');
-  
-  if (type === 'success') {
-    element.classList.add('bg-green-100', 'text-green-800');
-  } else {
-    element.classList.add('bg-red-100', 'text-red-800');
-  }
+  element.classList.add(type === 'success' ? 'bg-green-100' : 'bg-red-100');
+  element.classList.add(type === 'success' ? 'text-green-800' : 'text-red-800');
 }

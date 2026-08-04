@@ -23,4 +23,7 @@
   <url><loc>https://www.aquireandmanage.com/goals</loc><changefreq>yearly</changefreq><priority>0.5</priority></url>
   <url><loc>https://www.aquireandmanage.com/careers</loc><changefreq>weekly</changefreq><priority>0.6</priority></url>
   <url><loc>https://www.aquireandmanage.com/contact</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://www.aquireandmanage.com/privacy</loc><changefreq>yearly</changefreq><priority>0.3</priority></url>
+  <url><loc>https://www.aquireandmanage.com/terms</loc><changefreq>yearly</changefreq><priority>0.3</priority></url>
+  <url><loc>https://www.aquireandmanage.com/disclaimer</loc><changefreq>yearly</changefreq><priority>0.3</priority></url>
 </urlset>

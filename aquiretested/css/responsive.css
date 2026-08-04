@@ -684,3 +684,27 @@
     animation: none !important;
   }
 }
+
+:where(a, button, input, select, textarea):focus-visible {
+  outline: 3px solid #2563eb !important;
+  outline-offset: 3px !important;
+}
+
+.star-rating-btn,
+#search-modal-close,
+#chatbot-close-btn,
+#close-brochure-modal-btn,
+#close-video-modal-btn {
+  min-width: 44px;
+  min-height: 44px;
+}
+
+@media (pointer: coarse) {
+  .gallery-filter-btn,
+  .blog-cat-btn,
+  [data-filter],
+  .didi-icon-button,
+  .didi-language-option {
+    min-height: 44px;
+  }
+}

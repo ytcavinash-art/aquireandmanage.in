@@ -43,14 +43,14 @@ const FAQS = [
   {
     id: 'contact',
     keywords: ['contact', 'phone', 'call', 'email', 'whatsapp', 'site office', 'संपर्क', 'फ़ोन', 'फोन', 'कॉल', 'ईमेल'],
-    english: 'You can contact A&M Advisory through the website contact form, phone, email, WhatsApp or the site office. Call +91 022-45648350 or email info@aquireandmanage.com, and the team will help with your project-related concern.',
-    hindi: 'आप website contact form, फ़ोन, ईमेल, WhatsApp या site office के माध्यम से A&M Advisory से संपर्क कर सकते हैं। +91 022-45648350 पर कॉल करें या info@aquireandmanage.com पर ईमेल भेजें। हमारी टीम आपकी परियोजना से जुड़ी चिंता में सहायता करेगी।',
+    english: 'You can contact A&M Advisory through the website contact form, phone, email, WhatsApp or the site office. Call +91 22 4564 8350 or email info@aquireandmanage.com, and the team will help with your project-related concern.',
+    hindi: 'आप website contact form, फ़ोन, ईमेल, WhatsApp या site office के माध्यम से A&M Advisory से संपर्क कर सकते हैं। +91 22 4564 8350 पर कॉल करें या info@aquireandmanage.com पर ईमेल भेजें। हमारी टीम आपकी परियोजना से जुड़ी चिंता में सहायता करेगी।',
   },
   {
     id: 'consultation',
     keywords: ['schedule consultation', 'book consultation', 'consultation', 'appointment', 'meeting book', 'सलाह', 'परामर्श', 'अपॉइंटमेंट'],
-    english: 'You can schedule a consultation through the website contact form, phone, email or WhatsApp. Call +91 022-45648350 or email info@aquireandmanage.com; the A&M Advisory team will respond and guide you through the next steps.',
-    hindi: 'आप website contact form, फ़ोन, ईमेल या WhatsApp के माध्यम से consultation बुक कर सकते हैं। +91 022-45648350 पर कॉल करें या info@aquireandmanage.com पर ईमेल भेजें; A&M Advisory की टीम आगे की प्रक्रिया बताएगी।',
+    english: 'You can schedule a consultation through the website contact form, phone, email or WhatsApp. Call +91 22 4564 8350 or email info@aquireandmanage.com; the A&M Advisory team will respond and guide you through the next steps.',
+    hindi: 'आप website contact form, फ़ोन, ईमेल या WhatsApp के माध्यम से consultation बुक कर सकते हैं। +91 22 4564 8350 पर कॉल करें या info@aquireandmanage.com पर ईमेल भेजें; A&M Advisory की टीम आगे की प्रक्रिया बताएगी।',
   },
   {
     id: 'annexure-name-missing',
@@ -161,16 +161,28 @@ function fallbackAnswer(message, selectedLanguage) {
   return fallbacks[language];
 }
 
-function buildKnowledge() {
-  return FAQS.map((faq, index) => (
-    `${index + 1}. ${faq.id}\nEnglish: ${faq.english}\nHindi: ${faq.hindi || 'Not supplied'}\nMarathi: ${faq.marathi || 'Translate the English answer faithfully when Marathi is selected.'}`
-  )).join('\n\n');
+function extractCitations(apiResponse) {
+  const citations = new Map();
+  for (const item of apiResponse.output || []) {
+    if (item.type !== 'message') continue;
+    for (const content of item.content || []) {
+      for (const annotation of content.annotations || []) {
+        if (annotation.type === 'file_citation' && annotation.file_id) {
+          citations.set(annotation.file_id, {
+            fileId: annotation.file_id,
+            filename: annotation.filename || 'A&M Advisory knowledge base',
+          });
+        }
+      }
+    }
+  }
+  return [...citations.values()];
 }
 
 async function answerQuestion(messages, selectedLanguage) {
   const latestMessage = messages.at(-1)?.content || '';
   const responseLanguage = selectedLanguage === 'mr' ? 'Marathi' : selectedLanguage === 'hi' ? 'Hindi' : 'English';
-  if (!process.env.OPENAI_API_KEY) {
+  if (!process.env.OPENAI_API_KEY || !process.env.OPENAI_VECTOR_STORE_ID) {
     return { answer: fallbackAnswer(latestMessage, selectedLanguage), mode: 'knowledge-base' };
   }
 
@@ -178,23 +190,23 @@ async function answerQuestion(messages, selectedLanguage) {
   try {
     const response = await client.responses.create({
       model: process.env.OPENAI_CHAT_MODEL || 'gpt-5.6-sol',
-      instructions: `You are A&M Advisory DiDi, the website assistant for Mumbai SRA, tenant and property management, and urban redevelopment.
-The website language selected by the user is ${responseLanguage}. Reply only in ${responseLanguage},
-regardless of the language or script used in the user's message. Keep answers concise, practical and
-empathetic. Use only the supplied company knowledge. Never invent project claims, legal decisions,
-fixed timelines, consent percentages, government guarantees or document requirements. Clearly state when
-requirements vary and recommend verification with the competent authority. For questions outside this
-knowledge, use the matching-language fallback and offer the Quick Enquiry form.
-When English is selected, use standard English only. Never use Hindi words written in the Latin alphabet
-or Hinglish phrases such as "aap", "ke baare mein", "kar sakta hoon", "ke liye" or "karein".
-
-Company knowledge:
-${buildKnowledge()}`,
+      instructions: `You are DiDi, A&M Advisory's professional and helpful virtual assistant.
+Reply only in ${responseLanguage}. Never mix languages or use Romanized Hindi or Marathi.
+Search the supplied A&M Advisory knowledge base before answering company, project, service, process, policy, eligibility, document or contact questions.
+Use only retrieved company information. Never invent project claims, legal decisions, fixed timelines, consent percentages, guarantees or document requirements.
+If retrieval is insufficient, say so in the selected language and offer the Quick Enquiry form. Keep answers concise, practical and empathetic. Recommend verification with the competent authority for legal or regulatory matters.`,
       input: messages.slice(-8).map((message) => ({
         role: message.role === 'assistant' ? 'assistant' : 'user',
         content: message.content,
       })),
       max_output_tokens: 350,
+      tools: [{
+        type: 'file_search',
+        vector_store_ids: [process.env.OPENAI_VECTOR_STORE_ID],
+        max_num_results: 5,
+      }],
+      tool_choice: 'required',
+      include: ['file_search_call.results'],
       store: false,
     });
 
@@ -202,7 +214,11 @@ ${buildKnowledge()}`,
     if (selectedLanguage === 'en' && isHinglishResponse(generatedAnswer)) {
       return { answer: fallbackAnswer(latestMessage, 'en'), mode: 'knowledge-base' };
     }
-    return { answer: generatedAnswer || fallbackAnswer(latestMessage, selectedLanguage), mode: 'ai' };
+    return {
+      answer: generatedAnswer || fallbackAnswer(latestMessage, selectedLanguage),
+      mode: generatedAnswer ? 'rag' : 'knowledge-base',
+      citations: extractCitations(response),
+    };
   } catch (error) {
     console.error('OpenAI chatbot request failed:', error.message);
     return { answer: fallbackAnswer(latestMessage, selectedLanguage), mode: 'knowledge-base' };
